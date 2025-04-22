@@ -7,6 +7,13 @@ import { ProdutosModule } from './produtos/produtos.module';
 import { PedidosModule } from './pedidos/pedidos.module';
 import { UnidadesModule } from './unidades/unidades.module';
 import * as dotenv from 'dotenv';
+import { Unidade } from './unidades/unidade.model';
+import { Usuario } from './auth/usuario.model';
+import { Produto } from './produtos/produto.model';
+import { Pedido } from './pedidos/pedido.model';
+import { ItemPedido } from './pedidos/item-pedido.model';
+import { Maquineta } from './pedidos/maquineta.model';
+import { Evento } from './pedidos/evento.model';
 
 dotenv.config();
 
@@ -21,6 +28,15 @@ dotenv.config();
       database: process.env.DB_NAME,
       autoLoadModels: true,
       synchronize: true,
+      models: [
+        Unidade,
+        Usuario,
+        Produto,
+        Pedido,
+        ItemPedido,
+        Maquineta,
+        Evento,
+      ],
     }),
     AuthModule,
     ProdutosModule,
