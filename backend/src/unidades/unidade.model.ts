@@ -1,4 +1,9 @@
-import { Table, Column, Model, DataType } from 'sequelize-typescript';
+import { Table, Column, Model, DataType, HasMany } from 'sequelize-typescript';
+import { Usuario } from '../auth/usuario.model';
+import { Produto } from '../produtos/produto.model';
+import { Pedido } from '../pedidos/pedido.model';
+import { Maquineta } from '../pedidos/maquineta.model';
+import { Evento } from '../pedidos/evento.model';
 
 @Table({ tableName: 'unidades' })
 export class Unidade extends Model {
@@ -24,6 +29,21 @@ export class Unidade extends Model {
 
   @Column(DataType.STRING)
   endereco: string;
+
+  @HasMany(() => Usuario)
+  usuarios: Usuario[];
+
+  @HasMany(() => Produto)
+  produtos: Produto[];
+
+  @HasMany(() => Pedido)
+  pedidos: Pedido[];
+
+  @HasMany(() => Maquineta)
+  maquinetas: Maquineta[];
+
+  @HasMany(() => Evento)
+  eventos: Evento[];
 
   // Relationships (to be filled after all models are created)
 }

@@ -4,6 +4,7 @@ import {
   Model,
   DataType,
   ForeignKey,
+  BelongsTo,
 } from 'sequelize-typescript';
 import { Unidade } from '../unidades/unidade.model';
 
@@ -32,4 +33,7 @@ export class Usuario extends Model {
   @ForeignKey(() => Unidade)
   @Column(DataType.INTEGER)
   id_unidade: number;
+
+  @BelongsTo(() => Unidade)
+  unidade: Unidade;
 }

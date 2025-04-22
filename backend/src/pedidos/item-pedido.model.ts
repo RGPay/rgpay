@@ -4,6 +4,7 @@ import {
   Model,
   DataType,
   ForeignKey,
+  BelongsTo,
 } from 'sequelize-typescript';
 import { Pedido } from './pedido.model';
 import { Produto } from '../produtos/produto.model';
@@ -28,7 +29,13 @@ export class ItemPedido extends Model {
   @Column(DataType.INTEGER)
   id_pedido: number;
 
+  @BelongsTo(() => Pedido)
+  pedido: Pedido;
+
   @ForeignKey(() => Produto)
   @Column(DataType.INTEGER)
   id_produto: number;
+
+  @BelongsTo(() => Produto)
+  produto: Produto;
 }

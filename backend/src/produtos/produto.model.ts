@@ -4,8 +4,11 @@ import {
   Model,
   DataType,
   ForeignKey,
+  BelongsTo,
+  HasMany,
 } from 'sequelize-typescript';
 import { Unidade } from '../unidades/unidade.model';
+import { ItemPedido } from '../pedidos/item-pedido.model';
 
 @Table({ tableName: 'produtos' })
 export class Produto extends Model {
@@ -32,4 +35,10 @@ export class Produto extends Model {
   @ForeignKey(() => Unidade)
   @Column(DataType.INTEGER)
   id_unidade: number;
+
+  @BelongsTo(() => Unidade)
+  unidade: Unidade;
+
+  @HasMany(() => ItemPedido)
+  itensPedido: ItemPedido[];
 }
