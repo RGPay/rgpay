@@ -1,0 +1,75 @@
+ENTIDADE: Unidade
+- id_unidade (PK)
+- nome
+- cnpj
+- cidade
+- estado
+- endereco
+
+ENTIDADE: Usuario
+- id_usuario (PK)
+- nome
+- email
+- senha_hash
+- tipo_usuario (enum: 'master', 'gerente')
+- id_unidade (FK)
+
+ENTIDADE: Produto
+- id_produto (PK)
+- nome
+- preco
+- categoria
+- disponivel (boolean)
+- id_unidade (FK)
+
+ENTIDADE: Pedido
+- id_pedido (PK)
+- data_hora
+- valor_total
+- id_maquineta (FK)
+- id_unidade (FK)
+
+ENTIDADE: ItemPedido
+- id_item_pedido (PK)
+- quantidade
+- preco_unitario
+- id_pedido (FK)
+- id_produto (FK)
+
+RELACIONAMENTO: Pedido contém ItemPedido
+- 1 Pedido contém 1 ou N Itens
+- 1 ItemPedido pertence a 1 Pedido
+
+RELACIONAMENTO: ItemPedido refere-se a Produto
+- 1 ItemPedido refere-se a 1 Produto
+- 1 Produto pode aparecer em N ItensPedido
+
+ENTIDADE: Maquineta
+- id_maquineta (PK)
+- numero_serie
+- status (enum: 'ativa', 'inativa')
+- id_unidade (FK)
+
+ENTIDADE: Evento
+- id_evento (PK)
+- nome
+- descricao
+- data_inicio
+- data_fim
+- id_unidade (FK)
+
+RELACIONAMENTO: Maquineta pertence a Unidade
+- 1 Unidade possui 0 ou N Maquinetas
+- 1 Maquineta pertence a 1 Unidade
+
+RELACIONAMENTO: Evento ocorre em Unidade
+- 1 Unidade possui 0 ou N Eventos
+- 1 Evento pertence a 1 Unidade
+
+RELACIONAMENTO: Pedido é gerado por Maquineta
+- 1 Pedido é originado por 1 Maquineta
+- 1 Maquineta pode gerar N Pedidos
+
+RELACIONAMENTO: Usuario acessa Unidade
+- 1 Usuario acessa 1 Unidade
+- 1 Unidade pode ter N Usuários

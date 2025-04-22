@@ -1,0 +1,26 @@
+Linguagem
+TypeScript
+
+Front-end
+React puro (framework)
+Material-UI (componentes UI)
+Tailwind (estilização CSS, somente se não tiver pronto no Material)
+Redux Toolkit (gestão de dados)
+Formik com Yup (formulários e validações)
+Echarts (gráficos)
+Axios (Rest API)
+
+Back-end
+NodeJS
+Express
+NestJS
+Sequelize (ORM)
+
+Banco de dados
+MySQL
+
+Nuvem
+Azure Cloud
+Static Web App (front)
+Azure App Service (back)
+Azure Database for MySQL

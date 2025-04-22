@@ -1,0 +1,3 @@
+- clean code
+- reusable code 
+- good componentization
