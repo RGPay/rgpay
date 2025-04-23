@@ -17,7 +17,7 @@ export class ItemPedido extends Model {
     autoIncrement: true,
     field: 'id_item_pedido',
   })
-  id_item_pedido: number;
+  id_item_pedido?: number;
 
   @Column(DataType.INTEGER)
   quantidade: number;

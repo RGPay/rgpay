@@ -13,7 +13,7 @@ export class Unidade extends Model {
     autoIncrement: true,
     field: 'id_unidade',
   })
-  id_unidade: number;
+  id_unidade?: number;
 
   @Column(DataType.STRING)
   nome: string;

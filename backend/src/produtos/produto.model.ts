@@ -18,7 +18,7 @@ export class Produto extends Model {
     autoIncrement: true,
     field: 'id_produto',
   })
-  id_produto: number;
+  id_produto?: number;
 
   @Column(DataType.STRING)
   nome: string;

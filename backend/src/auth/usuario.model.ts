@@ -16,7 +16,7 @@ export class Usuario extends Model {
     autoIncrement: true,
     field: 'id_usuario',
   })
-  id_usuario: number;
+  id_usuario?: number;
 
   @Column(DataType.STRING)
   nome: string;

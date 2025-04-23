@@ -16,7 +16,7 @@ export class Evento extends Model {
     autoIncrement: true,
     field: 'id_evento',
   })
-  id_evento: number;
+  id_evento?: number;
 
   @Column(DataType.STRING)
   nome: string;

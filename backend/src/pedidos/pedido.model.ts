@@ -19,7 +19,7 @@ export class Pedido extends Model {
     autoIncrement: true,
     field: 'id_pedido',
   })
-  id_pedido: number;
+  id_pedido?: number;
 
   @Column(DataType.DATE)
   data_hora: Date;

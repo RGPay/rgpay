@@ -18,7 +18,7 @@ export class Maquineta extends Model {
     autoIncrement: true,
     field: 'id_maquineta',
   })
-  id_maquineta: number;
+  id_maquineta?: number;
 
   @Column(DataType.STRING)
   numero_serie: string;
