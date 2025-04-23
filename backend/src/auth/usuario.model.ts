@@ -9,31 +9,31 @@ import {
 import { Unidade } from '../unidades/unidade.model';
 
 @Table({ tableName: 'usuarios' })
-export class Usuario extends Model {
+export class Usuario extends Model<Usuario> {
   @Column({
     type: DataType.INTEGER,
     primaryKey: true,
     autoIncrement: true,
     field: 'id_usuario',
   })
-  id_usuario?: number;
+  declare id_usuario: number;
 
   @Column(DataType.STRING)
-  nome: string;
+  declare nome: string;
 
   @Column(DataType.STRING)
-  email: string;
+  declare email: string;
 
   @Column(DataType.STRING)
-  senha_hash: string;
+  declare senha_hash: string;
 
   @Column(DataType.ENUM('master', 'gerente'))
-  tipo_usuario: 'master' | 'gerente';
+  declare tipo_usuario: 'master' | 'gerente';
 
   @ForeignKey(() => Unidade)
   @Column(DataType.INTEGER)
-  id_unidade: number;
+  declare id_unidade: number;
 
   @BelongsTo(() => Unidade)
-  unidade: Unidade;
+  declare unidade: Unidade;
 }

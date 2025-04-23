@@ -6,44 +6,44 @@ import { Maquineta } from '../pedidos/maquineta.model';
 import { Evento } from '../pedidos/evento.model';
 
 @Table({ tableName: 'unidades' })
-export class Unidade extends Model {
+export class Unidade extends Model<Unidade> {
   @Column({
     type: DataType.INTEGER,
     primaryKey: true,
     autoIncrement: true,
     field: 'id_unidade',
   })
-  id_unidade?: number;
+  declare id_unidade: number;
 
   @Column(DataType.STRING)
-  nome: string;
+  declare nome: string;
 
   @Column(DataType.STRING)
-  cnpj: string;
+  declare cnpj: string;
 
   @Column(DataType.STRING)
-  cidade: string;
+  declare cidade: string;
 
   @Column(DataType.STRING)
-  estado: string;
+  declare estado: string;
 
   @Column(DataType.STRING)
-  endereco: string;
+  declare endereco: string;
 
   @HasMany(() => Usuario)
-  usuarios: Usuario[];
+  declare usuarios: Usuario[];
 
   @HasMany(() => Produto)
-  produtos: Produto[];
+  declare produtos: Produto[];
 
   @HasMany(() => Pedido)
-  pedidos: Pedido[];
+  declare pedidos: Pedido[];
 
   @HasMany(() => Maquineta)
-  maquinetas: Maquineta[];
+  declare maquinetas: Maquineta[];
 
   @HasMany(() => Evento)
-  eventos: Evento[];
+  declare eventos: Evento[];
 
   // Relationships (to be filled after all models are created)
 }

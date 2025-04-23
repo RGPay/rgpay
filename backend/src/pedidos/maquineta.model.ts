@@ -11,27 +11,27 @@ import { Unidade } from '../unidades/unidade.model';
 import { Pedido } from './pedido.model';
 
 @Table({ tableName: 'maquinetas' })
-export class Maquineta extends Model {
+export class Maquineta extends Model<Maquineta> {
   @Column({
     type: DataType.INTEGER,
     primaryKey: true,
     autoIncrement: true,
     field: 'id_maquineta',
   })
-  id_maquineta?: number;
+  declare id_maquineta: number;
 
   @Column(DataType.STRING)
-  numero_serie: string;
+  declare numero_serie: string;
 
   @Column(DataType.ENUM('ativa', 'inativa'))
-  status: 'ativa' | 'inativa';
+  declare status: 'ativa' | 'inativa';
 
   @ForeignKey(() => Unidade)
   @Column(DataType.INTEGER)
-  id_unidade: number;
+  declare id_unidade: number;
 
   @BelongsTo(() => Unidade)
-  unidade: Unidade;
+  declare unidade: Unidade;
 
   @HasMany(() => Pedido)
   pedidos: Pedido[];

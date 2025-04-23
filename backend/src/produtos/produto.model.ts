@@ -11,20 +11,20 @@ import { Unidade } from '../unidades/unidade.model';
 import { ItemPedido } from '../pedidos/item-pedido.model';
 
 @Table({ tableName: 'produtos' })
-export class Produto extends Model {
+export class Produto extends Model<Produto> {
   @Column({
     type: DataType.INTEGER,
     primaryKey: true,
     autoIncrement: true,
     field: 'id_produto',
   })
-  id_produto?: number;
+  declare id_produto: number;
 
   @Column(DataType.STRING)
-  nome: string;
+  declare nome: string;
 
   @Column(DataType.DECIMAL(10, 2))
-  preco: number;
+  declare preco: number;
 
   @Column(DataType.STRING)
   categoria: string;
@@ -34,10 +34,10 @@ export class Produto extends Model {
 
   @ForeignKey(() => Unidade)
   @Column(DataType.INTEGER)
-  id_unidade: number;
+  declare id_unidade: number;
 
   @BelongsTo(() => Unidade)
-  unidade: Unidade;
+  declare unidade: Unidade;
 
   @HasMany(() => ItemPedido)
   itensPedido: ItemPedido[];

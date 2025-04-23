@@ -9,31 +9,31 @@ import {
 import { Unidade } from '../unidades/unidade.model';
 
 @Table({ tableName: 'eventos' })
-export class Evento extends Model {
+export class Evento extends Model<Evento> {
   @Column({
     type: DataType.INTEGER,
     primaryKey: true,
     autoIncrement: true,
     field: 'id_evento',
   })
-  id_evento?: number;
+  declare id_evento: number;
 
   @Column(DataType.STRING)
-  nome: string;
+  declare nome: string;
 
   @Column(DataType.STRING)
-  descricao: string;
+  declare descricao: string;
 
   @Column(DataType.DATE)
-  data_inicio: Date;
+  declare data_inicio: Date;
 
   @Column(DataType.DATE)
-  data_fim: Date;
+  declare data_fim: Date;
 
   @ForeignKey(() => Unidade)
   @Column(DataType.INTEGER)
-  id_unidade: number;
+  declare id_unidade: number;
 
   @BelongsTo(() => Unidade)
-  unidade: Unidade;
+  declare unidade: Unidade;
 }

@@ -12,35 +12,35 @@ import { Maquineta } from './maquineta.model';
 import { ItemPedido } from './item-pedido.model';
 
 @Table({ tableName: 'pedidos' })
-export class Pedido extends Model {
+export class Pedido extends Model<Pedido> {
   @Column({
     type: DataType.INTEGER,
     primaryKey: true,
     autoIncrement: true,
     field: 'id_pedido',
   })
-  id_pedido?: number;
+  declare id_pedido: number;
 
   @Column(DataType.DATE)
-  data_hora: Date;
+  declare data_hora: Date;
 
   @Column(DataType.DECIMAL(10, 2))
-  valor_total: number;
+  declare valor_total: number;
 
   @ForeignKey(() => Maquineta)
   @Column(DataType.INTEGER)
-  id_maquineta: number;
+  declare id_maquineta: number;
 
   @BelongsTo(() => Maquineta)
-  maquineta: Maquineta;
+  declare maquineta: Maquineta;
 
   @ForeignKey(() => Unidade)
   @Column(DataType.INTEGER)
-  id_unidade: number;
+  declare id_unidade: number;
 
   @BelongsTo(() => Unidade)
-  unidade: Unidade;
+  declare unidade: Unidade;
 
   @HasMany(() => ItemPedido)
-  itensPedido: ItemPedido[];
+  declare itensPedido: ItemPedido[];
 }
