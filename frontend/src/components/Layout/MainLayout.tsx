@@ -30,7 +30,6 @@ import {
   Logout as LogoutIcon,
   Person as PersonIcon,
   Settings as SettingsIcon,
-  ChevronLeft as ChevronLeftIcon,
 } from "@mui/icons-material";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -303,24 +302,8 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
         >
           <Logo />
           <Divider sx={{ opacity: 0.1 }} />
-          {/* Remove the close button for permanent drawer on desktop */}
-          {isMobile && (
-            <Box sx={{ display: "flex", justifyContent: "flex-end", p: 1 }}>
-              <IconButton
-                onClick={handleDrawerToggle}
-                sx={{
-                  borderRadius: "50%",
-                  backgroundColor: "rgba(255, 255, 255, 0.05)",
-                  "&:hover": {
-                    backgroundColor: "rgba(255, 255, 255, 0.1)",
-                  },
-                }}
-                size="small"
-              >
-                <ChevronLeftIcon fontSize="small" />
-              </IconButton>
-            </Box>
-          )}
+          {/* Remove the close button for Drawer on all devices */}
+          {/* (No close button here) */}
           <Box sx={{ overflow: "auto", p: 1 }}>
             <Typography
               variant="overline"
