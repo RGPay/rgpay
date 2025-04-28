@@ -35,11 +35,6 @@ const routeMap: RouteMapping = {
     path: "/pedidos",
     label: "Pedidos",
   },
-  "/pedidos/novo": {
-    path: "/pedidos/novo",
-    label: "Novo Pedido",
-    parent: "/pedidos",
-  },
   "/pedidos/detalhes": {
     path: "/pedidos/detalhes",
     label: "Detalhes do Pedido",

@@ -30,26 +30,6 @@ export interface Pedido {
   itensPedido?: ItemPedido[];
 }
 
-export interface CreatePedidoDto {
-  id_unidade: number;
-  id_maquineta?: number;
-  itens: {
-    id_produto: number;
-    quantidade: number;
-    preco_unitario?: number;
-  }[];
-}
-
-export interface UpdatePedidoDto {
-  id_unidade?: number;
-  id_maquineta?: number;
-  itens?: {
-    id_produto: number;
-    quantidade: number;
-    preco_unitario?: number;
-  }[];
-}
-
 export interface PedidosFilter {
   data_inicio?: Date;
   data_fim?: Date;
@@ -65,20 +45,6 @@ class PedidosService {
   async getById(id: number): Promise<Pedido> {
     const response = await api.get(`/pedidos/${id}`);
     return response.data;
-  }
-
-  async create(pedido: CreatePedidoDto): Promise<Pedido> {
-    const response = await api.post("/pedidos", pedido);
-    return response.data;
-  }
-
-  async update(id: number, pedido: UpdatePedidoDto): Promise<Pedido> {
-    const response = await api.put(`/pedidos/${id}`, pedido);
-    return response.data;
-  }
-
-  async delete(id: number): Promise<void> {
-    await api.delete(`/pedidos/${id}`);
   }
 }
 

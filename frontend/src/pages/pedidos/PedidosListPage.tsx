@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import {
   Box,
-  Button,
   Typography,
   IconButton,
   FormControl,
@@ -14,13 +13,11 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { ptBR } from "date-fns/locale";
 import {
-  Add as AddIcon,
   Refresh as RefreshIcon,
   Visibility as VisibilityIcon,
-  Delete as DeleteIcon,
 } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
-import { DataTable, ConfirmDialog, Toast } from "../../components";
+import { DataTable, Toast } from "../../components";
 import {
   pedidosService,
   Pedido,
@@ -32,8 +29,6 @@ const PedidosListPage: React.FC = () => {
   const [pedidos, setPedidos] = useState<Pedido[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<PedidosFilter>({});
-  const [selectedPedido, setSelectedPedido] = useState<Pedido | null>(null);
-  const [dialogOpen, setDialogOpen] = useState(false);
   const [toast, setToast] = useState({
     open: false,
     message: "",
@@ -79,41 +74,8 @@ const PedidosListPage: React.FC = () => {
     loadPedidos();
   }, [loadPedidos]);
 
-  const handleCreatePedido = () => {
-    navigate("/pedidos/novo");
-  };
-
   const handleViewPedido = (pedido: Pedido) => {
     navigate(`/pedidos/detalhes/${pedido.id_pedido}`);
-  };
-
-  const handleDeleteConfirm = (pedido: Pedido) => {
-    setSelectedPedido(pedido);
-    setDialogOpen(true);
-  };
-
-  const handleDeletePedido = async () => {
-    if (!selectedPedido) return;
-
-    try {
-      await pedidosService.delete(selectedPedido.id_pedido);
-      setToast({
-        open: true,
-        message: "Pedido excluído com sucesso",
-        severity: "success",
-      });
-      loadPedidos();
-    } catch (error) {
-      console.error("Error deleting order:", error);
-      setToast({
-        open: true,
-        message: "Erro ao excluir pedido",
-        severity: "error",
-      });
-    } finally {
-      setDialogOpen(false);
-      setSelectedPedido(null);
-    }
   };
 
   const handleCloseToast = () => {
@@ -164,12 +126,6 @@ const PedidosListPage: React.FC = () => {
       tooltip: "Visualizar",
       onClick: handleViewPedido,
     },
-    {
-      icon: <DeleteIcon />,
-      tooltip: "Excluir",
-      onClick: handleDeleteConfirm,
-      color: "error" as const,
-    },
   ];
 
   return (
@@ -186,14 +142,6 @@ const PedidosListPage: React.FC = () => {
           <Typography variant="h5" component="h1">
             Pedidos
           </Typography>
-          <Button
-            variant="contained"
-            color="primary"
-            startIcon={<AddIcon />}
-            onClick={handleCreatePedido}
-          >
-            Novo Pedido
-          </Button>
         </Box>
 
         <Box sx={{ mb: 3, display: "flex", gap: 2, flexWrap: "wrap" }}>
@@ -251,17 +199,6 @@ const PedidosListPage: React.FC = () => {
           onRowClick={handleViewPedido}
           isLoading={loading}
           searchable={false}
-        />
-
-        <ConfirmDialog
-          open={dialogOpen}
-          title="Excluir Pedido"
-          message={`Tem certeza que deseja excluir o pedido #${selectedPedido?.id_pedido}? Esta ação não pode ser desfeita.`}
-          confirmButtonText="Excluir"
-          cancelButtonText="Cancelar"
-          confirmButtonColor="error"
-          onConfirm={handleDeletePedido}
-          onCancel={() => setDialogOpen(false)}
         />
 
         <Toast

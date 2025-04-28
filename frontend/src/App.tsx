@@ -35,7 +35,6 @@ function ProtectedLayout() {
 }
 
 // Placeholder components for routes that don't have dedicated pages yet
-const OrderCreatePage = () => <div>Criar Pedido em construção</div>;
 const ProfilePage = () => <div>Perfil em construção</div>;
 
 // Check if user is already logged in and redirect accordingly
@@ -70,7 +69,6 @@ function App() {
           {/* Orders routes */}
           <Route path="/pedidos">
             <Route index element={<PedidosListPage />} />
-            <Route path="novo" element={<OrderCreatePage />} />
             <Route path="detalhes/:id" element={<PedidoDetailsPage />} />
           </Route>
 
