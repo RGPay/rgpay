@@ -156,8 +156,6 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
         position="fixed"
         sx={{
           zIndex: theme.zIndex.drawer + 1,
-          width: { sm: open ? `calc(100% - ${drawerWidth}px)` : "100%" },
-          ml: { sm: open ? `${drawerWidth}px` : 0 },
           transition: theme.transitions.create(["width", "margin"], {
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.leavingScreen,
@@ -276,166 +274,168 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
       </AppBar>
 
       {/* Drawer */}
-      <Drawer
-        variant={isMobile ? "temporary" : "permanent"}
-        open={open}
-        onClose={isMobile ? handleDrawerToggle : undefined}
-        sx={{
-          width: drawerWidth,
-          flexShrink: 0,
-          [`& .MuiDrawer-paper`]: {
+      {((isMobile && open) || !isMobile) && (
+        <Drawer
+          variant={isMobile ? "temporary" : "permanent"}
+          open={open}
+          onClose={isMobile ? handleDrawerToggle : undefined}
+          sx={{
+            display: open || isMobile ? "block" : "none",
             width: drawerWidth,
-            boxSizing: "border-box",
-            border: "none",
-            background: theme.palette.background.paper,
-            boxShadow: "0 8px 32px rgba(0, 0, 0, 0.2)",
-            ...(isMobile
-              ? {}
-              : {
-                  position: "relative",
-                  transition: theme.transitions.create("width", {
-                    easing: theme.transitions.easing.sharp,
-                    duration: theme.transitions.duration.enteringScreen,
+            flexShrink: 0,
+            [`& .MuiDrawer-paper`]: {
+              width: drawerWidth,
+              boxSizing: "border-box",
+              border: "none",
+              background: theme.palette.background.paper,
+              boxShadow: "0 8px 32px rgba(0, 0, 0, 0.2)",
+              ...(isMobile
+                ? {}
+                : {
+                    position: "relative",
+                    transition: theme.transitions.create("width", {
+                      easing: theme.transitions.easing.sharp,
+                      duration: theme.transitions.duration.enteringScreen,
+                    }),
                   }),
-                }),
-          },
-        }}
-      >
-        <Logo />
-        <Divider sx={{ opacity: 0.1 }} />
-
-        {!isMobile && (
-          <Box sx={{ display: "flex", justifyContent: "flex-end", p: 1 }}>
-            <IconButton
-              onClick={handleDrawerToggle}
+            },
+          }}
+        >
+          <Logo />
+          <Divider sx={{ opacity: 0.1 }} />
+          {/* Remove the close button for permanent drawer on desktop */}
+          {isMobile && (
+            <Box sx={{ display: "flex", justifyContent: "flex-end", p: 1 }}>
+              <IconButton
+                onClick={handleDrawerToggle}
+                sx={{
+                  borderRadius: "50%",
+                  backgroundColor: "rgba(255, 255, 255, 0.05)",
+                  "&:hover": {
+                    backgroundColor: "rgba(255, 255, 255, 0.1)",
+                  },
+                }}
+                size="small"
+              >
+                <ChevronLeftIcon fontSize="small" />
+              </IconButton>
+            </Box>
+          )}
+          <Box sx={{ overflow: "auto", p: 1 }}>
+            <Typography
+              variant="overline"
               sx={{
-                borderRadius: "50%",
-                backgroundColor: "rgba(255, 255, 255, 0.05)",
-                "&:hover": {
-                  backgroundColor: "rgba(255, 255, 255, 0.1)",
-                },
+                px: 2,
+                py: 1,
+                display: "block",
+                color: "text.secondary",
+                fontWeight: 600,
               }}
-              size="small"
             >
-              <ChevronLeftIcon fontSize="small" />
-            </IconButton>
-          </Box>
-        )}
-
-        <Box sx={{ overflow: "auto", p: 1 }}>
-          <Typography
-            variant="overline"
-            sx={{
-              px: 2,
-              py: 1,
-              display: "block",
-              color: "text.secondary",
-              fontWeight: 600,
-            }}
-          >
-            Menu Principal
-          </Typography>
-          <List>
-            {menuItems.map((item) => (
-              <ListItem key={item.text} disablePadding sx={{ mb: 0.5 }}>
+              Menu Principal
+            </Typography>
+            <List>
+              {menuItems.map((item) => (
+                <ListItem key={item.text} disablePadding sx={{ mb: 0.5 }}>
+                  <ListItemButton
+                    onClick={() => navigate(item.path)}
+                    selected={isActiveRoute(item.path)}
+                    sx={{
+                      borderRadius: 2,
+                      py: 1.2,
+                    }}
+                  >
+                    <ListItemIcon
+                      sx={{
+                        color: isActiveRoute(item.path)
+                          ? "primary.main"
+                          : "text.secondary",
+                        minWidth: 40,
+                      }}
+                    >
+                      {item.icon}
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={item.text}
+                      primaryTypographyProps={{
+                        fontWeight: isActiveRoute(item.path) ? 600 : 400,
+                        fontSize: "0.95rem",
+                      }}
+                    />
+                    {isActiveRoute(item.path) && (
+                      <Box
+                        sx={{
+                          width: 4,
+                          height: 20,
+                          borderRadius: 4,
+                          background:
+                            "linear-gradient(to bottom, #3070FF, #00E5E0)",
+                        }}
+                      />
+                    )}
+                  </ListItemButton>
+                </ListItem>
+              ))}
+            </List>
+            <Divider sx={{ my: 2, opacity: 0.1 }} />
+            <Typography
+              variant="overline"
+              sx={{
+                px: 2,
+                py: 1,
+                display: "block",
+                color: "text.secondary",
+                fontWeight: 600,
+              }}
+            >
+              Conta
+            </Typography>
+            <List>
+              <ListItem disablePadding sx={{ mb: 0.5 }}>
                 <ListItemButton
-                  onClick={() => navigate(item.path)}
-                  selected={isActiveRoute(item.path)}
+                  onClick={() => navigate("/profile")}
+                  selected={isActiveRoute("/profile")}
                   sx={{
                     borderRadius: 2,
                     py: 1.2,
                   }}
                 >
-                  <ListItemIcon
-                    sx={{
-                      color: isActiveRoute(item.path)
-                        ? "primary.main"
-                        : "text.secondary",
-                      minWidth: 40,
-                    }}
-                  >
-                    {item.icon}
+                  <ListItemIcon sx={{ color: "text.secondary", minWidth: 40 }}>
+                    <PersonIcon />
                   </ListItemIcon>
                   <ListItemText
-                    primary={item.text}
+                    primary="Perfil"
                     primaryTypographyProps={{
-                      fontWeight: isActiveRoute(item.path) ? 600 : 400,
+                      fontWeight: isActiveRoute("/profile") ? 600 : 400,
                       fontSize: "0.95rem",
                     }}
                   />
-                  {isActiveRoute(item.path) && (
-                    <Box
-                      sx={{
-                        width: 4,
-                        height: 20,
-                        borderRadius: 4,
-                        background:
-                          "linear-gradient(to bottom, #3070FF, #00E5E0)",
-                      }}
-                    />
-                  )}
                 </ListItemButton>
               </ListItem>
-            ))}
-          </List>
-          <Divider sx={{ my: 2, opacity: 0.1 }} />
-          <Typography
-            variant="overline"
-            sx={{
-              px: 2,
-              py: 1,
-              display: "block",
-              color: "text.secondary",
-              fontWeight: 600,
-            }}
-          >
-            Conta
-          </Typography>
-          <List>
-            <ListItem disablePadding sx={{ mb: 0.5 }}>
-              <ListItemButton
-                onClick={() => navigate("/profile")}
-                selected={isActiveRoute("/profile")}
-                sx={{
-                  borderRadius: 2,
-                  py: 1.2,
-                }}
-              >
-                <ListItemIcon sx={{ color: "text.secondary", minWidth: 40 }}>
-                  <PersonIcon />
-                </ListItemIcon>
-                <ListItemText
-                  primary="Perfil"
-                  primaryTypographyProps={{
-                    fontWeight: isActiveRoute("/profile") ? 600 : 400,
-                    fontSize: "0.95rem",
+              <ListItem disablePadding sx={{ mb: 0.5 }}>
+                <ListItemButton
+                  onClick={handleLogout}
+                  sx={{
+                    borderRadius: 2,
+                    py: 1.2,
                   }}
-                />
-              </ListItemButton>
-            </ListItem>
-            <ListItem disablePadding sx={{ mb: 0.5 }}>
-              <ListItemButton
-                onClick={handleLogout}
-                sx={{
-                  borderRadius: 2,
-                  py: 1.2,
-                }}
-              >
-                <ListItemIcon sx={{ color: "error.main", minWidth: 40 }}>
-                  <LogoutIcon />
-                </ListItemIcon>
-                <ListItemText
-                  primary="Sair"
-                  primaryTypographyProps={{
-                    fontWeight: 400,
-                    fontSize: "0.95rem",
-                  }}
-                />
-              </ListItemButton>
-            </ListItem>
-          </List>
-        </Box>
-      </Drawer>
+                >
+                  <ListItemIcon sx={{ color: "error.main", minWidth: 40 }}>
+                    <LogoutIcon />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary="Sair"
+                    primaryTypographyProps={{
+                      fontWeight: 400,
+                      fontSize: "0.95rem",
+                    }}
+                  />
+                </ListItemButton>
+              </ListItem>
+            </List>
+          </Box>
+        </Drawer>
+      )}
 
       {/* Main content */}
       <Box
@@ -443,12 +443,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
         sx={{
           flexGrow: 1,
           p: { xs: 2, sm: 3 },
-          width: { sm: `calc(100% - ${open ? drawerWidth : 0}px)` },
-          marginLeft: { sm: open ? `${drawerWidth}px` : 0 },
-          transition: theme.transitions.create(["width", "margin"], {
-            easing: theme.transitions.easing.sharp,
-            duration: theme.transitions.duration.leavingScreen,
-          }),
+          transition: "min-width 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
           display: "flex",
           flexDirection: "column",
           overflow: "auto",
