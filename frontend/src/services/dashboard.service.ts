@@ -2,9 +2,12 @@ import api from "./api";
 
 export interface DashboardMetrics {
   totalVendas: number;
+  faturamentoTotal: number;
   ticketMedio: number;
   totalPedidos: number;
   pedidosHoje: number;
+  totalUnidades: number;
+  totalItensVendidos: number;
   produtosMaisVendidos: {
     id_produto: number;
     nome: string;
@@ -13,6 +16,11 @@ export interface DashboardMetrics {
   }[];
   vendasPorPeriodo: {
     data: string;
+    total: number;
+  }[];
+  vendasPorUnidade: {
+    id_unidade: number;
+    nome: string;
     total: number;
   }[];
 }
