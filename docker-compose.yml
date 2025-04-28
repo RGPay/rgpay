@@ -1,0 +1,19 @@
+version: "3.8"
+services:
+  db:
+    build:
+      context: ./backend
+      dockerfile: mysql-local.Dockerfile
+    container_name: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: rgpay
+    ports:
+      - "3306:3306"
+    volumes:
+      - rgpay-mysql-data:/var/lib/mysql
+    restart: unless-stopped
+
+volumes:
+  rgpay-mysql-data:
+    driver: local
