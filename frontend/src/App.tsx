@@ -1,25 +1,102 @@
 import React, { ReactElement } from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
-import Home from "./pages/Home";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+  Outlet,
+} from "react-router-dom";
 import About from "./pages/About";
 import Login from "./pages/Login";
+import { ProdutosListPage, ProdutoFormPage } from "./pages/produtos";
+import { PedidosListPage, PedidoDetailsPage } from "./pages/pedidos";
+import { UnidadesListPage, UnidadeFormPage } from "./pages/unidades";
+import Dashboard from "./pages/Dashboard";
 import "./App.css";
-import { useSelector } from 'react-redux';
-import type { RootState } from './store';
+import { useSelector } from "react-redux";
+import type { RootState } from "./store";
+import { MainLayout } from "./components/Layout";
 
-function ProtectedRoute({ children }: { children: ReactElement }) {
-  const isAuthenticated = useSelector((state: RootState) => state.isAuthenticated);
-  console.log('isAuthenticated:', isAuthenticated);
-  return isAuthenticated ? children : <Navigate to="/login" replace />;
+// Protected Layout component that checks authentication and applies the MainLayout
+function ProtectedLayout() {
+  const isAuthenticated = useSelector(
+    (state: RootState) => state.isAuthenticated
+  );
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
+
+  return (
+    <MainLayout>
+      <Outlet />
+    </MainLayout>
+  );
+}
+
+// Placeholder components for routes that don't have dedicated pages yet
+const OrderCreatePage = () => <div>Criar Pedido em construção</div>;
+const ProfilePage = () => <div>Perfil em construção</div>;
+
+// Check if user is already logged in and redirect accordingly
+function PublicRoute({ children }: { children: ReactElement }) {
+  const isAuthenticated = useSelector(
+    (state: RootState) => state.isAuthenticated
+  );
+
+  if (isAuthenticated) {
+    return <Navigate to="/" replace />;
+  }
+
+  return children;
 }
 
 function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>} />
-        <Route path="/about" element={<ProtectedRoute><About /></ProtectedRoute>} />
-        <Route path="/login" element={<Login />} />
+        {/* Protected routes with layout */}
+        <Route element={<ProtectedLayout />}>
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/about" element={<About />} />
+
+          {/* Products routes */}
+          <Route path="/produtos">
+            <Route index element={<ProdutosListPage />} />
+            <Route path="novo" element={<ProdutoFormPage />} />
+            <Route path="editar/:id" element={<ProdutoFormPage />} />
+          </Route>
+
+          {/* Orders routes */}
+          <Route path="/pedidos">
+            <Route index element={<PedidosListPage />} />
+            <Route path="novo" element={<OrderCreatePage />} />
+            <Route path="detalhes/:id" element={<PedidoDetailsPage />} />
+          </Route>
+
+          {/* Units routes */}
+          <Route path="/unidades">
+            <Route index element={<UnidadesListPage />} />
+            <Route path="nova" element={<UnidadeFormPage />} />
+            <Route path="editar/:id" element={<UnidadeFormPage />} />
+          </Route>
+
+          {/* Profile route */}
+          <Route path="/profile" element={<ProfilePage />} />
+        </Route>
+
+        {/* Public routes */}
+        <Route
+          path="/login"
+          element={
+            <PublicRoute>
+              <Login />
+            </PublicRoute>
+          }
+        />
+
+        {/* Catch all route - redirect to home */}
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Router>
   );
