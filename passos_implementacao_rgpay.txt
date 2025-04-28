@@ -5,50 +5,50 @@
 ### 1.1. Scaffolding do projeto React + TypeScript + NestJS
 **Descrição:** Configuração inicial da base de código para frontend e backend.
 **Detalhes técnicos:**
-1.1.1. Frontend: Criar projeto React com TypeScript usando Vite
-1.1.2. Configurar Material-UI e Tailwind CSS
-1.1.3. Configurar Redux Toolkit para gerenciamento de estado
-1.1.4. Backend: Inicializar projeto NestJS com TypeScript
-1.1.5. Implementar estrutura modular básica no NestJS
-**Resultados esperados:** Repositórios base com estrutura inicial configurada e pushados para Git
+1.1.1. Frontend: Criar projeto React com TypeScript usando Vite ✅
+1.1.2. Configurar Material-UI e Tailwind CSS ✅
+1.1.3. Configurar Redux Toolkit para gerenciamento de estado ✅
+1.1.4. Backend: Inicializar projeto NestJS com TypeScript ✅
+1.1.5. Implementar estrutura modular básica no NestJS ✅
+**Resultados esperados:** Repositórios base com estrutura inicial configurada e pushados para Git ✅
 
 ### 1.2. Estrutura de pastas e componentização básica
 **Descrição:** Organização inicial de diretórios e arquivos seguindo boas práticas.
 **Detalhes técnicos:**
-1.2.1. Frontend: Criar estrutura de pastas (components, pages, hooks, services, store)
-1.2.2. Implementar roteamento básico com React Router
-1.2.3. Backend: Estruturar em módulos (auth, produtos, pedidos, unidades)
-1.2.4. Configurar conexão base com banco de dados MySQL via Sequelize
-**Resultados esperados:** Estrutura organizada pronta para receber componentes e funcionalidades
+1.2.1. Frontend: Criar estrutura de pastas (components, pages, hooks, services, store) ✅
+1.2.2. Implementar roteamento básico com React Router ✅
+1.2.3. Backend: Estruturar em módulos (auth, produtos, pedidos, unidades) ✅
+1.2.4. Configurar conexão base com banco de dados MySQL via Sequelize ✅
+**Resultados esperados:** Estrutura organizada pronta para receber componentes e funcionalidades ✅
 
-### 1.3. Configuração mínima de CI/CD
-**Descrição:** Pipeline básico para automatizar deploys de desenvolvimento.
+### 1.3. Configuração mínima de CI/CD ❌
+**Descrição:** Pipeline básico para automatizar deploys de desenvolvimento. ❌
 **Detalhes técnicos:**
-1.3.1. Configurar GitHub Actions ou Azure DevOps para CI básico
-1.3.2. Implementar linting e formatação automática (ESLint + Prettier)
-1.3.3. Configurar script de build e deploy automático para ambiente de desenvolvimento
-**Resultados esperados:** Pipeline automático que valida e faz deploy após commits na branch principal
+1.3.1. Configurar GitHub Actions ou Azure DevOps para CI básico ❌
+1.3.2. Implementar linting e formatação automática (ESLint + Prettier) ❌
+1.3.3. Configurar script de build e deploy automático para ambiente de desenvolvimento ❌
+**Resultados esperados:** Pipeline automático que valida e faz deploy após commits na branch principal ❌
 
 ### 1.4. Modelos essenciais de dados
 **Descrição:** Implementação dos principais modelos de dados no Sequelize.
 **Detalhes técnicos:**
-1.4.1. Definir modelos essenciais: Unidade, Usuario, Produto, Pedido, ItemPedido
-1.4.2. Implementar relacionamentos básicos entre entidades
-1.4.3. Criar migrations iniciais
-1.4.4. Configurar seeds com dados de teste
-**Resultados esperados:** Modelos funcionais com banco de dados inicializado e populado com dados de teste
+1.4.1. Definir modelos essenciais: Unidade, Usuario, Produto, Pedido, ItemPedido ✅
+1.4.2. Implementar relacionamentos básicos entre entidades ✅
+1.4.3. Criar migrations iniciais ✅
+1.4.4. Configurar seeds com dados de teste ✅
+**Resultados esperados:** Modelos funcionais com banco de dados inicializado e populado com dados de teste ✅
 
 ## AUTENTICAÇÃO E CORE UI (Dias 3-4)
 
 ### 2.1. Sistema simples de login/autenticação
 **Descrição:** Implementação de autenticação básica JWT.
 **Detalhes técnicos:**
-2.1.1. Backend: Implementar autenticação JWT no NestJS
-2.1.2. Criar endpoints de login/registro
-2.1.3. Frontend: Criar formulário de login com Formik+Yup
-2.1.4. Implementar armazenamento e validação de tokens
-2.1.5. Criar slice de autenticação React no Redux
-**Resultados esperados:** Fluxo funcional de login/logout com proteção de rotas no frontend
+2.1.1. Backend: Implementar autenticação JWT no NestJS ✅
+2.1.2. Criar endpoints de login/registro ✅
+2.1.3. Frontend: Criar formulário de login com Formik+Yup ✅
+2.1.4. Implementar armazenamento e validação de tokens ✅
+2.1.5. Criar slice de autenticação React no Redux ✅
+**Resultados esperados:** Fluxo funcional de login/logout com proteção de rotas no frontend ✅
 
 ### 2.2. Layout principal responsivo
 **Descrição:** Implementação da estrutura base da interface compatível com PWA.
