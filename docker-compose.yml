@@ -1,19 +1,49 @@
 version: "3.8"
+
 services:
-  db:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:80"
+    environment:
+      - NODE_ENV=production
+      - REACT_APP_API_URL=http://localhost:3001/api
+    depends_on:
+      - backend
+
+  backend:
     build:
       context: ./backend
-      dockerfile: mysql-local.Dockerfile
-    container_name: mysql
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3001"
     environment:
-      MYSQL_ROOT_PASSWORD: password
-      MYSQL_DATABASE: rgpay
+      - NODE_ENV=production
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_USERNAME=rgpay
+      - DB_PASSWORD=rgpaypwd
+      - DB_DATABASE=rgpay
+      - JWT_SECRET=your-jwt-secret-key
+      - JWT_EXPIRES_IN=1d
+    depends_on:
+      - db
+
+  db:
+    image: mysql:8.0
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
     ports:
       - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=rootpassword
+      - MYSQL_DATABASE=rgpay
+      - MYSQL_USER=rgpay
+      - MYSQL_PASSWORD=rgpaypwd
     volumes:
-      - rgpay-mysql-data:/var/lib/mysql
-    restart: unless-stopped
+      - mysql-data:/var/lib/mysql
 
 volumes:
-  rgpay-mysql-data:
-    driver: local
+  mysql-data:
