@@ -1,7 +1,7 @@
 import api from "./api";
 
 export interface ItemPedido {
-  id_item?: number;
+  id_item_pedido?: number;
   id_pedido?: number;
   id_produto: number;
   quantidade: number;
@@ -25,7 +25,8 @@ export interface Pedido {
   };
   maquineta?: {
     id_maquineta: number;
-    identificador: string;
+    numero_serie: string;
+    status?: "ativa" | "inativa";
   };
   itensPedido?: ItemPedido[];
 }

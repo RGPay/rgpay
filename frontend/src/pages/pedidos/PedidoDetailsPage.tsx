@@ -191,7 +191,7 @@ const PedidoDetailsPage: React.FC = () => {
                     Maquineta
                   </Typography>
                   <Typography variant="body1">
-                    {pedido.maquineta?.identificador || "N/A"}
+                    {pedido.maquineta?.numero_serie || "N/A"}
                   </Typography>
                 </Box>
 
@@ -227,7 +227,7 @@ const PedidoDetailsPage: React.FC = () => {
                   <TableBody>
                     {pedido.itensPedido && pedido.itensPedido.length > 0 ? (
                       pedido.itensPedido.map((item: ItemPedido) => (
-                        <TableRow key={item.id_item}>
+                        <TableRow key={item.id_item_pedido}>
                           <TableCell>
                             {item.produto?.nome ||
                               `Produto #${item.id_produto}`}

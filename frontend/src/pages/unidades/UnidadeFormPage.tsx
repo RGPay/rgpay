@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Box, Typography, Button, Paper, Divider } from "@mui/material";
-import {
-  ArrowBack as ArrowBackIcon,
-  Save as SaveIcon,
-} from "@mui/icons-material";
+import { Box, Typography, Button, Divider } from "@mui/material";
+import { ArrowBack as ArrowBackIcon } from "@mui/icons-material";
 import * as Yup from "yup";
 import { FormikForm, Toast } from "../../components";
 import unidadesService, {
@@ -16,10 +13,10 @@ import unidadesService, {
 // Form validation schema
 const validationSchema = Yup.object({
   nome: Yup.string().required("O nome da unidade é obrigatório"),
+  cnpj: Yup.string().required("O CNPJ da unidade é obrigatório"),
+  cidade: Yup.string().required("A cidade da unidade é obrigatória"),
+  estado: Yup.string().required("O estado da unidade é obrigatório"),
   endereco: Yup.string().required("O endereço da unidade é obrigatório"),
-  telefone: Yup.string().required("O telefone da unidade é obrigatório"),
-  responsavel: Yup.string().required("O responsável da unidade é obrigatório"),
-  ativo: Yup.boolean(),
 });
 
 const UnidadeFormPage: React.FC = () => {
@@ -97,52 +94,55 @@ const UnidadeFormPage: React.FC = () => {
 
   const initialValues = {
     nome: unidade?.nome || "",
+    cnpj: unidade?.cnpj || "",
+    cidade: unidade?.cidade || "",
+    estado: unidade?.estado || "",
     endereco: unidade?.endereco || "",
-    telefone: unidade?.telefone || "",
-    responsavel: unidade?.responsavel || "",
-    ativo: unidade?.ativo ?? true,
   };
 
   const formFields = [
     {
       name: "nome",
       label: "Nome da Unidade",
-      type: "text",
+      type: "text" as const,
       required: true,
       fullWidth: true,
       xs: 12,
+    },
+    {
+      name: "cnpj",
+      label: "CNPJ",
+      type: "text" as const,
+      required: true,
+      fullWidth: true,
+      xs: 12,
+      md: 6,
     },
     {
       name: "endereco",
       label: "Endereço",
-      type: "text",
+      type: "text" as const,
       required: true,
       fullWidth: true,
       xs: 12,
     },
     {
-      name: "telefone",
-      label: "Telefone",
-      type: "tel",
-      required: true,
-      fullWidth: true,
-      xs: 12,
-      md: 6,
-    },
-    {
-      name: "responsavel",
-      label: "Responsável",
-      type: "text",
+      name: "cidade",
+      label: "Cidade",
+      type: "text" as const,
       required: true,
       fullWidth: true,
       xs: 12,
       md: 6,
     },
     {
-      name: "ativo",
-      label: "Unidade Ativa",
-      type: "checkbox",
+      name: "estado",
+      label: "Estado",
+      type: "text" as const,
+      required: true,
+      fullWidth: true,
       xs: 12,
+      md: 6,
     },
   ];
 

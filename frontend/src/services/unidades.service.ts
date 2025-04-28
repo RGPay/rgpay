@@ -3,26 +3,26 @@ import api from "./api";
 export interface Unidade {
   id_unidade: number;
   nome: string;
+  cnpj: string;
+  cidade: string;
+  estado: string;
   endereco: string;
-  telefone: string;
-  responsavel: string;
-  ativo: boolean;
 }
 
 export interface CreateUnidadeDto {
   nome: string;
+  cnpj: string;
+  cidade: string;
+  estado: string;
   endereco: string;
-  telefone: string;
-  responsavel: string;
-  ativo?: boolean;
 }
 
 export interface UpdateUnidadeDto {
   nome?: string;
+  cnpj?: string;
+  cidade?: string;
+  estado?: string;
   endereco?: string;
-  telefone?: string;
-  responsavel?: string;
-  ativo?: boolean;
 }
 
 class UnidadesService {

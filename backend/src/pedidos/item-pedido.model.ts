@@ -15,9 +15,9 @@ export class ItemPedido extends Model<ItemPedido> {
     type: DataType.INTEGER,
     primaryKey: true,
     autoIncrement: true,
-    field: 'id_item',
+    field: 'id_item_pedido',
   })
-  declare id_item: number;
+  declare id_item_pedido: number;
 
   @ForeignKey(() => Pedido)
   @Column(DataType.INTEGER)

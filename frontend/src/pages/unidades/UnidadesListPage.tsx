@@ -84,31 +84,12 @@ const UnidadesListPage: React.FC = () => {
   };
 
   const columns = [
-    { id: "id_unidade", label: "ID", minWidth: 50, sortable: true },
-    {
-      id: "nome",
-      label: "Nome",
-      minWidth: 200,
-      sortable: true,
-    },
-    {
-      id: "endereco",
-      label: "Endereço",
-      minWidth: 300,
-      sortable: false,
-    },
-    {
-      id: "telefone",
-      label: "Telefone",
-      minWidth: 150,
-      sortable: false,
-    },
-    {
-      id: "responsavel",
-      label: "Responsável",
-      minWidth: 200,
-      sortable: true,
-    },
+    { id: "id_unidade", label: "ID", minWidth: 50 },
+    { id: "nome", label: "Nome", minWidth: 180 },
+    { id: "cnpj", label: "CNPJ", minWidth: 150 },
+    { id: "cidade", label: "Cidade", minWidth: 120 },
+    { id: "estado", label: "Estado", minWidth: 80 },
+    { id: "endereco", label: "Endereço", minWidth: 250 },
   ];
 
   const actions = [
