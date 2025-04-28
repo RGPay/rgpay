@@ -6,6 +6,7 @@ import { AuthModule } from './auth/auth.module';
 import { ProdutosModule } from './produtos/produtos.module';
 import { PedidosModule } from './pedidos/pedidos.module';
 import { UnidadesModule } from './unidades/unidades.module';
+import { DashboardModule } from './dashboard/dashboard.module';
 import * as dotenv from 'dotenv';
 import { Unidade } from './unidades/unidade.model';
 import { Usuario } from './auth/usuario.model';
@@ -42,6 +43,7 @@ dotenv.config();
     ProdutosModule,
     PedidosModule,
     UnidadesModule,
+    DashboardModule,
   ],
   controllers: [AppController],
   providers: [AppService],

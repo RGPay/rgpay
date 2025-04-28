@@ -759,12 +759,6 @@ const Dashboard: React.FC = () => {
           >
             Dashboard
           </Typography>
-          <Typography variant="subtitle1" color="text.secondary">
-            {`${format(
-              filter.periodoInicio || new Date(),
-              "dd/MM/yyyy"
-            )} - ${format(filter.periodoFim || new Date(), "dd/MM/yyyy")}`}
-          </Typography>
         </Box>
 
         <Paper
