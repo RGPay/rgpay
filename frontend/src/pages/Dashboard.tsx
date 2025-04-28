@@ -2,8 +2,7 @@ import React, { useState, useEffect } from "react";
 import {
   Box,
   Typography,
-  Grid as MuiGrid,
-  Divider,
+  Grid,
   FormControl,
   InputLabel,
   MenuItem,
@@ -17,8 +16,6 @@ import {
   Button,
   useTheme,
   alpha,
-  Tooltip,
-  Stack,
   LinearProgress,
   Avatar,
 } from "@mui/material";
@@ -26,7 +23,7 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { ptBR } from "date-fns/locale";
-import { subDays, startOfMonth, format } from "date-fns";
+import { startOfMonth } from "date-fns";
 import {
   ShoppingCart as ShoppingCartIcon,
   AttachMoney as AttachMoneyIcon,
@@ -45,11 +42,8 @@ import dashboardService, {
   DashboardFilter,
 } from "../services/dashboard.service";
 import unidadesService, { Unidade } from "../services/unidades.service";
-import { Toast, InfoCard } from "../components";
+import { Toast } from "../components";
 import { useNavigate } from "react-router-dom";
-
-// Use Grid as a named component to avoid type issues
-const Grid = MuiGrid;
 
 // Custom styled components
 const GradientCard = ({
@@ -875,42 +869,44 @@ const Dashboard: React.FC = () => {
 
         <MetricCards />
 
-        <Grid container spacing={3} sx={{ mt: 1 }}>
-          <Grid item xs={12} lg={8}>
-            <ChartCard
-              title="Faturamento no Período"
-              isLoading={loading}
-              chart={
-                <ReactECharts
-                  option={getVendasChartOptions()}
-                  style={{ height: 350, width: "100%" }}
-                />
-              }
-            />
-          </Grid>
-          <Grid item xs={12} lg={4}>
-            <ChartCard
-              title="Produtos Mais Vendidos"
-              isLoading={loading}
-              chart={
-                <ReactECharts
-                  option={getProdutosChartOptions()}
-                  style={{ height: 350, width: "100%" }}
-                />
-              }
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <ChartCard
-              title="Faturamento por Unidade"
-              isLoading={loading}
-              chart={
-                <ReactECharts
-                  option={getUnidadesChartOptions()}
-                  style={{ height: 350, width: "100%" }}
-                />
-              }
-            />
+        <Grid container spacing={5}>
+          <Grid container spacing={4} sx={{ mt: 2 }}>
+            <Grid xs={12} md={6} item>
+              <ChartCard
+                title="Faturamento no Período"
+                isLoading={loading}
+                chart={
+                  <ReactECharts
+                    option={getVendasChartOptions()}
+                    style={{ height: 350, width: "100%" }}
+                  />
+                }
+              />
+            </Grid>
+            <Grid xs={12} md={6} item>
+              <ChartCard
+                title="Produtos Mais Vendidos"
+                isLoading={loading}
+                chart={
+                  <ReactECharts
+                    option={getProdutosChartOptions()}
+                    style={{ height: 350, width: "100%" }}
+                  />
+                }
+              />
+            </Grid>
+            <Grid xs={12} item>
+              <ChartCard
+                title="Faturamento por Unidade"
+                isLoading={loading}
+                chart={
+                  <ReactECharts
+                    option={getUnidadesChartOptions()}
+                    style={{ height: 350, width: "100%" }}
+                  />
+                }
+              />
+            </Grid>
           </Grid>
         </Grid>
 
