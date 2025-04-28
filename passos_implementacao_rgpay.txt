@@ -47,7 +47,7 @@
 2.1.2. Criar endpoints de login/registro
 2.1.3. Frontend: Criar formulário de login com Formik+Yup
 2.1.4. Implementar armazenamento e validação de tokens
-2.1.5. Criar contexto de autenticação React
+2.1.5. Criar slice de autenticação React no Redux
 **Resultados esperados:** Fluxo funcional de login/logout com proteção de rotas no frontend
 
 ### 2.2. Layout principal responsivo
