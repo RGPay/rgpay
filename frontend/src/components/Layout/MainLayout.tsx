@@ -16,7 +16,6 @@ import {
   Avatar,
   Menu,
   MenuItem,
-  Badge,
   Tooltip,
   Container,
   alpha,
@@ -30,7 +29,6 @@ import {
   LocationOn as LocationOnIcon,
   Logout as LogoutIcon,
   Person as PersonIcon,
-  Notifications as NotificationsIcon,
   Settings as SettingsIcon,
   ChevronLeft as ChevronLeftIcon,
 } from "@mui/icons-material";
@@ -64,8 +62,6 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const [open, setOpen] = useState(!isMobile);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [notificationAnchorEl, setNotificationAnchorEl] =
-    useState<null | HTMLElement>(null);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const user = useSelector((state: RootState) => state.user);
@@ -114,14 +110,6 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
 
   const handleProfileMenuClose = () => {
     setAnchorEl(null);
-  };
-
-  const handleNotificationMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
-    setNotificationAnchorEl(event.currentTarget);
-  };
-
-  const handleNotificationMenuClose = () => {
-    setNotificationAnchorEl(null);
   };
 
   const handleLogout = () => {
@@ -198,105 +186,6 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
           >
             {getPageTitle()}
           </Typography>
-
-          {/* Notifications */}
-          <Tooltip title="Notificações">
-            <IconButton
-              color="inherit"
-              sx={{ mr: 1 }}
-              onClick={handleNotificationMenuOpen}
-            >
-              <Badge badgeContent={3} color="error">
-                <NotificationsIcon />
-              </Badge>
-            </IconButton>
-          </Tooltip>
-          <Menu
-            anchorEl={notificationAnchorEl}
-            open={Boolean(notificationAnchorEl)}
-            onClose={handleNotificationMenuClose}
-            PaperProps={{
-              sx: {
-                width: 320,
-                maxHeight: 400,
-                boxShadow: "0 8px 32px rgba(0, 0, 0, 0.2)",
-                background: "rgba(31, 41, 55, 0.9)",
-                backdropFilter: "blur(8px)",
-                border: "1px solid rgba(255, 255, 255, 0.05)",
-              },
-            }}
-          >
-            <MenuItem
-              sx={{ borderBottom: "1px solid rgba(255, 255, 255, 0.05)" }}
-            >
-              <Box sx={{ width: "100%" }}>
-                <Typography
-                  variant="subtitle2"
-                  sx={{ color: "primary.main", fontWeight: 600 }}
-                >
-                  Novo pedido recebido
-                </Typography>
-                <Typography
-                  variant="body2"
-                  sx={{ color: "text.secondary", fontSize: "0.8rem" }}
-                >
-                  Pedido #12345 aguardando confirmação
-                </Typography>
-                <Typography
-                  variant="caption"
-                  sx={{ color: "text.secondary", display: "block", mt: 0.5 }}
-                >
-                  Há 5 minutos
-                </Typography>
-              </Box>
-            </MenuItem>
-            <MenuItem
-              sx={{ borderBottom: "1px solid rgba(255, 255, 255, 0.05)" }}
-            >
-              <Box sx={{ width: "100%" }}>
-                <Typography
-                  variant="subtitle2"
-                  sx={{ color: "primary.main", fontWeight: 600 }}
-                >
-                  Pagamento confirmado
-                </Typography>
-                <Typography
-                  variant="body2"
-                  sx={{ color: "text.secondary", fontSize: "0.8rem" }}
-                >
-                  Pedido #12342 pago com sucesso
-                </Typography>
-                <Typography
-                  variant="caption"
-                  sx={{ color: "text.secondary", display: "block", mt: 0.5 }}
-                >
-                  Há 30 minutos
-                </Typography>
-              </Box>
-            </MenuItem>
-            <MenuItem>
-              <Box sx={{ width: "100%" }}>
-                <Typography
-                  variant="subtitle2"
-                  sx={{ color: "primary.main", fontWeight: 600 }}
-                >
-                  Novo produto adicionado
-                </Typography>
-                <Typography
-                  variant="body2"
-                  sx={{ color: "text.secondary", fontSize: "0.8rem" }}
-                >
-                  "Hambúrguer Especial" foi adicionado ao cardápio
-                </Typography>
-                <Typography
-                  variant="caption"
-                  sx={{ color: "text.secondary", display: "block", mt: 0.5 }}
-                >
-                  Há 2 horas
-                </Typography>
-              </Box>
-            </MenuItem>
-          </Menu>
 
           {/* Settings */}
           <Tooltip title="Configurações">
