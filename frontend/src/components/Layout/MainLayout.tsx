@@ -30,6 +30,7 @@ import {
   Logout as LogoutIcon,
   Person as PersonIcon,
   Settings as SettingsIcon,
+  Event as EventIcon,
 } from "@mui/icons-material";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -119,6 +120,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
     { text: "Dashboard", icon: <DashboardIcon />, path: "/" },
     { text: "Produtos", icon: <RestaurantIcon />, path: "/produtos" },
     { text: "Pedidos", icon: <ShoppingCartIcon />, path: "/pedidos" },
+    { text: "Eventos", icon: <EventIcon />, path: "/eventos" },
     { text: "Unidades", icon: <LocationOnIcon />, path: "/unidades" },
   ];
 

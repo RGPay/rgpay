@@ -15,6 +15,7 @@ import { Pedido } from './pedidos/pedido.model';
 import { ItemPedido } from './pedidos/item-pedido.model';
 import { Maquineta } from './pedidos/maquineta.model';
 import { Evento } from './pedidos/evento.model';
+import { EventosModule } from './pedidos/eventos.module';
 
 dotenv.config();
 
@@ -44,6 +45,7 @@ dotenv.config();
     PedidosModule,
     UnidadesModule,
     DashboardModule,
+    EventosModule,
   ],
   controllers: [AppController],
   providers: [AppService],

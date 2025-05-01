@@ -16,6 +16,8 @@ import "./App.css";
 import { useSelector } from "react-redux";
 import type { RootState } from "./store";
 import { MainLayout } from "./components/Layout";
+import EventsListPage from "./pages/events/EventsListPage";
+import EventsFormPage from "./pages/events/EventsFormPage";
 
 // Protected Layout component that checks authentication and applies the MainLayout
 function ProtectedLayout() {
@@ -77,6 +79,13 @@ function App() {
             <Route index element={<UnidadesListPage />} />
             <Route path="nova" element={<UnidadeFormPage />} />
             <Route path="editar/:id" element={<UnidadeFormPage />} />
+          </Route>
+
+          {/* Events routes */}
+          <Route path="/eventos">
+            <Route index element={<EventsListPage />} />
+            <Route path="novo" element={<EventsFormPage />} />
+            <Route path="editar/:id" element={<EventsFormPage />} />
           </Route>
 
           {/* Profile route */}
