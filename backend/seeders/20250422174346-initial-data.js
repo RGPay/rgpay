@@ -144,7 +144,7 @@ module.exports = {
     await queryInterface.bulkInsert('pedidos', [
       {
         id_pedido: 1,
-        data_hora: new Date('2025-04-22T20:30:00'),
+        data_hora: new Date('2025-05-01T20:30:00'),
         valor_total: 37.0,
         id_maquineta: 1,
         id_unidade: 1,
@@ -155,7 +155,7 @@ module.exports = {
       },
       {
         id_pedido: 2,
-        data_hora: new Date('2025-06-10T19:00:00'),
+        data_hora: new Date('2025-05-01T19:00:00'),
         valor_total: 18.0,
         id_maquineta: 2,
         id_unidade: 2,
