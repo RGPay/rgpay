@@ -41,6 +41,7 @@ export interface DashboardFilter {
   periodoInicio?: Date;
   periodoFim?: Date;
   id_unidade?: number;
+  id_evento?: number;
 }
 
 // Define interfaces for raw query results
@@ -105,6 +106,11 @@ export class DashboardService {
     // Apply unidade filter
     if (filter.id_unidade) {
       whereClause.id_unidade = filter.id_unidade;
+    }
+
+    // Apply event filter
+    if (filter.id_evento) {
+      whereClause.id_evento = filter.id_evento;
     }
 
     // Get total pedidos and faturamento total
@@ -269,7 +275,10 @@ export class DashboardService {
       group: ['forma_pagamento'],
       raw: true,
     });
-    for (const item of pagamentos as any[]) {
+    for (const item of pagamentos as unknown as {
+      forma_pagamento: string;
+      total: number;
+    }[]) {
       faturamentoPorFormaPagamento.push({
         forma_pagamento: item.forma_pagamento,
         total: Number(item.total),

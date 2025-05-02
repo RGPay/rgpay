@@ -12,6 +12,7 @@ export class DashboardController {
     @Query('periodoInicio') periodoInicio?: string,
     @Query('periodoFim') periodoFim?: string,
     @Query('id_unidade') id_unidade?: string,
+    @Query('id_evento') id_evento?: string,
   ) {
     const filter: DashboardFilter = {};
 
@@ -25,6 +26,10 @@ export class DashboardController {
 
     if (id_unidade) {
       filter.id_unidade = parseInt(id_unidade, 10);
+    }
+
+    if (id_evento) {
+      filter.id_evento = parseInt(id_evento, 10);
     }
 
     return this.dashboardService.getMetrics(filter);

@@ -50,6 +50,7 @@ import type { RootState } from "../store/store";
 import {
   FaturamentoPorHoraChart,
   TicketMedioPorHoraChart,
+  ProdutosMaisVendidosTable,
 } from "../components/Charts";
 
 // Custom styled components
@@ -318,24 +319,23 @@ const Dashboard: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    const fetchMetrics = async () => {
-      setLoading(true);
-      try {
-        const data = await dashboardService.getMetrics(filter);
+    setLoading(true);
+    dashboardService
+      .getMetrics({
+        ...filter,
+      })
+      .then((data) => {
         setMetrics(data);
-      } catch (error) {
+      })
+      .catch((error) => {
         console.error("Error loading dashboard metrics:", error);
         setToast({
           open: true,
           message: "Erro ao carregar métricas do dashboard",
           severity: "error",
         });
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchMetrics();
+      })
+      .finally(() => setLoading(false));
   }, [filter, selectedUnidade]);
 
   const formatCurrency = (value: number) => {
@@ -343,219 +343,6 @@ const Dashboard: React.FC = () => {
       style: "currency",
       currency: "BRL",
     }).format(value);
-  };
-
-  const getVendasChartOptions = () => {
-    if (!metrics?.vendasPorPeriodo) return {};
-
-    const dates = metrics.vendasPorPeriodo.map((item) => item.data);
-    const values = metrics.vendasPorPeriodo.map((item) => item.total);
-
-    return {
-      tooltip: {
-        trigger: "axis",
-        formatter: (params: any) => {
-          const value = params[0].value;
-          return `${params[0].name}: ${formatCurrency(value)}`;
-        },
-        backgroundColor: alpha(theme.palette.background.paper, 0.9),
-        borderColor: alpha(theme.palette.divider, 0.2),
-        textStyle: {
-          color: theme.palette.text.primary,
-        },
-        extraCssText:
-          "backdrop-filter: blur(8px); border-radius: 8px; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);",
-      },
-      grid: {
-        left: "3%",
-        right: "4%",
-        bottom: "3%",
-        containLabel: true,
-      },
-      xAxis: {
-        type: "category",
-        data: dates,
-        axisLine: {
-          lineStyle: {
-            color: alpha(theme.palette.divider, 0.3),
-          },
-        },
-        axisLabel: {
-          color: theme.palette.text.secondary,
-          formatter: (value: string) => {
-            return value.slice(0, 5);
-          },
-        },
-        axisTick: {
-          alignWithLabel: true,
-          lineStyle: {
-            color: alpha(theme.palette.divider, 0.3),
-          },
-        },
-      },
-      yAxis: {
-        type: "value",
-        axisLine: {
-          show: false,
-        },
-        axisLabel: {
-          color: theme.palette.text.secondary,
-          formatter: (value: number) => formatCurrency(value),
-        },
-        splitLine: {
-          lineStyle: {
-            color: alpha(theme.palette.divider, 0.1),
-            type: "dashed",
-          },
-        },
-      },
-      series: [
-        {
-          name: "Vendas",
-          type: "line",
-          smooth: true,
-          data: values,
-          symbol: "circle",
-          symbolSize: 8,
-          itemStyle: {
-            color: theme.palette.primary.main,
-            borderColor: theme.palette.background.paper,
-            borderWidth: 2,
-          },
-          lineStyle: {
-            width: 3,
-            color: {
-              type: "linear",
-              x: 0,
-              y: 0,
-              x2: 1,
-              y2: 0,
-              colorStops: [
-                {
-                  offset: 0,
-                  color: theme.palette.primary.main,
-                },
-                {
-                  offset: 1,
-                  color: theme.palette.secondary.main,
-                },
-              ],
-            },
-          },
-          areaStyle: {
-            color: {
-              type: "linear",
-              x: 0,
-              y: 0,
-              x2: 0,
-              y2: 1,
-              colorStops: [
-                {
-                  offset: 0,
-                  color: alpha(theme.palette.primary.main, 0.3),
-                },
-                {
-                  offset: 1,
-                  color: alpha(theme.palette.primary.main, 0.05),
-                },
-              ],
-            },
-          },
-        },
-      ],
-    };
-  };
-
-  const getProdutosChartOptions = () => {
-    if (!metrics?.produtosMaisVendidos) return {};
-
-    const produtos = metrics.produtosMaisVendidos
-      .slice(0, 5)
-      .map((item) => item.nome);
-    const valores = metrics.produtosMaisVendidos
-      .slice(0, 5)
-      .map((item) => item.valor_total);
-
-    return {
-      tooltip: {
-        trigger: "item",
-        formatter: (params: any) => {
-          return `${params.name}: ${formatCurrency(params.value)} (${
-            params.percent
-          }%)`;
-        },
-        backgroundColor: alpha(theme.palette.background.paper, 0.9),
-        borderColor: alpha(theme.palette.divider, 0.2),
-        textStyle: {
-          color: theme.palette.text.primary,
-        },
-        extraCssText:
-          "backdrop-filter: blur(8px); border-radius: 8px; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);",
-      },
-      legend: {
-        orient: "vertical",
-        right: 10,
-        top: "center",
-        data: produtos,
-        textStyle: {
-          color: theme.palette.text.secondary,
-        },
-        itemGap: 12,
-        icon: "circle",
-        itemWidth: 10,
-        itemHeight: 10,
-        formatter: (name: string) => {
-          if (name.length > 15) {
-            return name.substring(0, 15) + "...";
-          }
-          return name;
-        },
-      },
-      series: [
-        {
-          name: "Produtos",
-          type: "pie",
-          radius: ["45%", "75%"],
-          avoidLabelOverlap: false,
-          itemStyle: {
-            borderRadius: 10,
-            borderColor: theme.palette.background.paper,
-            borderWidth: 2,
-          },
-          label: {
-            show: false,
-          },
-          emphasis: {
-            label: {
-              show: true,
-              fontSize: 14,
-              fontWeight: "bold",
-            },
-            itemStyle: {
-              shadowBlur: 10,
-              shadowOffsetX: 0,
-              shadowColor: "rgba(0, 0, 0, 0.2)",
-            },
-          },
-          labelLine: {
-            show: false,
-          },
-          data: produtos.map((nome, index) => ({
-            value: valores[index],
-            name: nome,
-            itemStyle: {
-              color: [
-                theme.palette.primary.main,
-                theme.palette.secondary.main,
-                theme.palette.success.main,
-                "#9C27B0",
-                "#FF9800",
-              ][index % 5],
-            },
-          })),
-        },
-      ],
-    };
   };
 
   const getUnidadesChartOptions = () => {
@@ -570,8 +357,9 @@ const Dashboard: React.FC = () => {
         axisPointer: {
           type: "shadow",
         },
-        formatter: (params: any) => {
-          return `${params[0].name}: ${formatCurrency(params[0].value)}`;
+        formatter: (params: unknown) => {
+          const p = params as { [key: string]: any };
+          return `${p[0].name}: ${formatCurrency(p[0].value)}`;
         },
         backgroundColor: alpha(theme.palette.background.paper, 0.9),
         borderColor: alpha(theme.palette.divider, 0.2),
@@ -701,10 +489,9 @@ const Dashboard: React.FC = () => {
     return {
       tooltip: {
         trigger: "item",
-        formatter: (params: any) => {
-          return `${params.name}: ${formatCurrency(params.value)} (${
-            params.percent
-          }%)`;
+        formatter: (params: unknown) => {
+          const p = params as { [key: string]: any };
+          return `${p.name}: ${formatCurrency(p.value)} (${p.percent}%)`;
         },
         backgroundColor: alpha(theme.palette.background.paper, 0.9),
         borderColor: alpha(theme.palette.divider, 0.2),
@@ -953,14 +740,9 @@ const Dashboard: React.FC = () => {
           </Grid>
           <Grid item xs={12} md={6}>
             <ChartCard
-              title="Produtos Mais Vendidos"
+              title="Faturamento por Produto"
               isLoading={loading}
-              chart={
-                <ReactECharts
-                  option={getProdutosChartOptions()}
-                  style={{ height: 350, width: "100%" }}
-                />
-              }
+              chart={<ProdutosMaisVendidosTable filter={filter} />}
             />
           </Grid>
           <Grid item xs={12} md={6}>
