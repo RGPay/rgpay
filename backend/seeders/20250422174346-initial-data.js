@@ -43,7 +43,8 @@ module.exports = {
         id_usuario: 2,
         nome: 'Bob Gerente',
         email: 'bob@bardocentro.com',
-        senha_hash: 'hash2',
+        senha_hash:
+          '$2b$10$gzX.lruZB2EM/oqnehGMbeRWGaBi16cf0nGgasbkDSNToxWScZHAq',
         tipo_usuario: 'gerente',
         id_unidade: 1,
         createdAt: new Date(),
