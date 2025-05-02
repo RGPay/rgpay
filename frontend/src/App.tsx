@@ -14,7 +14,7 @@ import { UnidadesListPage, UnidadeFormPage } from "./pages/unidades";
 import Dashboard from "./pages/Dashboard";
 import "./App.css";
 import { useSelector } from "react-redux";
-import type { RootState } from "./store";
+import type { RootState } from "./store/store";
 import { MainLayout } from "./components/Layout";
 import EventsListPage from "./pages/events/EventsListPage";
 import EventsFormPage from "./pages/events/EventsFormPage";
@@ -22,7 +22,7 @@ import EventsFormPage from "./pages/events/EventsFormPage";
 // Protected Layout component that checks authentication and applies the MainLayout
 function ProtectedLayout() {
   const isAuthenticated = useSelector(
-    (state: RootState) => state.isAuthenticated
+    (state: RootState) => state.auth.isAuthenticated
   );
 
   if (!isAuthenticated) {
@@ -42,7 +42,7 @@ const ProfilePage = () => <div>Perfil em construção</div>;
 // Check if user is already logged in and redirect accordingly
 function PublicRoute({ children }: { children: ReactElement }) {
   const isAuthenticated = useSelector(
-    (state: RootState) => state.isAuthenticated
+    (state: RootState) => state.auth.isAuthenticated
   );
 
   if (isAuthenticated) {

@@ -3,10 +3,6 @@ import {
   Box,
   Typography,
   Grid,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
   Paper,
   CircularProgress,
   Card,
@@ -44,6 +40,8 @@ import dashboardService, {
 import unidadesService, { Unidade } from "../services/unidades.service";
 import { Toast } from "../components";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import type { RootState } from "../store/store";
 
 // Custom styled components
 const GradientCard = ({
@@ -293,6 +291,9 @@ const Dashboard: React.FC = () => {
   });
 
   const navigate = useNavigate();
+  const selectedUnidade = useSelector(
+    (state: RootState) => state.unidade.selectedUnidade
+  );
 
   useEffect(() => {
     const fetchUnidades = async () => {
@@ -326,7 +327,7 @@ const Dashboard: React.FC = () => {
     };
 
     fetchMetrics();
-  }, [filter]);
+  }, [filter, selectedUnidade]);
 
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat("pt-BR", {
@@ -818,37 +819,6 @@ const Dashboard: React.FC = () => {
               },
             }}
           />
-
-          <FormControl
-            size="small"
-            sx={{
-              minWidth: { xs: "100%", sm: 200 },
-              bgcolor: alpha(theme.palette.background.paper, 0.8),
-            }}
-          >
-            <InputLabel id="unidade-filter-label">Unidade</InputLabel>
-            <Select
-              labelId="unidade-filter-label"
-              id="unidade-filter"
-              value={filter.id_unidade || ""}
-              label="Unidade"
-              onChange={(e) =>
-                setFilter({
-                  ...filter,
-                  id_unidade: e.target.value
-                    ? Number(e.target.value)
-                    : undefined,
-                })
-              }
-            >
-              <MenuItem value="">Todas as unidades</MenuItem>
-              {unidades.map((unidade) => (
-                <MenuItem key={unidade.id_unidade} value={unidade.id_unidade}>
-                  {unidade.nome}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
 
           <Box sx={{ flex: "1 1 auto" }} />
 

@@ -11,7 +11,6 @@ import {
   FormControl,
   InputLabel,
   Select,
-  CircularProgress,
 } from "@mui/material";
 import {
   Add as AddIcon,
@@ -28,6 +27,8 @@ import {
   Produto,
   ProdutosFilter,
 } from "../../services/produtos.service";
+import { useSelector } from "react-redux";
+import type { RootState } from "../../store/store";
 
 const ProdutosListPage: React.FC = () => {
   const navigate = useNavigate();
@@ -42,6 +43,9 @@ const ProdutosListPage: React.FC = () => {
     message: "",
     severity: "success" as "success" | "error",
   });
+  const selectedUnidade = useSelector(
+    (state: RootState) => state.unidade.selectedUnidade
+  );
 
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat("pt-BR", {
@@ -69,7 +73,7 @@ const ProdutosListPage: React.FC = () => {
 
   useEffect(() => {
     loadProdutos();
-  }, [filter]);
+  }, [filter, selectedUnidade]);
 
   const handleSearch = () => {
     // In a real app, you might want to search on the server side

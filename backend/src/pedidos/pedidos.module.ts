@@ -7,11 +7,17 @@ import { PedidosController } from './pedidos.controller';
 import { PedidosService } from './pedidos.service';
 import { ProdutosModule } from '../produtos/produtos.module';
 import { Produto } from '../produtos/produto.model';
-import { Evento } from './evento.model';
+import { Evento } from '../eventos/evento.model';
 
 @Module({
   imports: [
-    SequelizeModule.forFeature([Pedido, ItemPedido, Maquineta, Produto, Evento]),
+    SequelizeModule.forFeature([
+      Pedido,
+      ItemPedido,
+      Maquineta,
+      Produto,
+      Evento,
+    ]),
     ProdutosModule,
   ],
   controllers: [PedidosController],

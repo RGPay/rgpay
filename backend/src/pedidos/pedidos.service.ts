@@ -10,6 +10,7 @@ import {
 } from './pedidos.dto';
 import { Sequelize } from 'sequelize-typescript';
 import { Op } from 'sequelize';
+import { Evento } from '../eventos/evento.model';
 
 @Injectable()
 export class PedidosService {
@@ -140,13 +141,19 @@ export class PedidosService {
     // Use a transaction to ensure data consistency
     await this.sequelize.transaction(async (t) => {
       // Update order basic info
-      if (updatePedidoDto.id_unidade || updatePedidoDto.id_maquineta || updatePedidoDto.id_evento || updatePedidoDto.forma_pagamento) {
+      if (
+        updatePedidoDto.id_unidade ||
+        updatePedidoDto.id_maquineta ||
+        updatePedidoDto.id_evento ||
+        updatePedidoDto.forma_pagamento
+      ) {
         await pedido.update(
           {
             id_unidade: updatePedidoDto.id_unidade || pedido.id_unidade,
             id_maquineta: updatePedidoDto.id_maquineta ?? pedido.id_maquineta,
             id_evento: updatePedidoDto.id_evento ?? pedido.id_evento,
-            forma_pagamento: updatePedidoDto.forma_pagamento ?? pedido.forma_pagamento,
+            forma_pagamento:
+              updatePedidoDto.forma_pagamento ?? pedido.forma_pagamento,
           },
           { transaction: t },
         );

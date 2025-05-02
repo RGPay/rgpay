@@ -9,6 +9,8 @@ import { useNavigate } from "react-router-dom";
 import { DataTable, Toast, ConfirmDialog } from "../../components";
 import eventosService, { Evento } from "../../services/eventos.service";
 import unidadesService from "../../services/unidades.service";
+import { useSelector } from "react-redux";
+import type { RootState } from "../../store/store";
 
 const EventsListPage: React.FC = () => {
   const navigate = useNavigate();
@@ -22,6 +24,9 @@ const EventsListPage: React.FC = () => {
     severity: "success" as "success" | "error",
   });
   const [unidadeMap, setUnidadeMap] = useState<Record<number, string>>({});
+  const selectedUnidade = useSelector(
+    (state: RootState) => state.unidade.selectedUnidade
+  );
 
   const loadEvents = async () => {
     setLoading(true);
@@ -55,7 +60,7 @@ const EventsListPage: React.FC = () => {
   useEffect(() => {
     loadEvents();
     loadUnidades();
-  }, []);
+  }, [selectedUnidade]);
 
   const handleCreateEvent = () => {
     navigate("/eventos/novo");

@@ -1,4 +1,5 @@
 import api from "./api";
+import { store } from "../store/store";
 
 export interface Evento {
   id_evento: number;
@@ -31,7 +32,11 @@ export interface UpdateEventoDto {
 
 class EventosService {
   async getAll(): Promise<Evento[]> {
-    const response = await api.get("/eventos");
+    const selectedUnidade = store.getState().unidade.selectedUnidade;
+    const params = selectedUnidade
+      ? { id_unidade: Number(selectedUnidade) }
+      : {};
+    const response = await api.get("/eventos", { params });
     return response.data;
   }
 
@@ -55,4 +60,4 @@ class EventosService {
   }
 }
 
-export default new EventosService(); 
+export default new EventosService();

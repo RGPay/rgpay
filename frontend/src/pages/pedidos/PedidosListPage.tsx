@@ -23,6 +23,8 @@ import {
   Pedido,
   PedidosFilter,
 } from "../../services/pedidos.service";
+import { useSelector } from "react-redux";
+import type { RootState } from "../../store/store";
 
 const PedidosListPage: React.FC = () => {
   const navigate = useNavigate();
@@ -34,6 +36,9 @@ const PedidosListPage: React.FC = () => {
     message: "",
     severity: "success" as "success" | "error",
   });
+  const selectedUnidade = useSelector(
+    (state: RootState) => state.unidade.selectedUnidade
+  );
 
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat("pt-BR", {
@@ -72,7 +77,7 @@ const PedidosListPage: React.FC = () => {
 
   useEffect(() => {
     loadPedidos();
-  }, [loadPedidos]);
+  }, [loadPedidos, selectedUnidade]);
 
   const handleViewPedido = (pedido: Pedido) => {
     navigate(`/pedidos/detalhes/${pedido.id_pedido}`);

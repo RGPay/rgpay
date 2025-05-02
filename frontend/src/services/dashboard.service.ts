@@ -1,4 +1,5 @@
 import api from "./api";
+import { store } from "../store/store";
 
 export interface DashboardMetrics {
   totalVendas: number;
@@ -33,7 +34,14 @@ export interface DashboardFilter {
 
 class DashboardService {
   async getMetrics(filters: DashboardFilter = {}): Promise<DashboardMetrics> {
-    const response = await api.get("/dashboard/metrics", { params: filters });
+    const selectedUnidade = store.getState().unidade.selectedUnidade;
+    const mergedFilters = {
+      ...filters,
+      id_unidade: selectedUnidade ? Number(selectedUnidade) : undefined,
+    };
+    const response = await api.get("/dashboard/metrics", {
+      params: mergedFilters,
+    });
     return response.data;
   }
 }

@@ -1,4 +1,5 @@
 import api from "./api";
+import { store } from "../store/store";
 
 export interface ItemPedido {
   id_item_pedido?: number;
@@ -39,7 +40,12 @@ export interface PedidosFilter {
 
 class PedidosService {
   async getAll(filters: PedidosFilter = {}): Promise<Pedido[]> {
-    const response = await api.get("/pedidos", { params: filters });
+    const selectedUnidade = store.getState().unidade.selectedUnidade;
+    const mergedFilters = {
+      ...filters,
+      id_unidade: selectedUnidade ? Number(selectedUnidade) : undefined,
+    };
+    const response = await api.get("/pedidos", { params: mergedFilters });
     return response.data;
   }
 

@@ -1,7 +1,11 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Evento } from './evento.model';
-import { CreateEventoDto, UpdateEventoDto } from './eventos.dto';
+import {
+  CreateEventoDto,
+  UpdateEventoDto,
+  EventoFilterDto,
+} from './eventos.dto';
 
 @Injectable()
 export class EventosService {
@@ -10,8 +14,12 @@ export class EventosService {
     private readonly eventoModel: typeof Evento,
   ) {}
 
-  async findAll(): Promise<Evento[]> {
-    return this.eventoModel.findAll();
+  async findAll(filters: EventoFilterDto = {}): Promise<Evento[]> {
+    const where: any = {};
+    if (filters.id_unidade) {
+      where.id_unidade = filters.id_unidade;
+    }
+    return this.eventoModel.findAll({ where });
   }
 
   async findOne(id: number): Promise<Evento> {
@@ -36,4 +44,4 @@ export class EventosService {
     const evento = await this.findOne(id);
     await evento.destroy();
   }
-} 
+}

@@ -15,7 +15,7 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { login as loginAction } from "../store";
+import { login as loginAction } from "../store/authSlice";
 import { useNavigate } from "react-router-dom";
 import api from "../services/api";
 import { AxiosError } from "axios";

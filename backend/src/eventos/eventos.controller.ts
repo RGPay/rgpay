@@ -12,7 +12,11 @@ import {
 import { EventosService } from './eventos.service';
 import { Evento } from './evento.model';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import { CreateEventoDto, UpdateEventoDto } from './eventos.dto';
+import {
+  CreateEventoDto,
+  UpdateEventoDto,
+  EventoFilterDto,
+} from './eventos.dto';
 
 @Controller('eventos')
 @UseGuards(JwtAuthGuard)
@@ -20,8 +24,8 @@ export class EventosController {
   constructor(private readonly eventosService: EventosService) {}
 
   @Get()
-  async findAll(): Promise<Evento[]> {
-    return this.eventosService.findAll();
+  async findAll(@Query() filterDto: EventoFilterDto): Promise<Evento[]> {
+    return this.eventosService.findAll(filterDto);
   }
 
   @Get(':id')
@@ -46,4 +50,4 @@ export class EventosController {
   async remove(@Param('id') id: string): Promise<void> {
     return this.eventosService.remove(parseInt(id, 10));
   }
-} 
+}

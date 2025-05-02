@@ -1,13 +1,13 @@
-import { useDispatch } from 'react-redux';
-import { logout as logoutAction } from '../store';
-import { useNavigate } from 'react-router-dom';
+import { useDispatch } from "react-redux";
+import { logout as logoutAction } from "../store/authSlice";
+import { useNavigate } from "react-router-dom";
 
 export default function Home() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const handleLogout = () => {
     dispatch(logoutAction());
-    navigate('/login');
+    navigate("/login");
   };
   return (
     <>

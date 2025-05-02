@@ -34,9 +34,10 @@ import {
 } from "@mui/icons-material";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { logout } from "../../store";
-import type { RootState } from "../../store";
+import { logout } from "../../store/authSlice";
+import type { RootState } from "../../store/store";
 import { Breadcrumb } from "../Navigation";
+import UnidadeSelect from "../Inputs/UnidadeSelect";
 
 const drawerWidth = 260;
 
@@ -63,7 +64,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const user = useSelector((state: RootState) => state.user);
+  const user = useSelector((state: RootState) => state.auth.user);
   const location = useLocation();
 
   // Close drawer on mobile when route changes
@@ -184,6 +185,9 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
           >
             {getPageTitle()}
           </Typography>
+
+          {/* Unidade Select */}
+          <UnidadeSelect />
 
           {/* Settings */}
           <Tooltip title="Configurações">

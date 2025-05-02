@@ -14,8 +14,8 @@ import { Produto } from './produtos/produto.model';
 import { Pedido } from './pedidos/pedido.model';
 import { ItemPedido } from './pedidos/item-pedido.model';
 import { Maquineta } from './pedidos/maquineta.model';
-import { Evento } from './pedidos/evento.model';
-import { EventosModule } from './pedidos/eventos.module';
+import { Evento } from './eventos/evento.model';
+import { EventosModule } from './eventos/eventos.module';
 
 dotenv.config();
 

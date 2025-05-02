@@ -10,4 +10,4 @@ import { EventosController } from './eventos.controller';
   controllers: [EventosController],
   exports: [EventosService],
 })
-export class EventosModule {} 
+export class EventosModule {}
