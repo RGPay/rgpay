@@ -59,14 +59,25 @@ class DashboardService {
     return response.data;
   }
 
-  async getEventos(): Promise<Evento[]> {
-    const response = await api.get("/eventos");
+  async getEventos(unidadeId?: number): Promise<Evento[]> {
+    const params: Record<string, unknown> = {};
+    if (unidadeId) params.id_unidade = unidadeId;
+    const response = await api.get("/eventos", { params });
     return response.data;
   }
 
-  async getFaturamentoPorHora(eventId?: number): Promise<FaturamentoPorHora[]> {
+  async getFaturamentoPorHora(
+    eventId?: number,
+    id_unidade?: number,
+    filter?: DashboardFilter
+  ): Promise<FaturamentoPorHora[]> {
+    const params: Record<string, unknown> = {};
+    if (eventId) params.eventId = eventId;
+    if (id_unidade) params.id_unidade = id_unidade;
+    if (filter?.periodoInicio) params.periodoInicio = filter.periodoInicio;
+    if (filter?.periodoFim) params.periodoFim = filter.periodoFim;
     const response = await api.get("/dashboard/faturamento-por-hora", {
-      params: eventId ? { eventId } : {},
+      params,
     });
     return response.data;
   }

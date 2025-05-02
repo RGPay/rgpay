@@ -31,8 +31,19 @@ export class DashboardController {
   }
 
   @Get('faturamento-por-hora')
-  async getFaturamentoPorHora(@Query('eventId') eventId?: string) {
-    const id = eventId ? parseInt(eventId, 10) : undefined;
-    return this.dashboardService.getFaturamentoPorHora(id);
+  async getFaturamentoPorHora(
+    @Query('eventId') eventId?: string,
+    @Query('id_unidade') id_unidade?: string,
+    @Query('periodoInicio') periodoInicio?: string,
+    @Query('periodoFim') periodoFim?: string,
+  ) {
+    const eventIdNum = eventId ? parseInt(eventId, 10) : undefined;
+    const unidadeIdNum = id_unidade ? parseInt(id_unidade, 10) : undefined;
+    return this.dashboardService.getFaturamentoPorHora(
+      eventIdNum,
+      unidadeIdNum,
+      periodoInicio,
+      periodoFim,
+    );
   }
 }

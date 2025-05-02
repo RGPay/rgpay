@@ -4,15 +4,19 @@ import { Box, Chip, CircularProgress } from "@mui/material";
 import { ReactECharts } from ".";
 import dashboardService, {
   FaturamentoPorHora,
-  Evento,
+  DashboardFilter,
 } from "../../services/dashboard.service";
+import { useSelector } from "react-redux";
+import type { RootState } from "../../store/store";
 
 interface FaturamentoPorHoraChartProps {
   height?: number;
+  filter: DashboardFilter;
 }
 
 const FaturamentoPorHoraChart: React.FC<FaturamentoPorHoraChartProps> = ({
   height = 350,
+  filter,
 }) => {
   const [eventos, setEventos] = useState<{ id: number; name: string }[]>([]);
   const [selectedEvento, setSelectedEvento] = useState<number | null>(null);
@@ -21,24 +25,51 @@ const FaturamentoPorHoraChart: React.FC<FaturamentoPorHoraChartProps> = ({
   >([]);
   const [loading, setLoading] = useState(false);
 
+  const selectedUnidade = useSelector(
+    (state: RootState) => state.unidade.selectedUnidade
+  );
+
+  // Reset selectedEvento when unidade changes
   React.useEffect(() => {
-    dashboardService.getEventos().then((rawEventos) => {
-      setEventos(
-        rawEventos.map((e: any) => ({
-          id: e.id_evento ?? e.id,
-          name: e.nome ?? e.name,
-        }))
-      );
-    });
-  }, []);
+    setSelectedEvento(null);
+  }, [selectedUnidade]);
+
+  React.useEffect(() => {
+    dashboardService
+      .getEventos(selectedUnidade ?? undefined)
+      .then((rawEventos) => {
+        setEventos(
+          rawEventos.map(
+            (e: {
+              id_evento?: number;
+              id?: number;
+              nome?: string;
+              name?: string;
+            }) => ({
+              id: e.id_evento ?? e.id!,
+              name: e.nome ?? e.name!,
+            })
+          )
+        );
+      });
+  }, [selectedUnidade, filter.periodoInicio, filter.periodoFim]);
 
   React.useEffect(() => {
     setLoading(true);
     dashboardService
-      .getFaturamentoPorHora(selectedEvento ?? undefined)
+      .getFaturamentoPorHora(
+        selectedEvento ?? undefined,
+        selectedUnidade ?? undefined,
+        filter
+      )
       .then(setFaturamentoPorHora)
       .finally(() => setLoading(false));
-  }, [selectedEvento]);
+  }, [
+    selectedEvento,
+    selectedUnidade,
+    filter.periodoInicio,
+    filter.periodoFim,
+  ]);
 
   const getOptions = () => ({
     tooltip: { trigger: "axis" },

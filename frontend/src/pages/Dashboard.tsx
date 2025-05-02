@@ -938,7 +938,7 @@ const Dashboard: React.FC = () => {
             <ChartCard
               title="Faturamento por Hora"
               isLoading={false}
-              chart={<FaturamentoPorHoraChart />}
+              chart={<FaturamentoPorHoraChart filter={filter} />}
             />
           </Grid>
           <Grid item xs={12} md={6}>
