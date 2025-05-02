@@ -104,6 +104,8 @@ export class PedidosService {
         data_hora: new Date(),
         valor_total: valorTotal,
         id_unidade: createPedidoDto.id_unidade,
+        id_evento: createPedidoDto.id_evento ?? null,
+        forma_pagamento: createPedidoDto.forma_pagamento,
       };
       if (typeof createPedidoDto.id_maquineta !== 'undefined') {
         pedidoData.id_maquineta = createPedidoDto.id_maquineta;
@@ -138,11 +140,13 @@ export class PedidosService {
     // Use a transaction to ensure data consistency
     await this.sequelize.transaction(async (t) => {
       // Update order basic info
-      if (updatePedidoDto.id_unidade || updatePedidoDto.id_maquineta) {
+      if (updatePedidoDto.id_unidade || updatePedidoDto.id_maquineta || updatePedidoDto.id_evento || updatePedidoDto.forma_pagamento) {
         await pedido.update(
           {
             id_unidade: updatePedidoDto.id_unidade || pedido.id_unidade,
             id_maquineta: updatePedidoDto.id_maquineta ?? pedido.id_maquineta,
+            id_evento: updatePedidoDto.id_evento ?? pedido.id_evento,
+            forma_pagamento: updatePedidoDto.forma_pagamento ?? pedido.forma_pagamento,
           },
           { transaction: t },
         );

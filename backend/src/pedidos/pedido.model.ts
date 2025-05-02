@@ -10,6 +10,7 @@ import {
 import { Unidade } from '../unidades/unidade.model';
 import { Maquineta } from './maquineta.model';
 import { ItemPedido } from './item-pedido.model';
+import { Evento } from './evento.model';
 
 @Table({ tableName: 'pedidos' })
 export class Pedido extends Model<Pedido> {
@@ -43,4 +44,18 @@ export class Pedido extends Model<Pedido> {
 
   @HasMany(() => ItemPedido)
   declare itensPedido: ItemPedido[];
+
+  @ForeignKey(() => Evento)
+  @Column({ type: DataType.INTEGER, allowNull: true })
+  declare id_evento: number | null;
+
+  @BelongsTo(() => Evento)
+  declare evento: Evento;
+
+  @Column({
+    type: DataType.ENUM('dinheiro', 'credito', 'debito', 'pix'),
+    allowNull: false,
+    field: 'forma_pagamento',
+  })
+  declare forma_pagamento: 'dinheiro' | 'credito' | 'debito' | 'pix';
 }

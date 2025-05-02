@@ -111,6 +111,17 @@ module.exports = {
         onDelete: 'CASCADE',
         allowNull: false,
       },
+      id_evento: {
+        type: Sequelize.INTEGER,
+        references: { model: 'eventos', key: 'id_evento' },
+        onUpdate: 'CASCADE',
+        onDelete: 'SET NULL',
+        allowNull: true,
+      },
+      forma_pagamento: {
+        type: Sequelize.ENUM('dinheiro', 'credito', 'debito', 'pix'),
+        allowNull: false,
+      },
       createdAt: { type: Sequelize.DATE, allowNull: false },
       updatedAt: { type: Sequelize.DATE, allowNull: false },
     });

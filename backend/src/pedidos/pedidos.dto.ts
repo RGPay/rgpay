@@ -4,6 +4,7 @@ import {
   IsOptional,
   ValidateNested,
   IsDate,
+  IsEnum,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 
@@ -27,6 +28,13 @@ export class CreatePedidoDto {
   @IsOptional()
   id_maquineta?: number;
 
+  @IsNumber()
+  @IsOptional()
+  id_evento?: number;
+
+  @IsEnum(['dinheiro', 'credito', 'debito', 'pix'])
+  forma_pagamento: 'dinheiro' | 'credito' | 'debito' | 'pix';
+
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => ItemPedidoDto)
@@ -41,6 +49,14 @@ export class UpdatePedidoDto {
   @IsNumber()
   @IsOptional()
   id_maquineta?: number;
+
+  @IsNumber()
+  @IsOptional()
+  id_evento?: number;
+
+  @IsEnum(['dinheiro', 'credito', 'debito', 'pix'])
+  @IsOptional()
+  forma_pagamento?: 'dinheiro' | 'credito' | 'debito' | 'pix';
 
   @IsArray()
   @ValidateNested({ each: true })
