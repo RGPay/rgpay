@@ -16,6 +16,7 @@ import {
   UpdateProdutoDto,
 } from "../../services/produtos.service";
 import { FormikHelpers } from "formik";
+import unidadesService, { Unidade } from "../../services/unidades.service";
 
 const validationSchema = Yup.object({
   nome: Yup.string().required("Nome é obrigatório"),
@@ -48,6 +49,24 @@ const ProdutoFormPage: React.FC = () => {
     message: "",
     severity: "success" as "success" | "error",
   });
+
+  const [unidades, setUnidades] = useState<Unidade[]>([]);
+  const [unidadesLoading, setUnidadesLoading] = useState(true);
+  const [unidadesError, setUnidadesError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchUnidades = async () => {
+      try {
+        const unidadesData = await unidadesService.getAll();
+        setUnidades(unidadesData);
+      } catch (error) {
+        setUnidadesError("Erro ao carregar unidades");
+      } finally {
+        setUnidadesLoading(false);
+      }
+    };
+    fetchUnidades();
+  }, []);
 
   useEffect(() => {
     if (isEditMode && id) {
@@ -114,24 +133,26 @@ const ProdutoFormPage: React.FC = () => {
     setToast({ ...toast, open: false });
   };
 
+  const unidadeOptions = unidades.map((u) => ({ value: u.id_unidade, label: u.nome }));
+
   const formFields = [
     {
       name: "nome",
       label: "Nome do Produto",
-      type: "text",
+      type: "text" as const,
       required: true,
       autoFocus: true,
     },
     {
       name: "preco",
       label: "Preço",
-      type: "number",
+      type: "number" as const,
       required: true,
     },
     {
       name: "categoria",
       label: "Categoria",
-      type: "select",
+      type: "select" as const,
       required: true,
       options: [
         { value: "Bebidas", label: "Bebidas" },
@@ -144,28 +165,33 @@ const ProdutoFormPage: React.FC = () => {
     {
       name: "disponivel",
       label: "Disponível",
-      type: "checkbox",
+      type: "checkbox" as const,
       xs: 12,
       sm: 6,
     },
     {
       name: "id_unidade",
       label: "Unidade",
-      type: "select",
+      type: "select" as const,
       required: true,
-      options: [
-        { value: 1, label: "Unidade 1" },
-        { value: 2, label: "Unidade 2" },
-      ],
+      options: unidadeOptions,
       xs: 12,
       sm: 6,
     },
   ];
 
-  if (loading) {
+  if (loading || unidadesLoading) {
     return (
       <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
         <CircularProgress />
+      </Box>
+    );
+  }
+
+  if (unidadesError) {
+    return (
+      <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
+        <Typography color="error">{unidadesError}</Typography>
       </Box>
     );
   }
