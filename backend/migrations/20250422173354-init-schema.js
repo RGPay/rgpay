@@ -87,7 +87,30 @@ module.exports = {
       updatedAt: { type: Sequelize.DATE, allowNull: false },
     });
 
-    // 5. Pedido
+    // 5. Evento
+    await queryInterface.createTable('eventos', {
+      id_evento: {
+        type: Sequelize.INTEGER,
+        primaryKey: true,
+        autoIncrement: true,
+        allowNull: false,
+      },
+      nome: Sequelize.STRING,
+      descricao: Sequelize.STRING,
+      data_inicio: Sequelize.DATE,
+      data_fim: Sequelize.DATE,
+      id_unidade: {
+        type: Sequelize.INTEGER,
+        references: { model: 'unidades', key: 'id_unidade' },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE',
+        allowNull: false,
+      },
+      createdAt: { type: Sequelize.DATE, allowNull: false },
+      updatedAt: { type: Sequelize.DATE, allowNull: false },
+    });
+
+    // 6. Pedido
     await queryInterface.createTable('pedidos', {
       id_pedido: {
         type: Sequelize.INTEGER,
@@ -126,29 +149,6 @@ module.exports = {
       updatedAt: { type: Sequelize.DATE, allowNull: false },
     });
 
-    // 6. Evento
-    await queryInterface.createTable('eventos', {
-      id_evento: {
-        type: Sequelize.INTEGER,
-        primaryKey: true,
-        autoIncrement: true,
-        allowNull: false,
-      },
-      nome: Sequelize.STRING,
-      descricao: Sequelize.STRING,
-      data_inicio: Sequelize.DATE,
-      data_fim: Sequelize.DATE,
-      id_unidade: {
-        type: Sequelize.INTEGER,
-        references: { model: 'unidades', key: 'id_unidade' },
-        onUpdate: 'CASCADE',
-        onDelete: 'CASCADE',
-        allowNull: false,
-      },
-      createdAt: { type: Sequelize.DATE, allowNull: false },
-      updatedAt: { type: Sequelize.DATE, allowNull: false },
-    });
-
     // 7. ItemPedido
     await queryInterface.createTable('itens_pedido', {
       id_item_pedido: {
@@ -181,18 +181,11 @@ module.exports = {
   async down(queryInterface, Sequelize) {
     // Drop tables in reverse order to avoid FK constraint errors
     await queryInterface.dropTable('itens_pedido');
-    await queryInterface.dropTable('eventos');
     await queryInterface.dropTable('pedidos');
+    await queryInterface.dropTable('eventos');
     await queryInterface.dropTable('maquinetas');
     await queryInterface.dropTable('produtos');
     await queryInterface.dropTable('usuarios');
     await queryInterface.dropTable('unidades');
-    // Drop ENUM types (for Postgres, but MySQL ignores)
-    await queryInterface.sequelize.query(
-      'DROP TYPE IF EXISTS "enum_usuarios_tipo_usuario";',
-    );
-    await queryInterface.sequelize.query(
-      'DROP TYPE IF EXISTS "enum_maquinetas_status";',
-    );
   },
 };
