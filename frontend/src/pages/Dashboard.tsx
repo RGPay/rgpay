@@ -30,12 +30,13 @@ import {
   AttachMoney as AttachMoneyIcon,
   Receipt as ReceiptIcon,
   Storefront as StorefrontIcon,
-  MoreVert as MoreVertIcon,
   ArrowUpward as ArrowUpwardIcon,
   ArrowDownward as ArrowDownwardIcon,
   NavigateNext as NavigateNextIcon,
   Refresh as RefreshIcon,
   FilterAlt as FilterAltIcon,
+  Fullscreen as FullscreenIcon,
+  FullscreenExit as FullscreenExitIcon,
 } from "@mui/icons-material";
 import { ReactECharts } from "../components";
 import dashboardService, {
@@ -52,6 +53,9 @@ import {
   TicketMedioPorHoraChart,
   ProdutosMaisVendidosTable,
 } from "../components/Charts";
+import Dialog from "@mui/material/Dialog";
+import DialogContent from "@mui/material/DialogContent";
+import Tooltip from "@mui/material/Tooltip";
 
 // Custom styled components
 const GradientCard = ({
@@ -233,55 +237,94 @@ const ChartCard = ({
   actions?: React.ReactNode;
 }) => {
   const theme = useTheme();
+  const [fullscreen, setFullscreen] = useState(false);
 
   return (
-    <Card sx={{ height: "100%", display: "flex", flexDirection: "column" }}>
-      <CardHeader
-        title={
-          <Typography variant="h6" sx={{ fontWeight: 600 }}>
-            {title}
-          </Typography>
-        }
-        action={
-          actions || (
-            <IconButton>
-              <MoreVertIcon />
-            </IconButton>
-          )
-        }
-        sx={{
-          px: 3,
-          py: 2,
-          borderBottom: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
-        }}
-      />
-      <CardContent
-        sx={{
-          flex: 1,
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          p: 3,
-          pt: 2,
-          position: "relative",
+    <>
+      <Card sx={{ height: "100%", display: "flex", flexDirection: "column" }}>
+        <CardHeader
+          title={
+            <Typography variant="h6" sx={{ fontWeight: 600 }}>
+              {title}
+            </Typography>
+          }
+          action={
+            actions || (
+              <Tooltip title="Ver em tela cheia">
+                <IconButton onClick={() => setFullscreen(true)}>
+                  <FullscreenIcon />
+                </IconButton>
+              </Tooltip>
+            )
+          }
+          sx={{
+            px: 3,
+            py: 2,
+            borderBottom: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
+          }}
+        />
+        <CardContent
+          sx={{
+            flex: 1,
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            p: 3,
+            pt: 2,
+            position: "relative",
+          }}
+        >
+          {isLoading ? (
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                height: "100%",
+              }}
+            >
+              <CircularProgress size={40} />
+            </Box>
+          ) : (
+            chart
+          )}
+        </CardContent>
+      </Card>
+      <Dialog
+        open={fullscreen}
+        onClose={() => setFullscreen(false)}
+        fullScreen
+        PaperProps={{
+          sx: { background: theme.palette.background.default },
         }}
       >
-        {isLoading ? (
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              height: "100%",
-            }}
-          >
-            <CircularProgress size={40} />
-          </Box>
-        ) : (
-          chart
-        )}
-      </CardContent>
-    </Card>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            p: 2,
+          }}
+        >
+          <Typography variant="h5" sx={{ fontWeight: 700 }}>
+            {title}
+          </Typography>
+          <IconButton onClick={() => setFullscreen(false)}>
+            <FullscreenExitIcon />
+          </IconButton>
+        </Box>
+        <DialogContent
+          sx={{
+            height: "calc(100vh - 80px)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <Box sx={{ width: "100%", height: "100%" }}>{chart}</Box>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 };
 
