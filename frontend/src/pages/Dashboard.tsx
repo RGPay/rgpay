@@ -931,56 +931,54 @@ const Dashboard: React.FC = () => {
 
         <MetricCards />
 
-        <Grid container spacing={5}>
-          <Grid container spacing={4} sx={{ mt: 2 }}>
-            <Grid item xs={12} md={6}>
-              <ChartCard
-                title="Faturamento no Período"
-                isLoading={loading}
-                chart={
-                  <ReactECharts
-                    option={getVendasChartOptions()}
-                    style={{ height: 350, width: "100%" }}
-                  />
-                }
-              />
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <ChartCard
-                title="Produtos Mais Vendidos"
-                isLoading={loading}
-                chart={
-                  <ReactECharts
-                    option={getProdutosChartOptions()}
-                    style={{ height: 350, width: "100%" }}
-                  />
-                }
-              />
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <ChartCard
-                title="Faturamento por Forma de Pagamento"
-                isLoading={loading}
-                chart={
-                  <ReactECharts
-                    option={getFormaPagamentoChartOptions()}
-                    style={{ height: 350, width: "100%" }}
-                  />
-                }
-              />
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <ChartCard
-                title="Faturamento por Unidade"
-                isLoading={loading}
-                chart={
-                  <ReactECharts
-                    option={getUnidadesChartOptions()}
-                    style={{ height: 350, width: "100%" }}
-                  />
-                }
-              />
-            </Grid>
+        <Grid container spacing={4} sx={{ mt: 2 }}>
+          <Grid item xs={12} md={6}>
+            <ChartCard
+              title="Faturamento no Período"
+              isLoading={loading}
+              chart={
+                <ReactECharts
+                  option={getVendasChartOptions()}
+                  style={{ height: 350, width: "100%" }}
+                />
+              }
+            />
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <ChartCard
+              title="Produtos Mais Vendidos"
+              isLoading={loading}
+              chart={
+                <ReactECharts
+                  option={getProdutosChartOptions()}
+                  style={{ height: 350, width: "100%" }}
+                />
+              }
+            />
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <ChartCard
+              title="Faturamento por Forma de Pagamento"
+              isLoading={loading}
+              chart={
+                <ReactECharts
+                  option={getFormaPagamentoChartOptions()}
+                  style={{ height: 350, width: "100%" }}
+                />
+              }
+            />
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <ChartCard
+              title="Faturamento por Unidade"
+              isLoading={loading}
+              chart={
+                <ReactECharts
+                  option={getUnidadesChartOptions()}
+                  style={{ height: 350, width: "100%" }}
+                />
+              }
+            />
           </Grid>
         </Grid>
 
