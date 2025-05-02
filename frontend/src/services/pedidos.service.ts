@@ -30,6 +30,7 @@ export interface Pedido {
     status?: "ativa" | "inativa";
   };
   itensPedido?: ItemPedido[];
+  forma_pagamento: "dinheiro" | "credito" | "debito" | "pix";
 }
 
 export interface PedidosFilter {

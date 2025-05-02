@@ -117,6 +117,26 @@ const PedidosListPage: React.FC = () => {
       },
     },
     {
+      id: "forma_pagamento",
+      label: "Forma de Pagamento",
+      minWidth: 120,
+      sortable: true,
+      format: (value: unknown) => {
+        switch (value) {
+          case "dinheiro":
+            return "Dinheiro";
+          case "credito":
+            return "Cartão de Crédito";
+          case "debito":
+            return "Cartão de Débito";
+          case "pix":
+            return "Pix";
+          default:
+            return "-";
+        }
+      },
+    },
+    {
       id: "itensPedido",
       label: "Qtd. Itens",
       minWidth: 100,
