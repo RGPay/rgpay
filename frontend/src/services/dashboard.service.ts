@@ -24,6 +24,10 @@ export interface DashboardMetrics {
     nome: string;
     total: number;
   }[];
+  faturamentoPorFormaPagamento: {
+    forma_pagamento: string;
+    total: number;
+  }[];
 }
 
 export interface DashboardFilter {

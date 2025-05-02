@@ -2,7 +2,10 @@ import React, { useState, useEffect } from "react";
 import {
   Box,
   Typography,
-  Grid,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
   Paper,
   CircularProgress,
   Card,
@@ -15,6 +18,7 @@ import {
   LinearProgress,
   Avatar,
 } from "@mui/material";
+import Grid from "@mui/material/Grid";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
@@ -672,6 +676,94 @@ const Dashboard: React.FC = () => {
     };
   };
 
+  const getFormaPagamentoChartOptions = () => {
+    if (!metrics?.faturamentoPorFormaPagamento) return {};
+
+    const formas = metrics.faturamentoPorFormaPagamento.map(
+      (item) => item.forma_pagamento
+    );
+    const valores = metrics.faturamentoPorFormaPagamento.map(
+      (item) => item.total
+    );
+    const colorPalette = [
+      theme.palette.primary.main,
+      theme.palette.secondary.main,
+      theme.palette.success.main,
+      "#9C27B0",
+      "#FF9800",
+    ];
+
+    return {
+      tooltip: {
+        trigger: "item",
+        formatter: (params: any) => {
+          return `${params.name}: ${formatCurrency(params.value)} (${
+            params.percent
+          }%)`;
+        },
+        backgroundColor: alpha(theme.palette.background.paper, 0.9),
+        borderColor: alpha(theme.palette.divider, 0.2),
+        textStyle: {
+          color: theme.palette.text.primary,
+        },
+        extraCssText:
+          "backdrop-filter: blur(8px); border-radius: 8px; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);",
+      },
+      legend: {
+        orient: "vertical",
+        right: 10,
+        top: "center",
+        data: formas,
+        textStyle: {
+          color: theme.palette.text.secondary,
+        },
+        itemGap: 12,
+        icon: "circle",
+        itemWidth: 10,
+        itemHeight: 10,
+        formatter: (name: string) => name,
+      },
+      series: [
+        {
+          name: "Forma de Pagamento",
+          type: "pie",
+          radius: ["45%", "75%"],
+          avoidLabelOverlap: false,
+          itemStyle: {
+            borderRadius: 10,
+            borderColor: theme.palette.background.paper,
+            borderWidth: 2,
+          },
+          label: {
+            show: false,
+          },
+          emphasis: {
+            label: {
+              show: true,
+              fontSize: 14,
+              fontWeight: "bold",
+            },
+            itemStyle: {
+              shadowBlur: 10,
+              shadowOffsetX: 0,
+              shadowColor: "rgba(0, 0, 0, 0.2)",
+            },
+          },
+          labelLine: {
+            show: false,
+          },
+          data: formas.map((nome, index) => ({
+            value: valores[index],
+            name: nome,
+            itemStyle: {
+              color: colorPalette[index % colorPalette.length],
+            },
+          })),
+        },
+      ],
+    };
+  };
+
   const MetricCards = () => {
     if (!metrics || loading) {
       return (
@@ -841,7 +933,7 @@ const Dashboard: React.FC = () => {
 
         <Grid container spacing={5}>
           <Grid container spacing={4} sx={{ mt: 2 }}>
-            <Grid xs={12} md={6} item>
+            <Grid item xs={12} md={6}>
               <ChartCard
                 title="Faturamento no Período"
                 isLoading={loading}
@@ -853,7 +945,7 @@ const Dashboard: React.FC = () => {
                 }
               />
             </Grid>
-            <Grid xs={12} md={6} item>
+            <Grid item xs={12} md={6}>
               <ChartCard
                 title="Produtos Mais Vendidos"
                 isLoading={loading}
@@ -865,7 +957,19 @@ const Dashboard: React.FC = () => {
                 }
               />
             </Grid>
-            <Grid xs={12} item>
+            <Grid item xs={12} md={6}>
+              <ChartCard
+                title="Faturamento por Forma de Pagamento"
+                isLoading={loading}
+                chart={
+                  <ReactECharts
+                    option={getFormaPagamentoChartOptions()}
+                    style={{ height: 350, width: "100%" }}
+                  />
+                }
+              />
+            </Grid>
+            <Grid item xs={12} md={6}>
               <ChartCard
                 title="Faturamento por Unidade"
                 isLoading={loading}

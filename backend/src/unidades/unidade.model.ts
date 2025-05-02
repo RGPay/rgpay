@@ -3,7 +3,7 @@ import { Usuario } from '../auth/usuario.model';
 import { Produto } from '../produtos/produto.model';
 import { Pedido } from '../pedidos/pedido.model';
 import { Maquineta } from '../pedidos/maquineta.model';
-import { Evento } from '../pedidos/evento.model';
+import { Evento } from '../eventos/evento.model';
 
 @Table({ tableName: 'unidades' })
 export class Unidade extends Model<Unidade> {

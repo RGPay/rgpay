@@ -31,6 +31,10 @@ export interface DashboardMetrics {
     nome: string;
     total: number;
   }[];
+  faturamentoPorFormaPagamento: {
+    forma_pagamento: string;
+    total: number;
+  }[];
 }
 
 export interface DashboardFilter {
@@ -254,6 +258,24 @@ export class DashboardService {
       }
     }
 
+    // Get faturamento por forma de pagamento
+    const faturamentoPorFormaPagamento: { forma_pagamento: string; total: number }[] = [];
+    const pagamentos = await this.pedidoModel.findAll({
+      attributes: [
+        'forma_pagamento',
+        [fn('SUM', col('valor_total')), 'total'],
+      ],
+      where: whereClause,
+      group: ['forma_pagamento'],
+      raw: true,
+    });
+    for (const item of pagamentos as any[]) {
+      faturamentoPorFormaPagamento.push({
+        forma_pagamento: item.forma_pagamento,
+        total: Number(item.total),
+      });
+    }
+
     return {
       totalVendas: totalPedidos,
       faturamentoTotal,
@@ -265,6 +287,7 @@ export class DashboardService {
       produtosMaisVendidos,
       vendasPorPeriodo,
       vendasPorUnidade,
+      faturamentoPorFormaPagamento,
     };
   }
 }

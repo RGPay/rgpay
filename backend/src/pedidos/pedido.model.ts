@@ -10,7 +10,7 @@ import {
 import { Unidade } from '../unidades/unidade.model';
 import { Maquineta } from './maquineta.model';
 import { ItemPedido } from './item-pedido.model';
-import { Evento } from './evento.model';
+import { Evento } from '../eventos/evento.model';
 
 @Table({ tableName: 'pedidos' })
 export class Pedido extends Model<Pedido> {
