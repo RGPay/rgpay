@@ -1,9 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { Box, Button, Typography, Divider } from "@mui/material";
-import { Add as AddIcon, Edit as EditIcon, Delete as DeleteIcon } from "@mui/icons-material";
+import {
+  Add as AddIcon,
+  Edit as EditIcon,
+  Delete as DeleteIcon,
+} from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { DataTable, Toast, ConfirmDialog } from "../../components";
 import eventosService, { Evento } from "../../services/eventos.service";
+import unidadesService from "../../services/unidades.service";
 
 const EventsListPage: React.FC = () => {
   const navigate = useNavigate();
@@ -16,13 +21,14 @@ const EventsListPage: React.FC = () => {
     message: "",
     severity: "success" as "success" | "error",
   });
+  const [unidadeMap, setUnidadeMap] = useState<Record<number, string>>({});
 
   const loadEvents = async () => {
     setLoading(true);
     try {
       const response = await eventosService.getAll();
       setEvents(response);
-    } catch (error) {
+    } catch {
       setToast({
         open: true,
         message: "Erro ao carregar eventos. Tente novamente.",
@@ -33,8 +39,22 @@ const EventsListPage: React.FC = () => {
     }
   };
 
+  const loadUnidades = async () => {
+    try {
+      const data = await unidadesService.getAll();
+      const map: Record<number, string> = {};
+      data.forEach((u) => {
+        map[u.id_unidade] = u.nome;
+      });
+      setUnidadeMap(map);
+    } catch {
+      // Silently ignore unidade loading errors
+    }
+  };
+
   useEffect(() => {
     loadEvents();
+    loadUnidades();
   }, []);
 
   const handleCreateEvent = () => {
@@ -60,7 +80,7 @@ const EventsListPage: React.FC = () => {
         severity: "success",
       });
       loadEvents();
-    } catch (error) {
+    } catch {
       setToast({
         open: true,
         message: "Erro ao excluir evento",
@@ -82,7 +102,7 @@ const EventsListPage: React.FC = () => {
     { id: "descricao", label: "Descrição", minWidth: 200 },
     { id: "data_inicio", label: "Início", minWidth: 120 },
     { id: "data_fim", label: "Fim", minWidth: 120 },
-    { id: "id_unidade", label: "Unidade", minWidth: 80 },
+    { id: "unidade_nome", label: "Unidade", minWidth: 120 },
   ];
 
   const actions = [
@@ -101,18 +121,36 @@ const EventsListPage: React.FC = () => {
 
   return (
     <Box>
-      <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 3 }}>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          mb: 3,
+        }}
+      >
         <Typography variant="h5" component="h1">
           Eventos
         </Typography>
-        <Button variant="contained" color="primary" startIcon={<AddIcon />} onClick={handleCreateEvent}>
+        <Button
+          variant="contained"
+          color="primary"
+          startIcon={<AddIcon />}
+          onClick={handleCreateEvent}
+        >
           Novo Evento
         </Button>
       </Box>
       <Divider sx={{ mb: 3 }} />
       <DataTable
         columns={columns}
-        data={events}
+        data={events.map((event) => ({
+          ...event,
+          unidade_nome:
+            event.unidade?.nome ||
+            unidadeMap[event.id_unidade] ||
+            event.id_unidade,
+        }))}
         title="Lista de Eventos"
         keyExtractor={(item) => item.id_evento}
         actions={actions}
@@ -137,4 +175,4 @@ const EventsListPage: React.FC = () => {
   );
 };
 
-export default EventsListPage; 
+export default EventsListPage;
