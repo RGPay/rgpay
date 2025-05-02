@@ -46,6 +46,11 @@ export interface Evento {
   name: string;
 }
 
+export interface TicketMedioPorHora {
+  hour: number;
+  value: number;
+}
+
 class DashboardService {
   async getMetrics(filters: DashboardFilter = {}): Promise<DashboardMetrics> {
     const selectedUnidade = store.getState().unidade.selectedUnidade;
@@ -77,6 +82,22 @@ class DashboardService {
     if (filter?.periodoInicio) params.periodoInicio = filter.periodoInicio;
     if (filter?.periodoFim) params.periodoFim = filter.periodoFim;
     const response = await api.get("/dashboard/faturamento-por-hora", {
+      params,
+    });
+    return response.data;
+  }
+
+  async getTicketMedioPorHora(
+    eventId?: number,
+    id_unidade?: number,
+    filter?: DashboardFilter
+  ): Promise<TicketMedioPorHora[]> {
+    const params: Record<string, unknown> = {};
+    if (eventId) params.eventId = eventId;
+    if (id_unidade) params.id_unidade = id_unidade;
+    if (filter?.periodoInicio) params.periodoInicio = filter.periodoInicio;
+    if (filter?.periodoFim) params.periodoFim = filter.periodoFim;
+    const response = await api.get("/dashboard/ticket-medio-por-hora", {
       params,
     });
     return response.data;

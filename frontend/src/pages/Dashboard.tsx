@@ -47,7 +47,10 @@ import { Toast } from "../components";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import type { RootState } from "../store/store";
-import { FaturamentoPorHoraChart } from "../components/Charts";
+import {
+  FaturamentoPorHoraChart,
+  TicketMedioPorHoraChart,
+} from "../components/Charts";
 
 // Custom styled components
 const GradientCard = ({
@@ -939,6 +942,13 @@ const Dashboard: React.FC = () => {
               title="Faturamento por Hora"
               isLoading={false}
               chart={<FaturamentoPorHoraChart filter={filter} />}
+            />
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <ChartCard
+              title="Ticket Médio por Hora"
+              isLoading={false}
+              chart={<TicketMedioPorHoraChart filter={filter} />}
             />
           </Grid>
           <Grid item xs={12} md={6}>

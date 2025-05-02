@@ -343,4 +343,57 @@ export class DashboardService {
       value: Number(row.value),
     }));
   }
+
+  async getTicketMedioPorHora(
+    eventId?: number,
+    id_unidade?: number,
+    periodoInicio?: string | Date,
+    periodoFim?: string | Date,
+  ): Promise<{ hour: number; value: number }[]> {
+    const whereClause: Record<string, any> = {};
+    if (eventId) {
+      whereClause.id_evento = eventId;
+    }
+    if (id_unidade) {
+      whereClause.id_unidade = id_unidade;
+    }
+    if (periodoInicio && periodoFim) {
+      whereClause.data_hora = {
+        [Op.between]: [
+          startOfDay(new Date(periodoInicio)),
+          endOfDay(new Date(periodoFim)),
+        ],
+      };
+    } else if (periodoInicio) {
+      whereClause.data_hora = {
+        [Op.gte]: startOfDay(new Date(periodoInicio)),
+      };
+    } else if (periodoFim) {
+      whereClause.data_hora = {
+        [Op.lte]: endOfDay(new Date(periodoFim)),
+      };
+    }
+    // Group by hour and calculate average ticket (sum(valor_total)/count)
+    const hourFn = this.sequelize.fn(
+      'EXTRACT',
+      this.sequelize.literal('HOUR FROM data_hora'),
+    );
+    const results = await this.pedidoModel.findAll({
+      attributes: [
+        [hourFn, 'hour'],
+        [this.sequelize.literal('SUM(valor_total) / COUNT(*)'), 'value'],
+      ],
+      where: whereClause,
+      group: [hourFn],
+      order: [[this.sequelize.literal('hour'), 'ASC']],
+      raw: true,
+    });
+    // Map results to correct types
+    return (
+      results as unknown as { hour: string | number; value: string | number }[]
+    ).map((row) => ({
+      hour: Number(row.hour),
+      value: Number(row.value),
+    }));
+  }
 }

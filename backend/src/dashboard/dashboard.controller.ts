@@ -46,4 +46,21 @@ export class DashboardController {
       periodoFim,
     );
   }
+
+  @Get('ticket-medio-por-hora')
+  async getTicketMedioPorHora(
+    @Query('eventId') eventId?: string,
+    @Query('id_unidade') id_unidade?: string,
+    @Query('periodoInicio') periodoInicio?: string,
+    @Query('periodoFim') periodoFim?: string,
+  ) {
+    const eventIdNum = eventId ? parseInt(eventId, 10) : undefined;
+    const unidadeIdNum = id_unidade ? parseInt(id_unidade, 10) : undefined;
+    return this.dashboardService.getTicketMedioPorHora(
+      eventIdNum,
+      unidadeIdNum,
+      periodoInicio,
+      periodoFim,
+    );
+  }
 }
