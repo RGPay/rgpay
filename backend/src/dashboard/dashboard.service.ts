@@ -259,12 +259,12 @@ export class DashboardService {
     }
 
     // Get faturamento por forma de pagamento
-    const faturamentoPorFormaPagamento: { forma_pagamento: string; total: number }[] = [];
+    const faturamentoPorFormaPagamento: {
+      forma_pagamento: string;
+      total: number;
+    }[] = [];
     const pagamentos = await this.pedidoModel.findAll({
-      attributes: [
-        'forma_pagamento',
-        [fn('SUM', col('valor_total')), 'total'],
-      ],
+      attributes: ['forma_pagamento', [fn('SUM', col('valor_total')), 'total']],
       where: whereClause,
       group: ['forma_pagamento'],
       raw: true,
@@ -289,5 +289,36 @@ export class DashboardService {
       vendasPorUnidade,
       faturamentoPorFormaPagamento,
     };
+  }
+
+  async getFaturamentoPorHora(
+    eventId?: number,
+  ): Promise<{ hour: number; value: number }[]> {
+    const whereClause: Record<string, any> = {};
+    if (eventId) {
+      whereClause.id_evento = eventId;
+    }
+    // Group by hour and sum valor_total
+    const hourFn = this.sequelize.fn(
+      'EXTRACT',
+      this.sequelize.literal('HOUR FROM data_hora'),
+    );
+    const results = await this.pedidoModel.findAll({
+      attributes: [
+        [hourFn, 'hour'],
+        [this.sequelize.fn('SUM', this.sequelize.col('valor_total')), 'value'],
+      ],
+      where: whereClause,
+      group: [hourFn],
+      order: [[this.sequelize.literal('hour'), 'ASC']],
+      raw: true,
+    });
+    // Map results to correct types
+    return (
+      results as unknown as { hour: string | number; value: string | number }[]
+    ).map((row) => ({
+      hour: Number(row.hour),
+      value: Number(row.value),
+    }));
   }
 }

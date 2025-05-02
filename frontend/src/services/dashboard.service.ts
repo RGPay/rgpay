@@ -36,6 +36,16 @@ export interface DashboardFilter {
   id_unidade?: number;
 }
 
+export interface FaturamentoPorHora {
+  hour: number;
+  value: number;
+}
+
+export interface Evento {
+  id: number;
+  name: string;
+}
+
 class DashboardService {
   async getMetrics(filters: DashboardFilter = {}): Promise<DashboardMetrics> {
     const selectedUnidade = store.getState().unidade.selectedUnidade;
@@ -45,6 +55,18 @@ class DashboardService {
     };
     const response = await api.get("/dashboard/metrics", {
       params: mergedFilters,
+    });
+    return response.data;
+  }
+
+  async getEventos(): Promise<Evento[]> {
+    const response = await api.get("/eventos");
+    return response.data;
+  }
+
+  async getFaturamentoPorHora(eventId?: number): Promise<FaturamentoPorHora[]> {
+    const response = await api.get("/dashboard/faturamento-por-hora", {
+      params: eventId ? { eventId } : {},
     });
     return response.data;
   }

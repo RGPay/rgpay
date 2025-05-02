@@ -29,4 +29,10 @@ export class DashboardController {
 
     return this.dashboardService.getMetrics(filter);
   }
+
+  @Get('faturamento-por-hora')
+  async getFaturamentoPorHora(@Query('eventId') eventId?: string) {
+    const id = eventId ? parseInt(eventId, 10) : undefined;
+    return this.dashboardService.getFaturamentoPorHora(id);
+  }
 }

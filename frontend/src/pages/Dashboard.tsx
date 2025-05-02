@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import * as React from "react";
+import { useState, useEffect } from "react";
 import {
   Box,
   Typography,
@@ -22,7 +23,7 @@ import Grid from "@mui/material/Grid";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import { ptBR } from "date-fns/locale";
+import { ptBR } from "date-fns/locale/pt-BR";
 import { startOfMonth } from "date-fns";
 import {
   ShoppingCart as ShoppingCartIcon,
@@ -46,6 +47,7 @@ import { Toast } from "../components";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import type { RootState } from "../store/store";
+import { FaturamentoPorHoraChart } from "../components/Charts";
 
 // Custom styled components
 const GradientCard = ({
@@ -934,14 +936,9 @@ const Dashboard: React.FC = () => {
         <Grid container spacing={4} sx={{ mt: 2 }}>
           <Grid item xs={12} md={6}>
             <ChartCard
-              title="Faturamento no Período"
-              isLoading={loading}
-              chart={
-                <ReactECharts
-                  option={getVendasChartOptions()}
-                  style={{ height: 350, width: "100%" }}
-                />
-              }
+              title="Faturamento por Hora"
+              isLoading={false}
+              chart={<FaturamentoPorHoraChart />}
             />
           </Grid>
           <Grid item xs={12} md={6}>
