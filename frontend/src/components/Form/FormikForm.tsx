@@ -213,7 +213,7 @@ function FormikForm<T>({
                 {...fieldProps}
                 type={type}
                 label={label}
-                placeholder={placeholder}
+                {...(type !== "date" && { placeholder })}
                 fullWidth={fullWidth}
                 required={required}
                 disabled={disabled || loading}
@@ -221,6 +221,7 @@ function FormikForm<T>({
                 helperText={fieldError || helperText}
                 autoFocus={autoFocus}
                 size="small"
+                InputLabelProps={type === "date" ? { shrink: true } : undefined}
               />
             )}
           </Field>
