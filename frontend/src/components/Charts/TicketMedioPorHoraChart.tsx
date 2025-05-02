@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useState } from "react";
-import { Box, Chip, CircularProgress } from "@mui/material";
+import { Box, Chip, CircularProgress, useTheme } from "@mui/material";
 import { ReactECharts } from ".";
 import dashboardService, {
   TicketMedioPorHora,
@@ -28,6 +28,8 @@ const TicketMedioPorHoraChart: React.FC<TicketMedioPorHoraChartProps> = ({
   const selectedUnidade = useSelector(
     (state: RootState) => state.unidade.selectedUnidade
   );
+
+  const theme = useTheme();
 
   // Reset selectedEvento when unidade changes
   React.useEffect(() => {
@@ -98,7 +100,19 @@ const TicketMedioPorHoraChart: React.FC<TicketMedioPorHoraChartProps> = ({
       {
         data: ticketMedioPorHora.map((item) => item.value),
         type: "bar",
-        itemStyle: { color: "#ff7043" },
+        itemStyle: {
+          color: {
+            type: "linear",
+            x: 0,
+            y: 0,
+            x2: 1,
+            y2: 0,
+            colorStops: [
+              { offset: 0, color: theme.palette.secondary.main },
+              { offset: 1, color: theme.palette.secondary.light },
+            ],
+          },
+        },
         barWidth: "60%",
       },
     ],

@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useState } from "react";
-import { Box, Chip, CircularProgress } from "@mui/material";
+import { Box, Chip, CircularProgress, useTheme } from "@mui/material";
 import { ReactECharts } from ".";
 import dashboardService, {
   FaturamentoPorHora,
@@ -28,6 +28,8 @@ const FaturamentoPorHoraChart: React.FC<FaturamentoPorHoraChartProps> = ({
   const selectedUnidade = useSelector(
     (state: RootState) => state.unidade.selectedUnidade
   );
+
+  const theme = useTheme();
 
   // Reset selectedEvento when unidade changes
   React.useEffect(() => {
@@ -90,7 +92,19 @@ const FaturamentoPorHoraChart: React.FC<FaturamentoPorHoraChartProps> = ({
       {
         data: faturamentoPorHora.map((item) => item.value),
         type: "bar",
-        itemStyle: { color: "#29b6f6" },
+        itemStyle: {
+          color: {
+            type: "linear",
+            x: 0,
+            y: 0,
+            x2: 1,
+            y2: 0,
+            colorStops: [
+              { offset: 0, color: theme.palette.primary.main },
+              { offset: 1, color: theme.palette.primary.light },
+            ],
+          },
+        },
         barWidth: "60%",
       },
     ],
