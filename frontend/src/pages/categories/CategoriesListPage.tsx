@@ -111,10 +111,6 @@ const CategoriesListPage: React.FC = () => {
     }
   };
 
-  const handleAddBlur = () => {
-    handleAddSave();
-  };
-
   const handleEditCategory = (category: Category) => {
     setEditingId(category.id);
     setEditValue(category.name);
@@ -155,10 +151,6 @@ const CategoriesListPage: React.FC = () => {
       setEditingId(null);
       setEditValue("");
     }
-  };
-
-  const handleEditBlur = () => {
-    handleEditSave();
   };
 
   const handleDeleteConfirm = (category: Category) => {
@@ -212,7 +204,6 @@ const CategoriesListPage: React.FC = () => {
             value={editValue}
             onChange={(e) => setEditValue(e.target.value)}
             onKeyDown={handleEditKeyDown}
-            onBlur={handleEditBlur}
             size="small"
             fullWidth
             autoFocus
@@ -270,7 +261,6 @@ const CategoriesListPage: React.FC = () => {
             value={addValue}
             onChange={(e) => setAddValue(e.target.value)}
             onKeyDown={handleAddKeyDown}
-            onBlur={handleAddBlur}
             size="small"
             placeholder="Nome da nova categoria"
             fullWidth
