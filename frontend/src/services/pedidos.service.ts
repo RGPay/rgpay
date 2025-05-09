@@ -10,7 +10,8 @@ export interface ItemPedido {
   produto?: {
     id_produto: number;
     nome: string;
-    categoria: string;
+    category_id: number;
+    category?: { id: number; name: string };
   };
 }
 

@@ -1,111 +1,199 @@
 import React, { useEffect, useState } from "react";
-import { Button, Box, Typography } from "@mui/material";
-import DataTable from "../../components/DataTable/DataTable";
-import CategoriesService, { Category } from "../../services/categories.service";
-import Toast from "../../components/Feedback/Toast";
-import ConfirmDialog from "../../components/Feedback/ConfirmDialog";
-import MainLayout from "../../components/Layout/MainLayout";
+import {
+  Box,
+  Button,
+  Typography,
+  IconButton,
+  InputAdornment,
+  TextField,
+} from "@mui/material";
+import {
+  Add as AddIcon,
+  Edit as EditIcon,
+  Delete as DeleteIcon,
+  Refresh as RefreshIcon,
+  Close as CloseIcon,
+} from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
-
-const columns = [
-  { field: "id", headerName: "ID", width: 90 },
-  { field: "name", headerName: "Nome", flex: 1 },
-  {
-    field: "actions",
-    headerName: "Ações",
-    width: 180,
-    renderCell: (params: any) => params.value,
-    sortable: false,
-    filterable: false,
-    disableColumnMenu: true,
-  },
-];
+import { DataTable, ConfirmDialog, Toast } from "../../components";
+import CategoriesService, { Category } from "../../services/categories.service";
 
 const CategoriesListPage: React.FC = () => {
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
-  const [deleteId, setDeleteId] = useState<number | null>(null);
   const navigate = useNavigate();
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState<Category | null>(
+    null
+  );
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [toast, setToast] = useState({
+    open: false,
+    message: "",
+    severity: "success" as "success" | "error",
+  });
 
-  const fetchCategories = async () => {
+  const loadCategories = async () => {
     setLoading(true);
     try {
       const data = await CategoriesService.getAll();
       setCategories(data);
-    } catch (err) {
-      setError("Erro ao carregar categorias.");
+    } catch (error) {
+      setToast({
+        open: true,
+        message: "Erro ao carregar categorias.",
+        severity: "error",
+      });
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchCategories();
+    loadCategories();
   }, []);
 
-  const handleEdit = (id: number) => {
-    navigate(`/categories/${id}/edit`);
+  const handleCreateCategory = () => {
+    navigate("/categories/new");
   };
 
-  const handleDelete = async () => {
-    if (deleteId == null) return;
+  const handleEditCategory = (category: Category) => {
+    navigate(`/categories/${category.id}/edit`);
+  };
+
+  const handleDeleteConfirm = (category: Category) => {
+    setSelectedCategory(category);
+    setDialogOpen(true);
+  };
+
+  const handleDeleteCategory = async () => {
+    if (!selectedCategory) return;
     try {
-      await CategoriesService.delete(deleteId);
-      setSuccess("Categoria excluída com sucesso.");
-      fetchCategories();
-    } catch {
-      setError("Erro ao excluir categoria.");
+      await CategoriesService.delete(selectedCategory.id);
+      setToast({
+        open: true,
+        message: "Categoria excluída com sucesso.",
+        severity: "success",
+      });
+      loadCategories();
+    } catch (error) {
+      setToast({
+        open: true,
+        message: "Erro ao excluir categoria.",
+        severity: "error",
+      });
     } finally {
-      setDeleteId(null);
+      setDialogOpen(false);
+      setSelectedCategory(null);
     }
   };
 
-  const rows = categories.map((cat) => ({
-    ...cat,
-    actions: (
-      <Box display="flex" gap={1}>
-        <Button variant="outlined" size="small" onClick={() => handleEdit(cat.id)}>
-          Editar
-        </Button>
-        <Button
-          variant="outlined"
-          color="error"
-          size="small"
-          onClick={() => setDeleteId(cat.id)}
-        >
-          Excluir
-        </Button>
-      </Box>
-    ),
-  }));
+  const handleCloseToast = () => {
+    setToast({ ...toast, open: false });
+  };
+
+  const columns = [
+    { id: "id", label: "ID", minWidth: 50, sortable: true },
+    { id: "name", label: "Nome", minWidth: 180, sortable: true },
+  ];
+
+  const actions = [
+    {
+      icon: <EditIcon />,
+      tooltip: "Editar",
+      onClick: handleEditCategory,
+    },
+    {
+      icon: <DeleteIcon />,
+      tooltip: "Excluir",
+      onClick: handleDeleteConfirm,
+      color: "error" as const,
+    },
+  ];
 
   return (
-    <MainLayout>
-      <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-        <Typography variant="h4">Categorias</Typography>
-        <Button variant="contained" color="primary" onClick={() => navigate("/categories/new")}>Nova Categoria</Button>
+    <Box>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          mb: 3,
+        }}
+      >
+        <Typography variant="h5" component="h1">
+          Categorias
+        </Typography>
+        <Button
+          variant="contained"
+          color="primary"
+          startIcon={<AddIcon />}
+          onClick={handleCreateCategory}
+        >
+          Nova Categoria
+        </Button>
       </Box>
+
+      <Box sx={{ mb: 3, display: "flex", gap: 2, flexWrap: "wrap" }}>
+        <TextField
+          placeholder="Buscar categorias..."
+          variant="outlined"
+          size="small"
+          sx={{ minWidth: 300 }}
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <EditIcon />
+              </InputAdornment>
+            ),
+            endAdornment: searchTerm ? (
+              <InputAdornment position="end">
+                <IconButton size="small" onClick={() => setSearchTerm("")}>
+                  <CloseIcon fontSize="small" />
+                </IconButton>
+              </InputAdornment>
+            ) : null,
+          }}
+          onKeyPress={(e) => {
+            if (e.key === "Enter") loadCategories();
+          }}
+        />
+        <IconButton onClick={loadCategories} color="primary">
+          <RefreshIcon />
+        </IconButton>
+      </Box>
+
       <DataTable
         columns={columns}
-        rows={rows}
-        loading={loading}
-        autoHeight
-        pageSize={10}
-        rowsPerPageOptions={[10, 20, 50]}
+        data={categories}
+        title="Lista de Categorias"
+        keyExtractor={(item) => item.id}
+        actions={actions}
+        isLoading={loading}
+        searchable={false}
       />
-      <Toast open={!!error} severity="error" message={error || ""} onClose={() => setError(null)} />
-      <Toast open={!!success} severity="success" message={success || ""} onClose={() => setSuccess(null)} />
+
       <ConfirmDialog
-        open={deleteId !== null}
+        open={dialogOpen}
         title="Excluir Categoria"
-        content="Tem certeza que deseja excluir esta categoria?"
-        onClose={() => setDeleteId(null)}
-        onConfirm={handleDelete}
+        message={`Tem certeza que deseja excluir a categoria "${selectedCategory?.name}"? Esta ação não pode ser desfeita.`}
+        confirmButtonText="Excluir"
+        cancelButtonText="Cancelar"
+        confirmButtonColor="error"
+        onConfirm={handleDeleteCategory}
+        onCancel={() => setDialogOpen(false)}
       />
-    </MainLayout>
+
+      <Toast
+        open={toast.open}
+        message={toast.message}
+        severity={toast.severity}
+        onClose={handleCloseToast}
+      />
+    </Box>
   );
 };
 
-export default CategoriesListPage; 
+export default CategoriesListPage;

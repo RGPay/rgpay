@@ -17,13 +17,14 @@ import {
 } from "../../services/produtos.service";
 import { FormikHelpers } from "formik";
 import unidadesService, { Unidade } from "../../services/unidades.service";
+import categoriesService, { Category } from "../../services/categories.service";
 
 const validationSchema = Yup.object({
   nome: Yup.string().required("Nome é obrigatório"),
   preco: Yup.number()
     .required("Preço é obrigatório")
     .positive("Preço deve ser positivo"),
-  categoria: Yup.string().required("Categoria é obrigatória"),
+  category_id: Yup.number().required("Categoria é obrigatória"),
   disponivel: Yup.boolean().required("Disponibilidade é obrigatória"),
   id_unidade: Yup.number().required("Unidade é obrigatória"),
 });
@@ -38,7 +39,7 @@ const ProdutoFormPage: React.FC = () => {
   >({
     nome: "",
     preco: 0,
-    categoria: "",
+    category_id: 0,
     disponivel: true,
     id_unidade: 1, // Default value, should be replaced with actual data
   });
@@ -54,6 +55,10 @@ const ProdutoFormPage: React.FC = () => {
   const [unidadesLoading, setUnidadesLoading] = useState(true);
   const [unidadesError, setUnidadesError] = useState<string | null>(null);
 
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [categoriesLoading, setCategoriesLoading] = useState(true);
+  const [categoriesError, setCategoriesError] = useState<string | null>(null);
+
   useEffect(() => {
     const fetchUnidades = async () => {
       try {
@@ -66,6 +71,20 @@ const ProdutoFormPage: React.FC = () => {
       }
     };
     fetchUnidades();
+  }, []);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const categoriesData = await categoriesService.getAll();
+        setCategories(categoriesData);
+      } catch (error) {
+        setCategoriesError("Erro ao carregar categorias");
+      } finally {
+        setCategoriesLoading(false);
+      }
+    };
+    fetchCategories();
   }, []);
 
   useEffect(() => {
@@ -133,7 +152,10 @@ const ProdutoFormPage: React.FC = () => {
     setToast({ ...toast, open: false });
   };
 
-  const unidadeOptions = unidades.map((u) => ({ value: u.id_unidade, label: u.nome }));
+  const unidadeOptions = unidades.map((u) => ({
+    value: u.id_unidade,
+    label: u.nome,
+  }));
 
   const formFields = [
     {
@@ -150,15 +172,11 @@ const ProdutoFormPage: React.FC = () => {
       required: true,
     },
     {
-      name: "categoria",
+      name: "category_id",
       label: "Categoria",
       type: "select" as const,
       required: true,
-      options: [
-        { value: "Bebidas", label: "Bebidas" },
-        { value: "Comidas", label: "Comidas" },
-        { value: "Sobremesas", label: "Sobremesas" },
-      ],
+      options: categories.map((cat) => ({ value: cat.id, label: cat.name })),
       xs: 12,
       sm: 6,
     },
@@ -180,7 +198,7 @@ const ProdutoFormPage: React.FC = () => {
     },
   ];
 
-  if (loading || unidadesLoading) {
+  if (loading || unidadesLoading || categoriesLoading) {
     return (
       <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
         <CircularProgress />
@@ -188,10 +206,12 @@ const ProdutoFormPage: React.FC = () => {
     );
   }
 
-  if (unidadesError) {
+  if (unidadesError || categoriesError) {
     return (
       <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
-        <Typography color="error">{unidadesError}</Typography>
+        <Typography color="error">
+          {unidadesError || categoriesError}
+        </Typography>
       </Box>
     );
   }

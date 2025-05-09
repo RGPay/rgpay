@@ -5,7 +5,8 @@ export interface Produto {
   id_produto: number;
   nome: string;
   preco: number;
-  categoria: string;
+  category_id: number;
+  category?: { id: number; name: string };
   disponivel: boolean;
   id_unidade: number;
   unidade?: {
@@ -17,7 +18,7 @@ export interface Produto {
 export interface CreateProdutoDto {
   nome: string;
   preco: number;
-  categoria: string;
+  category_id: number;
   disponivel: boolean;
   id_unidade: number;
 }
@@ -25,13 +26,13 @@ export interface CreateProdutoDto {
 export interface UpdateProdutoDto {
   nome?: string;
   preco?: number;
-  categoria?: string;
+  category_id?: number;
   disponivel?: boolean;
   id_unidade?: number;
 }
 
 export interface ProdutosFilter {
-  categoria?: string;
+  category_id?: number;
   disponivel?: boolean;
   id_unidade?: number;
 }
