@@ -27,6 +27,22 @@ module.exports = {
       },
     ]);
 
+    // Categories
+    await queryInterface.bulkInsert('categories', [
+      { id: 1, name: 'Bebida', createdAt: new Date(), updatedAt: new Date() },
+      { id: 2, name: 'Comida', createdAt: new Date(), updatedAt: new Date() },
+      { id: 3, name: 'Cervejas', createdAt: new Date(), updatedAt: new Date() },
+      { id: 4, name: 'Drinks', createdAt: new Date(), updatedAt: new Date() },
+      { id: 5, name: 'Petiscos', createdAt: new Date(), updatedAt: new Date() },
+      { id: 6, name: 'Comidas', createdAt: new Date(), updatedAt: new Date() },
+      {
+        id: 7,
+        name: 'Sem Álcool',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+    ]);
+
     // Usuarios
     await queryInterface.bulkInsert('usuarios', [
       {
@@ -68,9 +84,9 @@ module.exports = {
         id_produto: 1,
         nome: 'Cerveja Artesanal',
         preco: 12.0,
-        categoria: 'Bebida',
         disponivel: true,
         id_unidade: 1,
+        category_id: 3, // Cervejas (more specific than Bebida)
         createdAt: new Date(),
         updatedAt: new Date(),
       },
@@ -78,9 +94,9 @@ module.exports = {
         id_produto: 2,
         nome: 'Petisco Nordestino',
         preco: 25.0,
-        categoria: 'Comida',
         disponivel: true,
         id_unidade: 1,
+        category_id: 5, // Petiscos (more specific than Comida)
         createdAt: new Date(),
         updatedAt: new Date(),
       },
@@ -88,9 +104,9 @@ module.exports = {
         id_produto: 3,
         nome: 'Caipirinha de Frutas',
         preco: 18.0,
-        categoria: 'Bebida',
         disponivel: true,
         id_unidade: 2,
+        category_id: 4, // Drinks
         createdAt: new Date(),
         updatedAt: new Date(),
       },
@@ -206,5 +222,6 @@ module.exports = {
     await queryInterface.bulkDelete('produtos', null, {});
     await queryInterface.bulkDelete('usuarios', null, {});
     await queryInterface.bulkDelete('unidades', null, {});
+    await queryInterface.bulkDelete('categories', null, {});
   },
 };

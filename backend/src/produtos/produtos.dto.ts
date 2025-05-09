@@ -7,8 +7,8 @@ export class CreateProdutoDto {
   @IsNumber()
   preco: number;
 
-  @IsString()
-  categoria: string;
+  @IsNumber()
+  categoryId: number;
 
   @IsBoolean()
   disponivel: boolean;
@@ -26,9 +26,9 @@ export class UpdateProdutoDto {
   @IsOptional()
   preco?: number;
 
-  @IsString()
+  @IsNumber()
   @IsOptional()
-  categoria?: string;
+  categoryId?: number;
 
   @IsBoolean()
   @IsOptional()

@@ -9,6 +9,7 @@ import {
 } from 'sequelize-typescript';
 import { Unidade } from '../unidades/unidade.model';
 import { ItemPedido } from '../pedidos/item-pedido.model';
+import { Category } from '../categorias/category.model';
 
 @Table({ tableName: 'produtos' })
 export class Produto extends Model<Produto> {
@@ -26,8 +27,12 @@ export class Produto extends Model<Produto> {
   @Column(DataType.DECIMAL(10, 2))
   declare preco: number;
 
-  @Column(DataType.STRING)
-  categoria: string;
+  @ForeignKey(() => Category)
+  @Column({ type: DataType.INTEGER, field: 'category_id', allowNull: false })
+  declare categoryId: number;
+
+  @BelongsTo(() => Category)
+  declare category: Category;
 
   @Column(DataType.BOOLEAN)
   disponivel: boolean;
