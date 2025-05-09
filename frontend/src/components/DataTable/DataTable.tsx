@@ -12,7 +12,6 @@ import {
   Toolbar,
   Typography,
   Box,
-  Chip,
   IconButton,
   Tooltip,
   TextField,
@@ -20,7 +19,6 @@ import {
 } from "@mui/material";
 import {
   Search as SearchIcon,
-  FilterList as FilterListIcon,
   Refresh as RefreshIcon,
 } from "@mui/icons-material";
 
@@ -59,6 +57,11 @@ interface DataTableProps<T> {
   onRefresh?: () => void;
   searchable?: boolean;
   pagination?: boolean;
+  /**
+   * Optional array of React nodes to render as extra rows at the top of the TableBody.
+   * Useful for in-place add/edit rows.
+   */
+  extraRows?: React.ReactNode[];
 }
 
 function stableSort<T>(
@@ -88,19 +91,16 @@ function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
 
 type Order = "asc" | "desc";
 
-function getComparator<Key extends keyof any>(
+function getComparator(
   order: Order,
-  orderBy: Key
-): (
-  a: { [key in Key]: number | string | boolean },
-  b: { [key in Key]: number | string | boolean }
-) => number {
+  orderBy: string
+): (a: any, b: any) => number {
   return order === "desc"
     ? (a, b) => descendingComparator(a, b, orderBy)
     : (a, b) => -descendingComparator(a, b, orderBy);
 }
 
-function DataTable<T extends object>({
+function DataTable<T>({
   columns,
   data,
   title,
@@ -111,6 +111,7 @@ function DataTable<T extends object>({
   onRefresh,
   searchable = true,
   pagination = true,
+  extraRows = [],
 }: DataTableProps<T>) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -164,7 +165,7 @@ function DataTable<T extends object>({
 
   // Apply sorting
   const sortedData = orderBy
-    ? stableSort(filteredData, getComparator(order, orderBy as keyof T))
+    ? stableSort(filteredData, getComparator(order, orderBy))
     : filteredData;
 
   // Apply pagination
@@ -261,6 +262,10 @@ function DataTable<T extends object>({
             </TableRow>
           </TableHead>
           <TableBody>
+            {extraRows &&
+              extraRows.map((row, idx) => (
+                <React.Fragment key={"extra-" + idx}>{row}</React.Fragment>
+              ))}
             {paginatedData.map((row) => {
               return (
                 <TableRow
@@ -273,9 +278,23 @@ function DataTable<T extends object>({
                 >
                   {columns.map((column) => {
                     const value = row[column.id as keyof T];
+                    let cellContent: React.ReactNode = column.format
+                      ? column.format(value)
+                      : value;
+                    if (cellContent === undefined || cellContent === null) {
+                      cellContent = "";
+                    } else if (
+                      typeof cellContent !== "string" &&
+                      typeof cellContent !== "number" &&
+                      typeof cellContent !== "boolean" &&
+                      !React.isValidElement(cellContent)
+                    ) {
+                      cellContent = String(cellContent);
+                    }
                     return (
                       <TableCell key={column.id} align={column.align || "left"}>
-                        {column.format ? column.format(value) : value}
+                        {/* @ts-expect-error: cellContent is ensured to be a valid ReactNode at runtime for generic table rendering */}
+                        {cellContent}
                       </TableCell>
                     );
                   })}
