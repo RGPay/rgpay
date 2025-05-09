@@ -30,9 +30,25 @@ export class ProdutosService {
   }
 
   async create(createProdutoDto: CreateProdutoDto): Promise<Produto> {
-    return this.produtoModel.create({
-      ...createProdutoDto,
-    } as any);
+    const { category_id, nome, preco, disponivel, id_unidade } =
+      createProdutoDto as unknown as Record<string, unknown>;
+    let categoryId: number | undefined = undefined;
+    if (typeof category_id === 'number') {
+      categoryId = category_id;
+    } else if (
+      typeof (createProdutoDto as { categoryId?: unknown }).categoryId ===
+      'number'
+    ) {
+      categoryId = (createProdutoDto as { categoryId?: number }).categoryId;
+    }
+    const data = {
+      nome: nome as string,
+      preco: preco as number,
+      disponivel: disponivel as boolean,
+      id_unidade: id_unidade as number,
+      categoryId: categoryId as number,
+    };
+    return this.produtoModel.create(data as any);
   }
 
   async update(
