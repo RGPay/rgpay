@@ -13,13 +13,13 @@ export class ProdutosService {
   async findAll(filters = {}): Promise<Produto[]> {
     return this.produtoModel.findAll({
       where: filters,
-      include: ['unidade'],
+      include: ['unidade', 'category'],
     });
   }
 
   async findOne(id: number): Promise<Produto> {
     const produto = await this.produtoModel.findByPk(id, {
-      include: ['unidade'],
+      include: ['unidade', 'category'],
     });
 
     if (!produto) {

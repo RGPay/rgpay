@@ -16,6 +16,8 @@ import { ItemPedido } from './pedidos/item-pedido.model';
 import { Maquineta } from './pedidos/maquineta.model';
 import { Evento } from './eventos/evento.model';
 import { EventosModule } from './eventos/eventos.module';
+import { Category } from './categorias/category.model';
+import { CategoryModule } from './categorias/category.module';
 
 dotenv.config();
 
@@ -38,6 +40,7 @@ dotenv.config();
         ItemPedido,
         Maquineta,
         Evento,
+        Category,
       ],
     }),
     AuthModule,
@@ -46,6 +49,7 @@ dotenv.config();
     UnidadesModule,
     DashboardModule,
     EventosModule,
+    CategoryModule,
   ],
   controllers: [AppController],
   providers: [AppService],

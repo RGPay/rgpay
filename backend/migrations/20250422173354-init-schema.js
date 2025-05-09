@@ -20,7 +20,23 @@ module.exports = {
       updatedAt: { type: Sequelize.DATE, allowNull: false },
     });
 
-    // 2. Usuario
+    // 2. Categoria
+    await queryInterface.createTable('categories', {
+      id: {
+        type: Sequelize.INTEGER,
+        autoIncrement: true,
+        primaryKey: true,
+        allowNull: false,
+      },
+      name: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      createdAt: { type: Sequelize.DATE, allowNull: false },
+      updatedAt: { type: Sequelize.DATE, allowNull: false },
+    });
+
+    // 3. Usuario
     await queryInterface.createTable('usuarios', {
       id_usuario: {
         type: Sequelize.INTEGER,
@@ -43,7 +59,7 @@ module.exports = {
       updatedAt: { type: Sequelize.DATE, allowNull: false },
     });
 
-    // 3. Produto
+    // 4. Produto
     await queryInterface.createTable('produtos', {
       id_produto: {
         type: Sequelize.INTEGER,
@@ -53,7 +69,6 @@ module.exports = {
       },
       nome: Sequelize.STRING,
       preco: Sequelize.DECIMAL(10, 2),
-      categoria: Sequelize.STRING,
       disponivel: Sequelize.BOOLEAN,
       id_unidade: {
         type: Sequelize.INTEGER,
@@ -62,11 +77,18 @@ module.exports = {
         onDelete: 'CASCADE',
         allowNull: false,
       },
+      category_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: { model: 'categories', key: 'id' },
+        onUpdate: 'CASCADE',
+        onDelete: 'RESTRICT',
+      },
       createdAt: { type: Sequelize.DATE, allowNull: false },
       updatedAt: { type: Sequelize.DATE, allowNull: false },
     });
 
-    // 4. Maquineta
+    // 5. Maquineta
     await queryInterface.createTable('maquinetas', {
       id_maquineta: {
         type: Sequelize.INTEGER,
@@ -87,7 +109,7 @@ module.exports = {
       updatedAt: { type: Sequelize.DATE, allowNull: false },
     });
 
-    // 5. Evento
+    // 6. Evento
     await queryInterface.createTable('eventos', {
       id_evento: {
         type: Sequelize.INTEGER,
@@ -110,7 +132,7 @@ module.exports = {
       updatedAt: { type: Sequelize.DATE, allowNull: false },
     });
 
-    // 6. Pedido
+    // 7. Pedido
     await queryInterface.createTable('pedidos', {
       id_pedido: {
         type: Sequelize.INTEGER,
@@ -149,7 +171,7 @@ module.exports = {
       updatedAt: { type: Sequelize.DATE, allowNull: false },
     });
 
-    // 7. ItemPedido
+    // 8. ItemPedido
     await queryInterface.createTable('itens_pedido', {
       id_item_pedido: {
         type: Sequelize.INTEGER,
@@ -186,6 +208,7 @@ module.exports = {
     await queryInterface.dropTable('maquinetas');
     await queryInterface.dropTable('produtos');
     await queryInterface.dropTable('usuarios');
+    await queryInterface.dropTable('categories');
     await queryInterface.dropTable('unidades');
   },
 };

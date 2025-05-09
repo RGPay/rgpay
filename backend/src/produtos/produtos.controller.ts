@@ -21,14 +21,14 @@ export class ProdutosController {
 
   @Get()
   async findAll(
-    @Query('categoria') categoria?: string,
+    @Query('categoryId') categoryId?: number,
     @Query('disponivel') disponivel?: boolean,
     @Query('id_unidade') id_unidade?: number,
   ): Promise<Produto[]> {
-    const filters: any = {};
+    const filters: Record<string, any> = {};
 
-    if (categoria) {
-      filters.categoria = categoria;
+    if (categoryId) {
+      filters.categoryId = categoryId;
     }
 
     if (disponivel !== undefined) {

@@ -29,6 +29,7 @@ import {
 } from "../../services/produtos.service";
 import { useSelector } from "react-redux";
 import type { RootState } from "../../store/store";
+import categoriesService, { Category } from "../../services/categories.service";
 
 const ProdutosListPage: React.FC = () => {
   const navigate = useNavigate();
@@ -46,6 +47,9 @@ const ProdutosListPage: React.FC = () => {
   const selectedUnidade = useSelector(
     (state: RootState) => state.unidade.selectedUnidade
   );
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [categoriesLoading, setCategoriesLoading] = useState(true);
+  const [categoriesError, setCategoriesError] = useState<string | null>(null);
 
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat("pt-BR", {
@@ -74,6 +78,20 @@ const ProdutosListPage: React.FC = () => {
   useEffect(() => {
     loadProdutos();
   }, [filter, selectedUnidade]);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const categoriesData = await categoriesService.getAll();
+        setCategories(categoriesData);
+      } catch (error) {
+        setCategoriesError("Erro ao carregar categorias");
+      } finally {
+        setCategoriesLoading(false);
+      }
+    };
+    fetchCategories();
+  }, []);
 
   const handleSearch = () => {
     // In a real app, you might want to search on the server side
@@ -147,12 +165,17 @@ const ProdutosListPage: React.FC = () => {
     { id: "id_produto", label: "ID", minWidth: 50, sortable: true },
     { id: "nome", label: "Nome", minWidth: 180, sortable: true },
     {
-      id: "categoria",
+      id: "category",
       label: "Categoria",
       minWidth: 120,
       sortable: true,
-      format: (value: string) => (
-        <Chip label={value} size="small" color="primary" variant="outlined" />
+      format: (value: Produto["category"]) => (
+        <Chip
+          label={value?.name || "-"}
+          size="small"
+          color="primary"
+          variant="outlined"
+        />
       ),
     },
     {
@@ -250,20 +273,27 @@ const ProdutosListPage: React.FC = () => {
         />
 
         <FormControl size="small" sx={{ minWidth: 200 }}>
-          <InputLabel id="categoria-filter-label">Categoria</InputLabel>
+          <InputLabel id="category-filter-label">Categoria</InputLabel>
           <Select
-            labelId="categoria-filter-label"
-            id="categoria-filter"
-            value={filter.categoria || ""}
+            labelId="category-filter-label"
+            id="category-filter"
+            value={filter.category_id || ""}
             label="Categoria"
             onChange={(e) =>
-              setFilter({ ...filter, categoria: e.target.value || undefined })
+              setFilter({
+                ...filter,
+                category_id: e.target.value
+                  ? Number(e.target.value)
+                  : undefined,
+              })
             }
           >
             <MenuItem value="">Todas</MenuItem>
-            <MenuItem value="Bebidas">Bebidas</MenuItem>
-            <MenuItem value="Comidas">Comidas</MenuItem>
-            <MenuItem value="Sobremesas">Sobremesas</MenuItem>
+            {categories.map((cat) => (
+              <MenuItem key={cat.id} value={cat.id}>
+                {cat.name}
+              </MenuItem>
+            ))}
           </Select>
         </FormControl>
 
