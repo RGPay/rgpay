@@ -1,18 +1,9 @@
 import React, { useEffect, useState } from "react";
-import {
-  Box,
-  Button,
-  Typography,
-  IconButton,
-  InputAdornment,
-  TextField,
-} from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import {
   Add as AddIcon,
   Edit as EditIcon,
   Delete as DeleteIcon,
-  Refresh as RefreshIcon,
-  Close as CloseIcon,
 } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { DataTable, ConfirmDialog, Toast } from "../../components";
@@ -22,7 +13,6 @@ const CategoriesListPage: React.FC = () => {
   const navigate = useNavigate();
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(
     null
   );
@@ -38,7 +28,7 @@ const CategoriesListPage: React.FC = () => {
     try {
       const data = await CategoriesService.getAll();
       setCategories(data);
-    } catch (error) {
+    } catch {
       setToast({
         open: true,
         message: "Erro ao carregar categorias.",
@@ -76,7 +66,7 @@ const CategoriesListPage: React.FC = () => {
         severity: "success",
       });
       loadCategories();
-    } catch (error) {
+    } catch {
       setToast({
         open: true,
         message: "Erro ao excluir categoria.",
@@ -133,38 +123,6 @@ const CategoriesListPage: React.FC = () => {
           Nova Categoria
         </Button>
       </Box>
-
-      <Box sx={{ mb: 3, display: "flex", gap: 2, flexWrap: "wrap" }}>
-        <TextField
-          placeholder="Buscar categorias..."
-          variant="outlined"
-          size="small"
-          sx={{ minWidth: 300 }}
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <EditIcon />
-              </InputAdornment>
-            ),
-            endAdornment: searchTerm ? (
-              <InputAdornment position="end">
-                <IconButton size="small" onClick={() => setSearchTerm("")}>
-                  <CloseIcon fontSize="small" />
-                </IconButton>
-              </InputAdornment>
-            ) : null,
-          }}
-          onKeyPress={(e) => {
-            if (e.key === "Enter") loadCategories();
-          }}
-        />
-        <IconButton onClick={loadCategories} color="primary">
-          <RefreshIcon />
-        </IconButton>
-      </Box>
-
       <DataTable
         columns={columns}
         data={categories}
@@ -172,9 +130,9 @@ const CategoriesListPage: React.FC = () => {
         keyExtractor={(item) => item.id}
         actions={actions}
         isLoading={loading}
-        searchable={false}
+        searchable={true}
+        onRefresh={loadCategories}
       />
-
       <ConfirmDialog
         open={dialogOpen}
         title="Excluir Categoria"
@@ -185,7 +143,6 @@ const CategoriesListPage: React.FC = () => {
         onConfirm={handleDeleteCategory}
         onCancel={() => setDialogOpen(false)}
       />
-
       <Toast
         open={toast.open}
         message={toast.message}
