@@ -18,6 +18,7 @@ import type { RootState } from "./store/store";
 import { MainLayout } from "./components/Layout";
 import EventsListPage from "./pages/events/EventsListPage";
 import EventsFormPage from "./pages/events/EventsFormPage";
+import { CategoriesListPage, CategoriesFormPage } from "./pages/categories";
 
 // Protected Layout component that checks authentication and applies the MainLayout
 function ProtectedLayout() {
@@ -86,6 +87,13 @@ function App() {
             <Route index element={<EventsListPage />} />
             <Route path="novo" element={<EventsFormPage />} />
             <Route path="editar/:id" element={<EventsFormPage />} />
+          </Route>
+
+          {/* Categories routes */}
+          <Route path="/categories">
+            <Route index element={<CategoriesListPage />} />
+            <Route path="new" element={<CategoriesFormPage />} />
+            <Route path=":id/edit" element={<CategoriesFormPage />} />
           </Route>
 
           {/* Profile route */}

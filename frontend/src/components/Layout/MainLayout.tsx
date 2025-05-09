@@ -31,6 +31,7 @@ import {
   Person as PersonIcon,
   Settings as SettingsIcon,
   Event as EventIcon,
+  Category as CategoryIcon,
 } from "@mui/icons-material";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -120,6 +121,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const menuItems = [
     { text: "Dashboard", icon: <DashboardIcon />, path: "/" },
     { text: "Produtos", icon: <RestaurantIcon />, path: "/produtos" },
+    { text: "Categorias", icon: <CategoryIcon />, path: "/categories" },
     { text: "Pedidos", icon: <ShoppingCartIcon />, path: "/pedidos" },
     { text: "Eventos", icon: <EventIcon />, path: "/eventos" },
     { text: "Unidades", icon: <LocationOnIcon />, path: "/unidades" },
