@@ -27,7 +27,7 @@ type DataTableColumn<T> = {
   label: string;
   minWidth?: number;
   align?: "right" | "left" | "center";
-  format?: (value: unknown) => React.ReactNode;
+  format?: (value: unknown, row: T) => React.ReactNode;
   sortable?: boolean;
 };
 
@@ -94,10 +94,20 @@ type Order = "asc" | "desc";
 function getComparator(
   order: Order,
   orderBy: string
-): (a: any, b: any) => number {
+): (a: unknown, b: unknown) => number {
   return order === "desc"
-    ? (a, b) => descendingComparator(a, b, orderBy)
-    : (a, b) => -descendingComparator(a, b, orderBy);
+    ? (a: unknown, b: unknown) =>
+        descendingComparator(
+          a as Record<string, unknown>,
+          b as Record<string, unknown>,
+          orderBy as keyof typeof a
+        )
+    : (a: unknown, b: unknown) =>
+        -descendingComparator(
+          a as Record<string, unknown>,
+          b as Record<string, unknown>,
+          orderBy as keyof typeof a
+        );
 }
 
 function DataTable<T>({
@@ -277,10 +287,10 @@ function DataTable<T>({
                   sx={{ cursor: onRowClick ? "pointer" : "default" }}
                 >
                   {columns.map((column) => {
-                    const value = row[column.id as keyof T];
+                    const value = row[column.id as keyof T] as unknown;
                     let cellContent: React.ReactNode = column.format
-                      ? column.format(value)
-                      : value;
+                      ? column.format(value, row)
+                      : (value as React.ReactNode);
                     if (cellContent === undefined || cellContent === null) {
                       cellContent = "";
                     } else if (
@@ -293,7 +303,6 @@ function DataTable<T>({
                     }
                     return (
                       <TableCell key={column.id} align={column.align || "left"}>
-                        {/* @ts-expect-error: cellContent is ensured to be a valid ReactNode at runtime for generic table rendering */}
                         {cellContent}
                       </TableCell>
                     );
@@ -316,9 +325,14 @@ function DataTable<T>({
                             }}
                             color={action.color || "primary"}
                           >
-                            <Tooltip title={action.tooltip}>
-                              {action.icon}
-                            </Tooltip>
+                            {React.isValidElement(action.icon) &&
+                            action.tooltip ? (
+                              <Tooltip title={action.tooltip}>
+                                {action.icon}
+                              </Tooltip>
+                            ) : (
+                              action.icon
+                            )}
                           </IconButton>
                         );
                       })}

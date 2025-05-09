@@ -30,13 +30,12 @@ module.exports = {
     // Categories
     await queryInterface.bulkInsert('categories', [
       { id: 1, name: 'Bebida', createdAt: new Date(), updatedAt: new Date() },
-      { id: 2, name: 'Comida', createdAt: new Date(), updatedAt: new Date() },
+      { id: 2, name: 'Comidas', createdAt: new Date(), updatedAt: new Date() },
       { id: 3, name: 'Cervejas', createdAt: new Date(), updatedAt: new Date() },
       { id: 4, name: 'Drinks', createdAt: new Date(), updatedAt: new Date() },
       { id: 5, name: 'Petiscos', createdAt: new Date(), updatedAt: new Date() },
-      { id: 6, name: 'Comidas', createdAt: new Date(), updatedAt: new Date() },
       {
-        id: 7,
+        id: 6,
         name: 'Sem Álcool',
         createdAt: new Date(),
         updatedAt: new Date(),
