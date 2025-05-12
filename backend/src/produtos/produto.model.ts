@@ -25,7 +25,10 @@ export class Produto extends Model<Produto> {
   declare nome: string;
 
   @Column(DataType.DECIMAL(10, 2))
-  declare preco: number;
+  declare preco_compra: number;
+
+  @Column(DataType.DECIMAL(10, 2))
+  declare preco_venda: number;
 
   @ForeignKey(() => Category)
   @Column({ type: DataType.INTEGER, field: 'category_id', allowNull: false })

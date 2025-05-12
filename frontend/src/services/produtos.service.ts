@@ -4,7 +4,8 @@ import { store } from "../store/store";
 export interface Produto {
   id_produto: number;
   nome: string;
-  preco: number;
+  preco_compra: number;
+  preco_venda: number;
   category_id: number;
   category?: { id: number; name: string };
   disponivel: boolean;
@@ -18,7 +19,8 @@ export interface Produto {
 
 export interface CreateProdutoDto {
   nome: string;
-  preco: number;
+  preco_compra: number;
+  preco_venda: number;
   category_id: number;
   disponivel: boolean;
   id_unidade: number;
@@ -27,7 +29,8 @@ export interface CreateProdutoDto {
 
 export interface UpdateProdutoDto {
   nome?: string;
-  preco?: number;
+  preco_compra?: number;
+  preco_venda?: number;
   category_id?: number;
   disponivel?: boolean;
   id_unidade?: number;

@@ -102,8 +102,8 @@ export class PedidosService {
         // Decrement estoque
         await produto.update({ estoque: produto.estoque - item.quantidade }, { transaction: t });
         // Use the price from the product
-        item.preco_unitario = produto.preco;
-        valorTotal += produto.preco * item.quantidade;
+        item.preco_unitario = produto.preco_venda;
+        valorTotal += produto.preco_venda * item.quantidade;
       }
 
       // Create the order
@@ -186,7 +186,7 @@ export class PedidosService {
           }
 
           // Use the price from the product or the provided one
-          const precoUnitario = item.preco_unitario || produto.preco;
+          const precoUnitario = item.preco_unitario || produto.preco_venda;
           valorTotal += precoUnitario * item.quantidade;
 
           await this.itemPedidoModel.create(

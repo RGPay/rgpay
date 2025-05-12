@@ -179,8 +179,16 @@ const ProdutosListPage: React.FC = () => {
       ),
     },
     {
-      id: "preco",
-      label: "Preço",
+      id: "preco_compra",
+      label: "Preço de Compra",
+      minWidth: 120,
+      align: "right",
+      sortable: true,
+      format: (value: number) => formatCurrency(value),
+    },
+    {
+      id: "preco_venda",
+      label: "Preço de Venda",
       minWidth: 120,
       align: "right",
       sortable: true,
