@@ -5,10 +5,13 @@ export class CreateProdutoDto {
   nome: string;
 
   @IsNumber()
-  preco: number;
+  preco_compra: number;
 
   @IsNumber()
-  categoryId: number;
+  preco_venda: number;
+
+  @IsNumber()
+  category_id: number;
 
   @IsBoolean()
   disponivel: boolean;
@@ -27,11 +30,15 @@ export class UpdateProdutoDto {
 
   @IsNumber()
   @IsOptional()
-  preco?: number;
+  preco_compra?: number;
 
   @IsNumber()
   @IsOptional()
-  categoryId?: number;
+  preco_venda?: number;
+
+  @IsNumber()
+  @IsOptional()
+  category_id?: number;
 
   @IsBoolean()
   @IsOptional()

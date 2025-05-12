@@ -30,7 +30,7 @@ export class ProdutosService {
   }
 
   async create(createProdutoDto: CreateProdutoDto): Promise<Produto> {
-    const { category_id, nome, preco, disponivel, id_unidade, estoque } =
+    const { category_id, nome, preco_compra, preco_venda, disponivel, id_unidade, estoque } =
       createProdutoDto as unknown as Record<string, unknown>;
     let categoryId: number | undefined = undefined;
     if (typeof category_id === 'number') {
@@ -43,7 +43,8 @@ export class ProdutosService {
     }
     const data = {
       nome: nome as string,
-      preco: preco as number,
+      preco_compra: preco_compra as number,
+      preco_venda: preco_venda as number,
       disponivel: disponivel as boolean,
       id_unidade: id_unidade as number,
       categoryId: categoryId as number,

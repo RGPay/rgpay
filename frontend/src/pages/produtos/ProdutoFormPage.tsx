@@ -21,9 +21,12 @@ import categoriesService, { Category } from "../../services/categories.service";
 
 const validationSchema = Yup.object({
   nome: Yup.string().required("Nome é obrigatório"),
-  preco: Yup.number()
-    .required("Preço é obrigatório")
-    .positive("Preço deve ser positivo"),
+  preco_compra: Yup.number()
+    .required("Preço de compra é obrigatório")
+    .positive("Preço de compra deve ser positivo"),
+  preco_venda: Yup.number()
+    .required("Preço de venda é obrigatório")
+    .positive("Preço de venda deve ser positivo"),
   category_id: Yup.number().required("Categoria é obrigatória"),
   disponivel: Yup.boolean().required("Disponibilidade é obrigatória"),
   id_unidade: Yup.number().required("Unidade é obrigatória"),
@@ -42,7 +45,8 @@ const ProdutoFormPage: React.FC = () => {
     Produto | CreateProdutoDto
   >({
     nome: "",
-    preco: 0,
+    preco_compra: 0,
+    preco_venda: 0,
     category_id: 0,
     disponivel: true,
     id_unidade: 1, // Default value, should be replaced with actual data
@@ -171,8 +175,14 @@ const ProdutoFormPage: React.FC = () => {
       autoFocus: true,
     },
     {
-      name: "preco",
-      label: "Preço",
+      name: "preco_compra",
+      label: "Preço de Compra",
+      type: "number" as const,
+      required: true,
+    },
+    {
+      name: "preco_venda",
+      label: "Preço de Venda",
       type: "number" as const,
       required: true,
     },
