@@ -27,7 +27,9 @@ const validationSchema = Yup.object({
   preco_venda: Yup.number()
     .required("Preço de venda é obrigatório")
     .positive("Preço de venda deve ser positivo"),
-  category_id: Yup.number().required("Categoria é obrigatória"),
+  category_id: Yup.number()
+    .typeError("Categoria é obrigatória")
+    .required("Categoria é obrigatória"),
   disponivel: Yup.boolean().required("Disponibilidade é obrigatória"),
   id_unidade: Yup.number().required("Unidade é obrigatória"),
   estoque: Yup.number()
@@ -101,7 +103,12 @@ const ProdutoFormPage: React.FC = () => {
       const fetchProduto = async () => {
         try {
           const produto = await produtosService.getById(parseInt(id));
-          setInitialValues(produto);
+          setInitialValues({
+            ...produto,
+            category_id: Number(
+              produto.category_id ?? (produto.category ? produto.category.id : 0)
+            ),
+          });
         } catch (error) {
           console.error("Error fetching product:", error);
           setToast({
@@ -222,7 +229,7 @@ const ProdutoFormPage: React.FC = () => {
     },
   ];
 
-  if (loading || unidadesLoading || categoriesLoading) {
+  if (loading || unidadesLoading || categoriesLoading || (isEditMode && (!initialValues || !categories.length))) {
     return (
       <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
         <CircularProgress />
@@ -248,6 +255,7 @@ const ProdutoFormPage: React.FC = () => {
 
       <Paper sx={{ p: 3, mt: 3 }}>
         <FormikForm
+          key={JSON.stringify(initialValues)}
           initialValues={initialValues}
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
