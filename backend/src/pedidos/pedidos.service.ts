@@ -86,15 +86,21 @@ export class PedidosService {
       // Calculate total value based on item prices
       let valorTotal = 0;
 
-      // Fetch product prices and calculate total
+      // Fetch product prices and calculate total, and check/update estoque
       for (const item of createPedidoDto.itens) {
-        const produto = await this.produtoModel.findByPk(item.id_produto);
+        const produto = await this.produtoModel.findByPk(item.id_produto, { transaction: t });
         if (!produto) {
           throw new NotFoundException(
             `Produto com ID ${item.id_produto} não encontrado`,
           );
         }
-
+        if (produto.estoque < item.quantidade) {
+          throw new Error(
+            `Estoque insuficiente para o produto ${produto.nome}. Disponível: ${produto.estoque}, solicitado: ${item.quantidade}`
+          );
+        }
+        // Decrement estoque
+        await produto.update({ estoque: produto.estoque - item.quantidade }, { transaction: t });
         // Use the price from the product
         item.preco_unitario = produto.preco;
         valorTotal += produto.preco * item.quantidade;

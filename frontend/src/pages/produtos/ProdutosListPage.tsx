@@ -187,6 +187,14 @@ const ProdutosListPage: React.FC = () => {
       format: (value: number) => formatCurrency(value),
     },
     {
+      id: "estoque",
+      label: "Estoque",
+      minWidth: 100,
+      align: "right",
+      sortable: true,
+      format: (value: number) => value,
+    },
+    {
       id: "disponivel",
       label: "Disponível",
       minWidth: 120,

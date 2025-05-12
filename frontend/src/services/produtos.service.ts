@@ -13,6 +13,7 @@ export interface Produto {
     id_unidade: number;
     nome: string;
   };
+  estoque: number;
 }
 
 export interface CreateProdutoDto {
@@ -21,6 +22,7 @@ export interface CreateProdutoDto {
   category_id: number;
   disponivel: boolean;
   id_unidade: number;
+  estoque: number;
 }
 
 export interface UpdateProdutoDto {
@@ -29,6 +31,7 @@ export interface UpdateProdutoDto {
   category_id?: number;
   disponivel?: boolean;
   id_unidade?: number;
+  estoque?: number;
 }
 
 export interface ProdutosFilter {

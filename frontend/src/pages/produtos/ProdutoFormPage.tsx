@@ -27,6 +27,10 @@ const validationSchema = Yup.object({
   category_id: Yup.number().required("Categoria é obrigatória"),
   disponivel: Yup.boolean().required("Disponibilidade é obrigatória"),
   id_unidade: Yup.number().required("Unidade é obrigatória"),
+  estoque: Yup.number()
+    .required("Estoque é obrigatório")
+    .min(0, "Estoque não pode ser negativo")
+    .integer("Estoque deve ser um número inteiro"),
 });
 
 const ProdutoFormPage: React.FC = () => {
@@ -42,6 +46,7 @@ const ProdutoFormPage: React.FC = () => {
     category_id: 0,
     disponivel: true,
     id_unidade: 1, // Default value, should be replaced with actual data
+    estoque: 0,
   });
 
   const [loading, setLoading] = useState(isEditMode);
@@ -195,6 +200,15 @@ const ProdutoFormPage: React.FC = () => {
       options: unidadeOptions,
       xs: 12,
       sm: 6,
+    },
+    {
+      name: "estoque",
+      label: "Estoque",
+      type: "number" as const,
+      required: true,
+      xs: 12,
+      sm: 6,
+      min: 0,
     },
   ];
 

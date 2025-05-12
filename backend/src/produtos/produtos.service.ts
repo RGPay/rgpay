@@ -30,7 +30,7 @@ export class ProdutosService {
   }
 
   async create(createProdutoDto: CreateProdutoDto): Promise<Produto> {
-    const { category_id, nome, preco, disponivel, id_unidade } =
+    const { category_id, nome, preco, disponivel, id_unidade, estoque } =
       createProdutoDto as unknown as Record<string, unknown>;
     let categoryId: number | undefined = undefined;
     if (typeof category_id === 'number') {
@@ -47,6 +47,7 @@ export class ProdutosService {
       disponivel: disponivel as boolean,
       id_unidade: id_unidade as number,
       categoryId: categoryId as number,
+      estoque: typeof estoque === 'number' ? estoque : 0,
     };
     return this.produtoModel.create(data as any);
   }
