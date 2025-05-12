@@ -86,6 +86,7 @@ module.exports = {
         disponivel: true,
         id_unidade: 1,
         category_id: 3, // Cervejas (more specific than Bebida)
+        estoque: 100,
         createdAt: new Date(),
         updatedAt: new Date(),
       },
@@ -96,6 +97,7 @@ module.exports = {
         disponivel: true,
         id_unidade: 1,
         category_id: 5, // Petiscos (more specific than Comida)
+        estoque: 100,
         createdAt: new Date(),
         updatedAt: new Date(),
       },
@@ -106,6 +108,7 @@ module.exports = {
         disponivel: true,
         id_unidade: 2,
         category_id: 4, // Drinks
+        estoque: 100,
         createdAt: new Date(),
         updatedAt: new Date(),
       },

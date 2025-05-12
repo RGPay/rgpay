@@ -15,6 +15,9 @@ export class CreateProdutoDto {
 
   @IsNumber()
   id_unidade: number;
+
+  @IsNumber()
+  estoque: number;
 }
 
 export class UpdateProdutoDto {
@@ -37,4 +40,8 @@ export class UpdateProdutoDto {
   @IsNumber()
   @IsOptional()
   id_unidade?: number;
+
+  @IsNumber()
+  @IsOptional()
+  estoque?: number;
 }

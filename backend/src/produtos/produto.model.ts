@@ -37,6 +37,9 @@ export class Produto extends Model<Produto> {
   @Column(DataType.BOOLEAN)
   disponivel: boolean;
 
+  @Column({ type: DataType.INTEGER, allowNull: false, defaultValue: 0 })
+  estoque: number;
+
   @ForeignKey(() => Unidade)
   @Column(DataType.INTEGER)
   declare id_unidade: number;
