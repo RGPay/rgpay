@@ -82,7 +82,8 @@ module.exports = {
       {
         id_produto: 1,
         nome: 'Cerveja Artesanal',
-        preco: 12.0,
+        preco_compra: 12.0,
+        preco_venda: 12.0,
         disponivel: true,
         id_unidade: 1,
         category_id: 3, // Cervejas (more specific than Bebida)
@@ -93,7 +94,8 @@ module.exports = {
       {
         id_produto: 2,
         nome: 'Petisco Nordestino',
-        preco: 25.0,
+        preco_compra: 25.0,
+        preco_venda: 25.0,
         disponivel: true,
         id_unidade: 1,
         category_id: 5, // Petiscos (more specific than Comida)
@@ -104,7 +106,8 @@ module.exports = {
       {
         id_produto: 3,
         nome: 'Caipirinha de Frutas',
-        preco: 18.0,
+        preco_compra: 18.0,
+        preco_venda: 18.0,
         disponivel: true,
         id_unidade: 2,
         category_id: 4, // Drinks
