@@ -13,7 +13,7 @@ import {
   CircularProgress,
   Card,
 } from "@mui/material";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { login as loginAction } from "../store/authSlice";
 import { useNavigate } from "react-router-dom";
@@ -26,6 +26,7 @@ import {
   VisibilityOff as VisibilityOffIcon,
   ArrowForward as ArrowForwardIcon,
 } from "@mui/icons-material";
+import { AutoLoginCheckbox } from "../components/Inputs";
 
 const LoginSchema = Yup.object().shape({
   email: Yup.string().email("Email inválido").required("Email é obrigatório"),
@@ -41,6 +42,16 @@ export default function Login() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const theme = useTheme();
+
+  useEffect(() => {
+    // Auto-login if credentials are stored in localStorage
+    const token = localStorage.getItem("token");
+    const user = localStorage.getItem("user");
+    if (token && user) {
+      dispatch(loginAction({ token, user: JSON.parse(user) }));
+      navigate("/");
+    }
+  }, [dispatch, navigate]);
 
   const handleTogglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -144,7 +155,7 @@ export default function Login() {
             </Box>
 
             <Formik
-              initialValues={{ email: "", password: "" }}
+              initialValues={{ email: "", password: "", autoLogin: false }}
               validationSchema={LoginSchema}
               onSubmit={async (values) => {
                 setError("");
@@ -158,6 +169,13 @@ export default function Login() {
                   dispatch(
                     loginAction({ token: data.access_token, user: data.user })
                   );
+                  if (values.autoLogin) {
+                    localStorage.setItem("token", data.access_token);
+                    localStorage.setItem("user", JSON.stringify(data.user));
+                  } else {
+                    sessionStorage.setItem("token", data.access_token);
+                    sessionStorage.setItem("user", JSON.stringify(data.user));
+                  }
                   navigate("/");
                 } catch (err: unknown) {
                   if (err instanceof AxiosError) {
@@ -172,7 +190,7 @@ export default function Login() {
                 }
               }}
             >
-              {({ errors, touched, handleChange, handleBlur }) => (
+              {({ errors, touched, handleChange, handleBlur, values }) => (
                 <Form>
                   <TextField
                     fullWidth
@@ -241,6 +259,9 @@ export default function Login() {
                       },
                     }}
                   />
+                  <Box sx={{ mb: 2 }}>
+                    <AutoLoginCheckbox name="autoLogin" label="Login automático" />
+                  </Box>
                   {error && (
                     <Box
                       sx={{
