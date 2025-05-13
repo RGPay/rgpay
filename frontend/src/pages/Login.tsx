@@ -44,11 +44,17 @@ export default function Login() {
   const theme = useTheme();
 
   useEffect(() => {
-    // Auto-login if credentials are stored in localStorage
-    const token = localStorage.getItem("token");
-    const user = localStorage.getItem("user");
-    if (token && user) {
-      dispatch(loginAction({ token, user: JSON.parse(user) }));
+    // Auto-login if credentials are stored in localStorage or sessionStorage
+    let token = localStorage.getItem("token");
+    let refreshToken = localStorage.getItem("refresh_token");
+    let user = localStorage.getItem("user");
+    if (!(token && refreshToken && user)) {
+      token = sessionStorage.getItem("token");
+      refreshToken = sessionStorage.getItem("refresh_token");
+      user = sessionStorage.getItem("user");
+    }
+    if (token && refreshToken && user) {
+      dispatch(loginAction({ token, refreshToken, user: JSON.parse(user) }));
       navigate("/");
     }
   }, [dispatch, navigate]);
@@ -167,13 +173,15 @@ export default function Login() {
                   });
                   const data = response.data;
                   dispatch(
-                    loginAction({ token: data.access_token, user: data.user })
+                    loginAction({ token: data.access_token, refreshToken: data.refresh_token, user: data.user })
                   );
                   if (values.autoLogin) {
                     localStorage.setItem("token", data.access_token);
+                    localStorage.setItem("refresh_token", data.refresh_token);
                     localStorage.setItem("user", JSON.stringify(data.user));
                   } else {
                     sessionStorage.setItem("token", data.access_token);
+                    sessionStorage.setItem("refresh_token", data.refresh_token);
                     sessionStorage.setItem("user", JSON.stringify(data.user));
                   }
                   navigate("/");
@@ -261,6 +269,9 @@ export default function Login() {
                   />
                   <Box sx={{ mb: 2 }}>
                     <AutoLoginCheckbox name="autoLogin" label="Login automático" />
+                    <Typography variant="caption" color="warning.main" sx={{ mt: 0.5, display: 'block' }}>
+                      Não use o login automático em computadores públicos ou compartilhados.
+                    </Typography>
                   </Box>
                   {error && (
                     <Box

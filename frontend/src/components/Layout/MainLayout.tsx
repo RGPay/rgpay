@@ -32,6 +32,7 @@ import {
   Settings as SettingsIcon,
   Event as EventIcon,
   Category as CategoryIcon,
+  InfoOutlined as InfoOutlinedIcon,
 } from "@mui/icons-material";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -39,6 +40,12 @@ import { logout } from "../../store/authSlice";
 import type { RootState } from "../../store/store";
 import { Breadcrumb } from "../Navigation";
 import UnidadeSelect from "../Inputs/UnidadeSelect";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import DialogActions from "@mui/material/DialogActions";
+import Button from "@mui/material/Button";
+import AuthService from "../../services/auth.service";
 
 const drawerWidth = 260;
 
@@ -67,6 +74,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const dispatch = useDispatch();
   const user = useSelector((state: RootState) => state.auth.user);
   const location = useLocation();
+  const [revokeDialogOpen, setRevokeDialogOpen] = useState(false);
 
   // Close drawer on mobile when route changes
   useEffect(() => {
@@ -116,6 +124,18 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const handleLogout = () => {
     dispatch(logout());
     navigate("/login");
+  };
+
+  const handleRevokeAutoLogin = async () => {
+    if (user && user.sub) {
+      try {
+        await AuthService.revokeRefreshTokens(user.sub);
+      } catch (e) {}
+    }
+    localStorage.removeItem("token");
+    localStorage.removeItem("refresh_token");
+    localStorage.removeItem("user");
+    setRevokeDialogOpen(false);
   };
 
   const menuItems = [
@@ -268,6 +288,18 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                 <PersonIcon fontSize="small" color="primary" />
               </ListItemIcon>
               <ListItemText>Perfil</ListItemText>
+            </MenuItem>
+            <MenuItem
+              onClick={() => {
+                handleProfileMenuClose();
+                setRevokeDialogOpen(true);
+              }}
+              sx={{ py: 1.5 }}
+            >
+              <ListItemIcon>
+                <InfoOutlinedIcon fontSize="small" color="warning" />
+              </ListItemIcon>
+              <ListItemText>Revogar login automático</ListItemText>
             </MenuItem>
             <MenuItem onClick={handleLogout} sx={{ py: 1.5 }}>
               <ListItemIcon>
@@ -453,6 +485,21 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
           {children}
         </Container>
       </Box>
+
+      <Dialog open={revokeDialogOpen} onClose={() => setRevokeDialogOpen(false)}>
+        <DialogTitle>Revogar login automático</DialogTitle>
+        <DialogContent>
+          Tem certeza que deseja revogar todos os logins automáticos deste dispositivo? Você precisará digitar seu login e senha novamente na próxima vez.
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setRevokeDialogOpen(false)} color="primary">
+            Cancelar
+          </Button>
+          <Button onClick={handleRevokeAutoLogin} color="warning" variant="contained">
+            Revogar
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };
