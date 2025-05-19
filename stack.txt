@@ -25,3 +25,10 @@ Azure Cloud
 Static Web App (front)
 Azure App Service (back)
 Azure Database for MySQL
+
+Mobile
+React Native (framework)
+TypeScript
+React Navigation (roteamento)
+Axios (Rest API)
+Integração Cielo LIO (SDK/Deeplink)
