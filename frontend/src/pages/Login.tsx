@@ -13,7 +13,7 @@ import {
   CircularProgress,
   Card,
 } from "@mui/material";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { login as loginAction } from "../store/authSlice";
 import { useNavigate } from "react-router-dom";
@@ -26,6 +26,7 @@ import {
   VisibilityOff as VisibilityOffIcon,
   ArrowForward as ArrowForwardIcon,
 } from "@mui/icons-material";
+import { AutoLoginCheckbox } from "../components/Inputs";
 
 const LoginSchema = Yup.object().shape({
   email: Yup.string().email("Email inválido").required("Email é obrigatório"),
@@ -41,6 +42,22 @@ export default function Login() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const theme = useTheme();
+
+  useEffect(() => {
+    // Auto-login if credentials are stored in localStorage or sessionStorage
+    let token = localStorage.getItem("token");
+    let refreshToken = localStorage.getItem("refresh_token");
+    let user = localStorage.getItem("user");
+    if (!(token && refreshToken && user)) {
+      token = sessionStorage.getItem("token");
+      refreshToken = sessionStorage.getItem("refresh_token");
+      user = sessionStorage.getItem("user");
+    }
+    if (token && refreshToken && user) {
+      dispatch(loginAction({ token, refreshToken, user: JSON.parse(user) }));
+      navigate("/");
+    }
+  }, [dispatch, navigate]);
 
   const handleTogglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -144,7 +161,7 @@ export default function Login() {
             </Box>
 
             <Formik
-              initialValues={{ email: "", password: "" }}
+              initialValues={{ email: "", password: "", autoLogin: false }}
               validationSchema={LoginSchema}
               onSubmit={async (values) => {
                 setError("");
@@ -156,8 +173,17 @@ export default function Login() {
                   });
                   const data = response.data;
                   dispatch(
-                    loginAction({ token: data.access_token, user: data.user })
+                    loginAction({ token: data.access_token, refreshToken: data.refresh_token, user: data.user })
                   );
+                  if (values.autoLogin) {
+                    localStorage.setItem("token", data.access_token);
+                    localStorage.setItem("refresh_token", data.refresh_token);
+                    localStorage.setItem("user", JSON.stringify(data.user));
+                  } else {
+                    sessionStorage.setItem("token", data.access_token);
+                    sessionStorage.setItem("refresh_token", data.refresh_token);
+                    sessionStorage.setItem("user", JSON.stringify(data.user));
+                  }
                   navigate("/");
                 } catch (err: unknown) {
                   if (err instanceof AxiosError) {
@@ -172,7 +198,7 @@ export default function Login() {
                 }
               }}
             >
-              {({ errors, touched, handleChange, handleBlur }) => (
+              {({ errors, touched, handleChange, handleBlur, values }) => (
                 <Form>
                   <TextField
                     fullWidth
@@ -241,6 +267,12 @@ export default function Login() {
                       },
                     }}
                   />
+                  <Box sx={{ mb: 2 }}>
+                    <AutoLoginCheckbox name="autoLogin" label="Manter logado" />
+                    <Typography variant="caption" color="warning.main" sx={{ mt: 0.5, display: 'block' }}>
+                      Não use a opção "Manter logado" em computadores públicos ou compartilhados.
+                    </Typography>
+                  </Box>
                   {error && (
                     <Box
                       sx={{
