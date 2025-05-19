@@ -268,9 +268,9 @@ export default function Login() {
                     }}
                   />
                   <Box sx={{ mb: 2 }}>
-                    <AutoLoginCheckbox name="autoLogin" label="Login automático" />
+                    <AutoLoginCheckbox name="autoLogin" label="Manter logado" />
                     <Typography variant="caption" color="warning.main" sx={{ mt: 0.5, display: 'block' }}>
-                      Não use o login automático em computadores públicos ou compartilhados.
+                      Não use a opção "Manter logado" em computadores públicos ou compartilhados.
                     </Typography>
                   </Box>
                   {error && (

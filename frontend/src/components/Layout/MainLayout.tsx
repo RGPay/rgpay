@@ -299,7 +299,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
               <ListItemIcon>
                 <InfoOutlinedIcon fontSize="small" color="warning" />
               </ListItemIcon>
-              <ListItemText>Revogar login automático</ListItemText>
+              <ListItemText>Esquecer login</ListItemText>
             </MenuItem>
             <MenuItem onClick={handleLogout} sx={{ py: 1.5 }}>
               <ListItemIcon>
@@ -487,16 +487,20 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
       </Box>
 
       <Dialog open={revokeDialogOpen} onClose={() => setRevokeDialogOpen(false)}>
-        <DialogTitle>Revogar login automático</DialogTitle>
+        <DialogTitle>Esquecer login</DialogTitle>
         <DialogContent>
-          Tem certeza que deseja revogar todos os logins automáticos deste dispositivo? Você precisará digitar seu login e senha novamente na próxima vez.
+          Tem certeza que deseja esquecer este login neste dispositivo? Você será desconectado imediatamente e precisará digitar seu login e senha novamente.
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setRevokeDialogOpen(false)} color="primary">
             Cancelar
           </Button>
-          <Button onClick={handleRevokeAutoLogin} color="warning" variant="contained">
-            Revogar
+          <Button onClick={async () => {
+            await handleRevokeAutoLogin();
+            dispatch(logout());
+            navigate("/login");
+          }} color="warning" variant="contained">
+            Esquecer
           </Button>
         </DialogActions>
       </Dialog>
