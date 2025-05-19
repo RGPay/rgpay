@@ -12,7 +12,7 @@ const api = axios.create({
 // Add request interceptor to include token in every request
 api.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
-    const token = sessionStorage.getItem("token");
+    const token = sessionStorage.getItem("token") || localStorage.getItem("token");
     if (token && config.headers) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -26,11 +26,40 @@ api.interceptors.request.use(
 // Add response interceptor to handle common errors
 api.interceptors.response.use(
   (response: AxiosResponse) => response,
-  (error: AxiosError) => {
-    // Handle session expiration - redirect to login
+  async (error: AxiosError) => {
+    // Handle session expiration - try refresh token
     if (error.response && error.response.status === 401) {
+      const refreshToken = sessionStorage.getItem("refresh_token") || localStorage.getItem("refresh_token");
+      if (refreshToken) {
+        try {
+          const { default: AuthService } = await import("./auth.service");
+          const newTokens = await AuthService.refreshToken(refreshToken);
+          if (newTokens) {
+            // Retry original request with new access token
+            error.config.headers = error.config.headers || {};
+            error.config.headers["Authorization"] = `Bearer ${newTokens.access_token}`;
+            // Update storage
+            if (localStorage.getItem("refresh_token")) {
+              localStorage.setItem("token", newTokens.access_token);
+              localStorage.setItem("refresh_token", newTokens.refresh_token);
+              localStorage.setItem("user", JSON.stringify(newTokens.user));
+            } else {
+              sessionStorage.setItem("token", newTokens.access_token);
+              sessionStorage.setItem("refresh_token", newTokens.refresh_token);
+              sessionStorage.setItem("user", JSON.stringify(newTokens.user));
+            }
+            return api(error.config);
+          }
+        } catch (refreshError) {
+          // If refresh fails, clear storage and redirect
+        }
+      }
       sessionStorage.removeItem("token");
+      sessionStorage.removeItem("refresh_token");
       sessionStorage.removeItem("user");
+      localStorage.removeItem("token");
+      localStorage.removeItem("refresh_token");
+      localStorage.removeItem("user");
       window.location.href = "/login";
     }
     return Promise.reject(error);
