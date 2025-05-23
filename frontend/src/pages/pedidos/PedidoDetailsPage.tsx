@@ -19,10 +19,7 @@ import {
   Breadcrumbs,
   Link,
 } from "@mui/material";
-import {
-  ArrowBack as ArrowBackIcon,
-  Print as PrintIcon,
-} from "@mui/icons-material";
+import { ArrowBack as ArrowBackIcon } from "@mui/icons-material";
 import { useParams, useNavigate, Link as RouterLink } from "react-router-dom";
 import { Pedido, ItemPedido } from "../../services/pedidos.service";
 import pedidosService from "../../services/pedidos.service";
@@ -82,11 +79,6 @@ const PedidoDetailsPage: React.FC = () => {
       hour: "2-digit",
       minute: "2-digit",
     });
-  };
-
-  const handlePrintReceipt = () => {
-    // To be implemented in step 4.3
-    alert("Funcionalidade de impressão será implementada em breve");
   };
 
   const handleBack = () => {
@@ -149,13 +141,6 @@ const PedidoDetailsPage: React.FC = () => {
             Detalhes do Pedido #{id}
           </Typography>
         </Box>
-        <Button
-          variant="outlined"
-          startIcon={<PrintIcon />}
-          onClick={handlePrintReceipt}
-        >
-          Imprimir Comprovante
-        </Button>
       </Box>
 
       <Box sx={{ width: "100%" }}>

@@ -32,7 +32,6 @@ import {
   Settings as SettingsIcon,
   Event as EventIcon,
   Category as CategoryIcon,
-  InfoOutlined as InfoOutlinedIcon,
 } from "@mui/icons-material";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -59,6 +58,7 @@ const pageTitles: Record<string, string> = {
   "/unidades": "Unidades",
   "/unidades/nova": "Nova Unidade",
   "/profile": "Perfil",
+  "/settings": "Configurações",
 };
 
 interface MainLayoutProps {
@@ -213,7 +213,11 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
 
           {/* Settings */}
           <Tooltip title="Configurações">
-            <IconButton color="inherit" sx={{ mr: 1 }}>
+            <IconButton
+              color="inherit"
+              sx={{ mr: 1 }}
+              onClick={() => navigate("/settings")}
+            >
               <SettingsIcon />
             </IconButton>
           </Tooltip>
@@ -288,18 +292,6 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                 <PersonIcon fontSize="small" color="primary" />
               </ListItemIcon>
               <ListItemText>Perfil</ListItemText>
-            </MenuItem>
-            <MenuItem
-              onClick={() => {
-                handleProfileMenuClose();
-                setRevokeDialogOpen(true);
-              }}
-              sx={{ py: 1.5 }}
-            >
-              <ListItemIcon>
-                <InfoOutlinedIcon fontSize="small" color="warning" />
-              </ListItemIcon>
-              <ListItemText>Esquecer login</ListItemText>
             </MenuItem>
             <MenuItem onClick={handleLogout} sx={{ py: 1.5 }}>
               <ListItemIcon>
@@ -486,20 +478,29 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
         </Container>
       </Box>
 
-      <Dialog open={revokeDialogOpen} onClose={() => setRevokeDialogOpen(false)}>
+      <Dialog
+        open={revokeDialogOpen}
+        onClose={() => setRevokeDialogOpen(false)}
+      >
         <DialogTitle>Esquecer login</DialogTitle>
         <DialogContent>
-          Tem certeza que deseja esquecer este login neste dispositivo? Você será desconectado imediatamente e precisará digitar seu login e senha novamente.
+          Tem certeza que deseja esquecer este login neste dispositivo? Você
+          será desconectado imediatamente e precisará digitar seu login e senha
+          novamente.
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setRevokeDialogOpen(false)} color="primary">
             Cancelar
           </Button>
-          <Button onClick={async () => {
-            await handleRevokeAutoLogin();
-            dispatch(logout());
-            navigate("/login");
-          }} color="warning" variant="contained">
+          <Button
+            onClick={async () => {
+              await handleRevokeAutoLogin();
+              dispatch(logout());
+              navigate("/login");
+            }}
+            color="warning"
+            variant="contained"
+          >
             Esquecer
           </Button>
         </DialogActions>

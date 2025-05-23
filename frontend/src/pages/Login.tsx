@@ -25,6 +25,7 @@ import {
   Visibility as VisibilityIcon,
   VisibilityOff as VisibilityOffIcon,
   ArrowForward as ArrowForwardIcon,
+  Error as ErrorIcon,
 } from "@mui/icons-material";
 import { AutoLoginCheckbox } from "../components/Inputs";
 
@@ -190,13 +191,42 @@ export default function Login() {
                   }
                   navigate("/");
                 } catch (err: unknown) {
+                  let errorMessage = "Erro desconhecido ao fazer login";
+
                   if (err instanceof AxiosError) {
-                    setError(err.response?.data?.message || err.message);
+                    const status = err.response?.status;
+                    const serverMessage = err.response?.data?.message;
+
+                    switch (status) {
+                      case 401:
+                        errorMessage =
+                          "Email ou senha incorretos. Verifique suas credenciais e tente novamente.";
+                        break;
+                      case 403:
+                        errorMessage =
+                          "Acesso negado. Sua conta pode estar bloqueada ou inativa.";
+                        break;
+                      case 429:
+                        errorMessage =
+                          "Muitas tentativas de login. Aguarde alguns minutos antes de tentar novamente.";
+                        break;
+                      case 500:
+                        errorMessage =
+                          "Erro interno do servidor. Tente novamente em alguns instantes.";
+                        break;
+                      case 503:
+                        errorMessage =
+                          "Serviço temporariamente indisponível. Tente novamente mais tarde.";
+                        break;
+                      default:
+                        errorMessage =
+                          serverMessage || err.message || errorMessage;
+                    }
                   } else if (err instanceof Error) {
-                    setError(err.message);
-                  } else {
-                    setError("Erro desconhecido ao fazer login");
+                    errorMessage = err.message;
                   }
+
+                  setError(errorMessage);
                 } finally {
                   setLoading(false);
                 }
@@ -285,16 +315,63 @@ export default function Login() {
                   {error && (
                     <Box
                       sx={{
-                        p: 2,
+                        p: 2.5,
                         mb: 3,
-                        borderRadius: 2,
-                        backgroundColor: alpha(theme.palette.error.main, 0.1),
+                        borderRadius: 3,
+                        backgroundColor: alpha(theme.palette.error.main, 0.08),
                         borderLeft: `4px solid ${theme.palette.error.main}`,
+                        border: `1px solid ${alpha(
+                          theme.palette.error.main,
+                          0.2
+                        )}`,
+                        display: "flex",
+                        alignItems: "flex-start",
+                        gap: 1.5,
+                        animation: "slideIn 0.3s ease-out",
+                        "@keyframes slideIn": {
+                          "0%": {
+                            opacity: 0,
+                            transform: "translateY(-10px)",
+                          },
+                          "100%": {
+                            opacity: 1,
+                            transform: "translateY(0)",
+                          },
+                        },
                       }}
                     >
-                      <Typography color="error.main" variant="body2">
-                        {error}
-                      </Typography>
+                      <ErrorIcon
+                        sx={{
+                          color: theme.palette.error.main,
+                          fontSize: 20,
+                          mt: 0.1,
+                          flexShrink: 0,
+                        }}
+                      />
+                      <Box sx={{ flex: 1 }}>
+                        <Typography
+                          color="error.main"
+                          variant="body2"
+                          sx={{
+                            fontWeight: 500,
+                            lineHeight: 1.4,
+                          }}
+                        >
+                          {error}
+                        </Typography>
+                        {error.includes("Email ou senha incorretos") && (
+                          <Typography
+                            variant="caption"
+                            sx={{
+                              color: theme.palette.text.secondary,
+                              mt: 0.5,
+                              display: "block",
+                            }}
+                          >
+                            Dica: Verifique se o Caps Lock está ativado
+                          </Typography>
+                        )}
+                      </Box>
                     </Box>
                   )}
                   <Button
