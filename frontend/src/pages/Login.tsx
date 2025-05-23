@@ -173,7 +173,11 @@ export default function Login() {
                   });
                   const data = response.data;
                   dispatch(
-                    loginAction({ token: data.access_token, refreshToken: data.refresh_token, user: data.user })
+                    loginAction({
+                      token: data.access_token,
+                      refreshToken: data.refresh_token,
+                      user: data.user,
+                    })
                   );
                   if (values.autoLogin) {
                     localStorage.setItem("token", data.access_token);
@@ -269,8 +273,13 @@ export default function Login() {
                   />
                   <Box sx={{ mb: 2 }}>
                     <AutoLoginCheckbox name="autoLogin" label="Manter logado" />
-                    <Typography variant="caption" color="warning.main" sx={{ mt: 0.5, display: 'block' }}>
-                      Não use a opção "Manter logado" em computadores públicos ou compartilhados.
+                    <Typography
+                      variant="caption"
+                      color="warning.main"
+                      sx={{ mt: 0.5, display: "block" }}
+                    >
+                      Não use a opção "Manter logado" em computadores públicos
+                      ou compartilhados.
                     </Typography>
                   </Box>
                   {error && (

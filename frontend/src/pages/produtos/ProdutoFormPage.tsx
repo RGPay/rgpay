@@ -18,6 +18,7 @@ import {
 import { FormikHelpers } from "formik";
 import unidadesService, { Unidade } from "../../services/unidades.service";
 import categoriesService, { Category } from "../../services/categories.service";
+import { Formik, Form } from "formik";
 
 const validationSchema = Yup.object({
   nome: Yup.string().required("Nome é obrigatório"),
@@ -106,7 +107,8 @@ const ProdutoFormPage: React.FC = () => {
           setInitialValues({
             ...produto,
             category_id: Number(
-              produto.category_id ?? (produto.category ? produto.category.id : 0)
+              produto.category_id ??
+                (produto.category ? produto.category.id : 0)
             ),
           });
         } catch (error) {
@@ -229,7 +231,12 @@ const ProdutoFormPage: React.FC = () => {
     },
   ];
 
-  if (loading || unidadesLoading || categoriesLoading || (isEditMode && (!initialValues || !categories.length))) {
+  if (
+    loading ||
+    unidadesLoading ||
+    categoriesLoading ||
+    (isEditMode && (!initialValues || !categories.length))
+  ) {
     return (
       <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
         <CircularProgress />
@@ -254,16 +261,69 @@ const ProdutoFormPage: React.FC = () => {
       </Typography>
 
       <Paper sx={{ p: 3, mt: 3 }}>
-        <FormikForm
+        <Formik
           key={JSON.stringify(initialValues)}
           initialValues={initialValues}
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
-          onCancel={handleCancel}
-          fields={formFields}
-          submitButtonText={isEditMode ? "Atualizar" : "Criar"}
-          loading={loading}
-        />
+          enableReinitialize
+        >
+          {({ values, setFieldValue, isSubmitting, errors, touched }) => (
+            <Form>
+              {/* Image preview */}
+              {values.imagem && (
+                <Box sx={{ mb: 2, textAlign: "center" }}>
+                  <img
+                    src={values.imagem}
+                    alt="Pré-visualização"
+                    style={{
+                      maxWidth: 120,
+                      maxHeight: 120,
+                      borderRadius: 8,
+                      border: "1px solid #eee",
+                    }}
+                  />
+                </Box>
+              )}
+              {/* Image input */}
+              <Box sx={{ mb: 2 }}>
+                <Button variant="contained" component="label" color="primary">
+                  Selecionar Imagem
+                  <input
+                    type="file"
+                    accept="image/*"
+                    hidden
+                    onChange={async (e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        const reader = new FileReader();
+                        reader.onloadend = () => {
+                          setFieldValue("imagem", reader.result);
+                        };
+                        reader.readAsDataURL(file);
+                      }
+                    }}
+                  />
+                </Button>
+                {errors.imagem && touched.imagem && (
+                  <Typography color="error" variant="caption">
+                    {String(errors.imagem)}
+                  </Typography>
+                )}
+              </Box>
+              {/* Render the rest of the form fields */}
+              <FormikForm
+                initialValues={initialValues}
+                validationSchema={validationSchema}
+                onSubmit={handleSubmit}
+                onCancel={handleCancel}
+                fields={formFields}
+                submitButtonText={isEditMode ? "Atualizar" : "Criar"}
+                loading={loading || isSubmitting}
+              />
+            </Form>
+          )}
+        </Formik>
       </Paper>
 
       <Toast

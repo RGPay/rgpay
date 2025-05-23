@@ -30,8 +30,15 @@ export class ProdutosService {
   }
 
   async create(createProdutoDto: CreateProdutoDto): Promise<Produto> {
-    const { category_id, nome, preco_compra, preco_venda, disponivel, id_unidade, estoque } =
-      createProdutoDto as unknown as Record<string, unknown>;
+    const {
+      category_id,
+      nome,
+      preco_compra,
+      preco_venda,
+      disponivel,
+      id_unidade,
+      estoque,
+    } = createProdutoDto as unknown as Record<string, unknown>;
     let categoryId: number | undefined = undefined;
     if (typeof category_id === 'number') {
       categoryId = category_id;
@@ -49,6 +56,7 @@ export class ProdutosService {
       id_unidade: id_unidade as number,
       categoryId: categoryId as number,
       estoque: typeof estoque === 'number' ? estoque : 0,
+      imagem: createProdutoDto.imagem ?? undefined,
     };
     return this.produtoModel.create(data as any);
   }
@@ -59,7 +67,10 @@ export class ProdutosService {
   ): Promise<Produto> {
     const produto = await this.findOne(id);
 
-    await produto.update(updateProdutoDto);
+    await produto.update({
+      ...updateProdutoDto,
+      imagem: updateProdutoDto.imagem,
+    });
 
     return this.findOne(id);
   }

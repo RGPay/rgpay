@@ -162,6 +162,28 @@ const ProdutosListPage: React.FC = () => {
   };
 
   const columns = [
+    {
+      id: "imagem",
+      label: "Imagem",
+      minWidth: 60,
+      align: "center",
+      format: (value: string) =>
+        value ? (
+          <img
+            src={value}
+            alt="Produto"
+            style={{
+              width: 40,
+              height: 40,
+              objectFit: "cover",
+              borderRadius: 4,
+              border: "1px solid #eee",
+            }}
+          />
+        ) : (
+          <span style={{ color: "#bbb" }}>-</span>
+        ),
+    },
     { id: "id_produto", label: "ID", minWidth: 50, sortable: true },
     { id: "nome", label: "Nome", minWidth: 180, sortable: true },
     {
