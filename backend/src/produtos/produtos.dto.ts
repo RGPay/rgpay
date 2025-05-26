@@ -21,6 +21,10 @@ export class CreateProdutoDto {
 
   @IsNumber()
   estoque: number;
+
+  @IsString()
+  @IsOptional()
+  imagem?: string;
 }
 
 export class UpdateProdutoDto {
@@ -51,4 +55,8 @@ export class UpdateProdutoDto {
   @IsNumber()
   @IsOptional()
   estoque?: number;
+
+  @IsString()
+  @IsOptional()
+  imagem?: string;
 }

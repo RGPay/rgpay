@@ -8,6 +8,8 @@ import {
 } from "react-router-dom";
 import About from "./pages/About";
 import Login from "./pages/Login";
+import ProfilePage from "./pages/ProfilePage";
+import SettingsPage from "./pages/SettingsPage";
 import { ProdutosListPage, ProdutoFormPage } from "./pages/produtos";
 import { PedidosListPage, PedidoDetailsPage } from "./pages/pedidos";
 import { UnidadesListPage, UnidadeFormPage } from "./pages/unidades";
@@ -36,9 +38,6 @@ function ProtectedLayout() {
     </MainLayout>
   );
 }
-
-// Placeholder components for routes that don't have dedicated pages yet
-const ProfilePage = () => <div>Perfil em construção</div>;
 
 // Check if user is already logged in and redirect accordingly
 function PublicRoute({ children }: { children: ReactElement }) {
@@ -96,8 +95,9 @@ function App() {
             <Route path=":id/edit" element={<CategoriesFormPage />} />
           </Route>
 
-          {/* Profile route */}
+          {/* Profile and Settings routes */}
           <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/settings" element={<SettingsPage />} />
         </Route>
 
         {/* Public routes */}

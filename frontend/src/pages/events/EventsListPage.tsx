@@ -11,6 +11,7 @@ import eventosService, { Evento } from "../../services/eventos.service";
 import unidadesService from "../../services/unidades.service";
 import { useSelector } from "react-redux";
 import type { RootState } from "../../store/store";
+import { format, isValid } from "date-fns";
 
 const EventsListPage: React.FC = () => {
   const navigate = useNavigate();
@@ -101,12 +102,34 @@ const EventsListPage: React.FC = () => {
     setToast({ ...toast, open: false });
   };
 
+  const formatDate = (dateString: string): string => {
+    try {
+      const date = new Date(dateString);
+      if (isValid(date)) {
+        return format(date, "dd/MM/yyyy 'às' HH:mm");
+      }
+    } catch {
+      console.warn("Error formatting date:", dateString);
+    }
+    return dateString;
+  };
+
   const columns = [
     { id: "id_evento", label: "ID", minWidth: 50 },
     { id: "nome", label: "Nome", minWidth: 180 },
     { id: "descricao", label: "Descrição", minWidth: 200 },
-    { id: "data_inicio", label: "Início", minWidth: 120 },
-    { id: "data_fim", label: "Fim", minWidth: 120 },
+    {
+      id: "data_inicio",
+      label: "Início",
+      minWidth: 120,
+      format: (value: unknown) => formatDate(value as string),
+    },
+    {
+      id: "data_fim",
+      label: "Fim",
+      minWidth: 120,
+      format: (value: unknown) => formatDate(value as string),
+    },
     { id: "unidade_nome", label: "Unidade", minWidth: 120 },
   ];
 

@@ -3,10 +3,6 @@ import { useState, useEffect } from "react";
 import {
   Box,
   Typography,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
   Paper,
   CircularProgress,
   Card,
@@ -393,98 +389,165 @@ const Dashboard: React.FC = () => {
 
     const unidades = metrics.vendasPorUnidade.map((item) => item.nome);
     const valores = metrics.vendasPorUnidade.map((item) => item.total);
+    const maxValue = Math.max(...valores);
 
     return {
       tooltip: {
         trigger: "axis",
         axisPointer: {
           type: "shadow",
+          shadowStyle: {
+            color: alpha(theme.palette.primary.main, 0.1),
+          },
         },
         formatter: (params: unknown) => {
           const p = params as { [key: string]: any };
-          return `${p[0].name}: ${formatCurrency(p[0].value)}`;
+          const percentage = ((p[0].value / maxValue) * 100).toFixed(1);
+          return `<div style="padding: 12px;">
+            <div style="font-weight: 600; margin-bottom: 8px; color: ${
+              theme.palette.text.primary
+            };">${p[0].name}</div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <div style="width: 12px; height: 12px; background: ${
+                theme.palette.primary.main
+              }; border-radius: 3px;"></div>
+              <span style="color: ${
+                theme.palette.text.secondary
+              };">Faturamento: <strong style="color: ${
+            theme.palette.text.primary
+          };">${formatCurrency(p[0].value)}</strong></span>
+            </div>
+            <div style="margin-top: 4px; font-size: 12px; color: ${
+              theme.palette.text.secondary
+            };">
+              ${percentage}% do maior faturamento
+            </div>
+          </div>`;
         },
-        backgroundColor: alpha(theme.palette.background.paper, 0.9),
+        backgroundColor: alpha(theme.palette.background.paper, 0.95),
         borderColor: alpha(theme.palette.divider, 0.2),
         textStyle: {
           color: theme.palette.text.primary,
         },
         extraCssText:
-          "backdrop-filter: blur(8px); border-radius: 8px; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);",
+          "backdrop-filter: blur(12px); border-radius: 12px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15); border: none;",
       },
       grid: {
-        left: "3%",
-        right: "4%",
-        bottom: "3%",
+        left: "5%",
+        right: "8%",
+        bottom: "8%",
+        top: "5%",
         containLabel: true,
       },
       xAxis: {
         type: "value",
         axisLine: {
+          show: true,
           lineStyle: {
             color: alpha(theme.palette.divider, 0.3),
+            width: 1,
           },
         },
         axisLabel: {
           color: theme.palette.text.secondary,
-          formatter: (value: number) => formatCurrency(value),
+          fontSize: 11,
+          formatter: (value: number) => {
+            if (value >= 1000000) {
+              return `${(value / 1000000).toFixed(1)}M`;
+            } else if (value >= 1000) {
+              return `${(value / 1000).toFixed(0)}K`;
+            }
+            return formatCurrency(value);
+          },
         },
         splitLine: {
+          show: true,
           lineStyle: {
-            color: alpha(theme.palette.divider, 0.1),
+            color: alpha(theme.palette.divider, 0.08),
             type: "dashed",
+            width: 1,
           },
+        },
+        axisTick: {
+          show: false,
         },
       },
       yAxis: {
         type: "category",
         data: unidades,
         axisLine: {
+          show: true,
           lineStyle: {
             color: alpha(theme.palette.divider, 0.3),
+            width: 1,
           },
         },
         axisLabel: {
           color: theme.palette.text.secondary,
+          fontSize: 11,
           formatter: (value: string) => {
-            if (value.length > 15) {
-              return value.substring(0, 15) + "...";
+            if (value.length > 12) {
+              return value.substring(0, 12) + "...";
             }
             return value;
           },
+          margin: 8,
         },
         axisTick: {
-          alignWithLabel: true,
-          lineStyle: {
-            color: alpha(theme.palette.divider, 0.3),
-          },
+          show: false,
         },
       },
       series: [
         {
           name: "Vendas",
           type: "bar",
-          data: valores,
-          barWidth: "40%",
-          itemStyle: {
-            borderRadius: [0, 4, 4, 0],
-            color: {
-              type: "linear",
-              x: 0,
-              y: 0,
-              x2: 1,
-              y2: 0,
-              colorStops: [
-                {
-                  offset: 0,
-                  color: theme.palette.primary.main,
-                },
-                {
-                  offset: 1,
-                  color: theme.palette.primary.light,
-                },
-              ],
+          data: valores.map((value) => ({
+            value,
+            itemStyle: {
+              color: {
+                type: "linear",
+                x: 0,
+                y: 0,
+                x2: 1,
+                y2: 0,
+                colorStops: [
+                  {
+                    offset: 0,
+                    color: alpha(theme.palette.primary.main, 0.8),
+                  },
+                  {
+                    offset: 0.5,
+                    color: theme.palette.primary.main,
+                  },
+                  {
+                    offset: 1,
+                    color: theme.palette.primary.light,
+                  },
+                ],
+              },
+              borderRadius: [0, 6, 6, 0],
+              shadowColor: alpha(theme.palette.primary.main, 0.3),
+              shadowBlur: 8,
+              shadowOffsetX: 2,
+              shadowOffsetY: 2,
             },
+          })),
+          barWidth: "50%",
+          barMaxWidth: 40,
+          label: {
+            show: true,
+            position: "right",
+            formatter: (params: any) => {
+              if (params.value >= 1000000) {
+                return `${(params.value / 1000000).toFixed(1)}M`;
+              } else if (params.value >= 1000) {
+                return `${(params.value / 1000).toFixed(0)}K`;
+              }
+              return formatCurrency(params.value);
+            },
+            fontSize: 10,
+            color: theme.palette.text.secondary,
+            fontWeight: "bold",
           },
           emphasis: {
             itemStyle: {
@@ -500,15 +563,27 @@ const Dashboard: React.FC = () => {
                     color: theme.palette.primary.dark,
                   },
                   {
-                    offset: 1,
+                    offset: 0.5,
                     color: theme.palette.primary.main,
+                  },
+                  {
+                    offset: 1,
+                    color: theme.palette.primary.light,
                   },
                 ],
               },
+              shadowBlur: 12,
+              shadowColor: alpha(theme.palette.primary.main, 0.4),
             },
+            scale: true,
           },
+          animationDelay: (idx: number) => idx * 100,
+          animationDuration: 800,
         },
       ],
+      animation: true,
+      animationThreshold: 2000,
+      animationDuration: 1000,
     };
   };
 
@@ -521,6 +596,7 @@ const Dashboard: React.FC = () => {
     const valores = metrics.faturamentoPorFormaPagamento.map(
       (item) => item.total
     );
+    const total = valores.reduce((sum, value) => sum + value, 0);
     const colorPalette = [
       theme.palette.primary.main,
       theme.palette.secondary.main,
@@ -534,15 +610,24 @@ const Dashboard: React.FC = () => {
         trigger: "item",
         formatter: (params: unknown) => {
           const p = params as { [key: string]: any };
-          return `${p.name}: ${formatCurrency(p.value)} (${p.percent}%)`;
+          const percentage = ((p.value / total) * 100).toFixed(1);
+          return `<div style="padding: 8px;">
+            <div style="font-weight: 600; margin-bottom: 4px;">${p.name}</div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <div style="width: 12px; height: 12px; background: ${
+                p.color
+              }; border-radius: 50%;"></div>
+              <span>${formatCurrency(p.value)} (${percentage}%)</span>
+            </div>
+          </div>`;
         },
-        backgroundColor: alpha(theme.palette.background.paper, 0.9),
+        backgroundColor: alpha(theme.palette.background.paper, 0.95),
         borderColor: alpha(theme.palette.divider, 0.2),
         textStyle: {
           color: theme.palette.text.primary,
         },
         extraCssText:
-          "backdrop-filter: blur(8px); border-radius: 8px; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);",
+          "backdrop-filter: blur(8px); border-radius: 12px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15); border: none;",
       },
       legend: {
         orient: "vertical",
@@ -551,26 +636,47 @@ const Dashboard: React.FC = () => {
         data: formas,
         textStyle: {
           color: theme.palette.text.secondary,
+          fontSize: 12,
         },
-        itemGap: 12,
+        itemGap: 16,
         icon: "circle",
-        itemWidth: 10,
-        itemHeight: 10,
-        formatter: (name: string) => name,
+        itemWidth: 12,
+        itemHeight: 12,
+        formatter: (name: string) => {
+          const index = formas.indexOf(name);
+          const value = valores[index];
+          const percentage = ((value / total) * 100).toFixed(1);
+          return `${name} (${percentage}%)`;
+        },
       },
       series: [
         {
           name: "Forma de Pagamento",
           type: "pie",
           radius: ["45%", "75%"],
+          center: ["40%", "50%"],
           avoidLabelOverlap: false,
           itemStyle: {
-            borderRadius: 10,
+            borderRadius: 8,
             borderColor: theme.palette.background.paper,
-            borderWidth: 2,
+            borderWidth: 3,
           },
           label: {
-            show: false,
+            show: true,
+            position: "outside",
+            formatter: (params: any) => {
+              const percentage = ((params.value / total) * 100).toFixed(1);
+              return `${percentage}%`;
+            },
+            fontSize: 12,
+            fontWeight: "bold",
+            color: theme.palette.text.primary,
+          },
+          labelLine: {
+            show: true,
+            length: 15,
+            length2: 10,
+            smooth: true,
           },
           emphasis: {
             label: {
@@ -579,13 +685,13 @@ const Dashboard: React.FC = () => {
               fontWeight: "bold",
             },
             itemStyle: {
-              shadowBlur: 10,
+              shadowBlur: 15,
               shadowOffsetX: 0,
-              shadowColor: "rgba(0, 0, 0, 0.2)",
+              shadowColor: "rgba(0, 0, 0, 0.3)",
+              borderWidth: 4,
             },
-          },
-          labelLine: {
-            show: false,
+            scale: true,
+            scaleSize: 5,
           },
           data: formas.map((nome, index) => ({
             value: valores[index],

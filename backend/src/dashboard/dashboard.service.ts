@@ -19,6 +19,7 @@ export interface DashboardMetrics {
   produtosMaisVendidos: {
     id_produto: number;
     nome: string;
+    imagem?: string;
     quantidade: number;
     valor_total: number;
   }[];
@@ -167,6 +168,7 @@ export class DashboardService {
     const produtosMaisVendidos: {
       id_produto: number;
       nome: string;
+      imagem?: string;
       quantidade: number;
       valor_total: number;
     }[] = [];
@@ -181,7 +183,7 @@ export class DashboardService {
         include: [
           {
             model: Produto,
-            attributes: ['nome'],
+            attributes: ['nome', 'imagem'],
             required: true,
           },
         ],
@@ -190,17 +192,20 @@ export class DashboardService {
             [Op.in]: pedidosIds,
           },
         },
-        group: ['id_produto', 'produto.nome'],
+        group: ['id_produto', 'produto.nome', 'produto.imagem'],
         order: [[literal('quantidade'), 'DESC']],
         limit: 10,
         raw: true,
         nest: true,
-      })) as unknown as ProdutoVendidoResult[];
+      })) as unknown as (ProdutoVendidoResult & {
+        produto: { nome: string; imagem?: string };
+      })[];
 
       for (const item of result) {
         produtosMaisVendidos.push({
           id_produto: item.id_produto,
           nome: item.produto.nome,
+          imagem: item.produto.imagem,
           quantidade: Number(item.quantidade),
           valor_total: Number(item.valor_total),
         });

@@ -22,6 +22,7 @@ import type { RootState } from "../../store/store";
 interface ProdutoMaisVendido {
   id_produto: number;
   nome: string;
+  imagem?: string;
   quantidade: number;
   valor_total: number;
 }
@@ -211,20 +212,23 @@ const ProdutosMaisVendidosTable: React.FC<ProdutosMaisVendidosTableProps> = ({
                   <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                     <Avatar
                       variant="rounded"
+                      src={produto.imagem || undefined}
                       sx={{
                         width: 32,
                         height: 32,
                         bgcolor:
-                          theme.palette.mode === "dark"
+                          !produto.imagem && theme.palette.mode === "dark"
                             ? theme.palette.primary.dark + "22"
-                            : theme.palette.primary.light + "22",
+                            : !produto.imagem
+                            ? theme.palette.primary.light + "22"
+                            : undefined,
                         color: theme.palette.text.secondary,
                         fontWeight: 700,
                         fontSize: 16,
                         mr: 1,
                       }}
                     >
-                      {produto.nome.charAt(0).toUpperCase()}
+                      {!produto.imagem && produto.nome.charAt(0).toUpperCase()}
                     </Avatar>
                     <Typography
                       variant="body2"
