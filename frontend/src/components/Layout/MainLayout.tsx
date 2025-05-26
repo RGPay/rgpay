@@ -33,6 +33,7 @@ import {
   Event as EventIcon,
   Category as CategoryIcon,
   InfoOutlined as InfoOutlinedIcon,
+  BarChart as BarChartIcon,
 } from "@mui/icons-material";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -145,6 +146,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
     { text: "Pedidos", icon: <ShoppingCartIcon />, path: "/pedidos" },
     { text: "Eventos", icon: <EventIcon />, path: "/eventos" },
     { text: "Unidades", icon: <LocationOnIcon />, path: "/unidades" },
+    { text: "Relatórios", icon: <BarChartIcon />, path: "/relatorios" },
   ];
 
   const isActiveRoute = (path: string) => {

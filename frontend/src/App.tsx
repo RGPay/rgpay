@@ -19,6 +19,7 @@ import { MainLayout } from "./components/Layout";
 import EventsListPage from "./pages/events/EventsListPage";
 import EventsFormPage from "./pages/events/EventsFormPage";
 import { CategoriesListPage, CategoriesFormPage } from "./pages/categories";
+import RelatoriosPage from "./pages/RelatoriosPage";
 
 // Protected Layout component that checks authentication and applies the MainLayout
 function ProtectedLayout() {
@@ -98,6 +99,9 @@ function App() {
 
           {/* Profile route */}
           <Route path="/profile" element={<ProfilePage />} />
+
+          {/* Relatórios route */}
+          <Route path="/relatorios" element={<RelatoriosPage />} />
         </Route>
 
         {/* Public routes */}

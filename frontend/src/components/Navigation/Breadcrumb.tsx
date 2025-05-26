@@ -58,6 +58,10 @@ const routeMap: RouteMapping = {
     path: "/profile",
     label: "Perfil",
   },
+  "/relatorios": {
+    path: "/relatorios",
+    label: "Relatórios",
+  },
 };
 
 const Breadcrumb: React.FC = () => {
