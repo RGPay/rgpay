@@ -41,8 +41,11 @@ const ReportFilters: React.FC<ReportFiltersProps> = ({
 }) => {
   const theme = useTheme();
 
-  // Determine current filter mode
-  const filterMode: FilterMode = filter.id_evento ? 'event' : 'date';
+  // Track filter mode separately from filter values
+  const [filterMode, setFilterMode] = React.useState<FilterMode>(() => {
+    // Initialize based on current filter state
+    return filter.id_evento ? 'event' : 'date';
+  });
 
   const handleModeChange = (
     _event: React.MouseEvent<HTMLElement>,
@@ -50,16 +53,23 @@ const ReportFilters: React.FC<ReportFiltersProps> = ({
   ) => {
     if (newMode === null) return;
 
+    setFilterMode(newMode);
+
     if (newMode === 'date') {
-      // Switch to date mode - clear event filter
+      // Switch to date mode - clear event filter and search
       onFilterChange({
-        ...filter,
+        search: undefined,
+        periodoInicio: filter.periodoInicio,
+        periodoFim: filter.periodoFim,
+        id_unidade: filter.id_unidade,
         id_evento: undefined,
       });
     } else {
-      // Switch to event mode - clear date filters
+      // Switch to event mode - clear date filters and search
       onFilterChange({
-        ...filter,
+        search: undefined,
+        id_evento: filter.id_evento,
+        id_unidade: filter.id_unidade,
         periodoInicio: undefined,
         periodoFim: undefined,
       });

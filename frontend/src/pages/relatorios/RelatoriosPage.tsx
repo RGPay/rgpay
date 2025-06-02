@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Box,
   Typography,
@@ -27,6 +27,11 @@ const RelatoriosPage: React.FC = () => {
     message: "",
     severity: "error" as "success" | "error",
   });
+  // Separate state for search term to allow local typing without triggering API calls
+  const [searchTerm, setSearchTerm] = useState("");
+  
+  // Use ref to track if we're currently debouncing to avoid conflicts
+  const debounceRef = useRef<NodeJS.Timeout | null>(null);
 
   // Load eventos on mount
   useEffect(() => {
@@ -47,10 +52,35 @@ const RelatoriosPage: React.FC = () => {
     loadEventos();
   }, []);
 
+  // Debounced effect for search term - only update filter after user stops typing
+  useEffect(() => {
+    // Clear any existing timeout
+    if (debounceRef.current) {
+      clearTimeout(debounceRef.current);
+    }
+
+    // Set new timeout
+    debounceRef.current = setTimeout(() => {
+      setFilter(prevFilter => ({
+        ...prevFilter,
+        search: searchTerm || undefined,
+      }));
+      debounceRef.current = null;
+    }, 500); // 500ms delay
+
+    // Cleanup function
+    return () => {
+      if (debounceRef.current) {
+        clearTimeout(debounceRef.current);
+        debounceRef.current = null;
+      }
+    };
+  }, [searchTerm]);
+
   // Load report data when filter changes
   useEffect(() => {
     loadReportData();
-  }, [filter]);
+  }, [filter.periodoInicio, filter.periodoFim, filter.id_evento, filter.id_unidade, filter.search]);
 
   const loadReportData = async () => {
     setLoading(true);
@@ -71,14 +101,22 @@ const RelatoriosPage: React.FC = () => {
   };
 
   const handleFilterChange = (newFilter: RelatorioFilter) => {
+    // Clear any pending debounced search to avoid conflicts
+    if (debounceRef.current) {
+      clearTimeout(debounceRef.current);
+      debounceRef.current = null;
+    }
+    
+    // Update filter immediately
     setFilter(newFilter);
+    
+    // Always sync the search term with the filter's search value
+    // This ensures the UI stays in sync when the filter is changed externally
+    setSearchTerm(newFilter.search || "");
   };
 
-  const handleSearchChange = (searchTerm: string) => {
-    setFilter({
-      ...filter,
-      search: searchTerm || undefined,
-    });
+  const handleSearchChange = (newSearchTerm: string) => {
+    setSearchTerm(newSearchTerm);
   };
 
   const handleExportCSV = async () => {
@@ -167,7 +205,7 @@ const RelatoriosPage: React.FC = () => {
       <ReportTable
         data={reportData}
         loading={loading}
-        searchTerm={filter.search}
+        searchTerm={searchTerm}
         onSearchChange={handleSearchChange}
       />
 
