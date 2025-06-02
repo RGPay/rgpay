@@ -34,7 +34,7 @@ api.interceptors.response.use(
         try {
           const { default: AuthService } = await import("./auth.service");
           const newTokens = await AuthService.refreshToken(refreshToken);
-          if (newTokens) {
+          if (newTokens && error.config) {
             // Retry original request with new access token
             error.config.headers = error.config.headers || {};
             error.config.headers["Authorization"] = `Bearer ${newTokens.access_token}`;
@@ -60,7 +60,10 @@ api.interceptors.response.use(
       localStorage.removeItem("token");
       localStorage.removeItem("refresh_token");
       localStorage.removeItem("user");
-      window.location.href = "/login";
+      const hadToken = !!(sessionStorage.getItem("token") || localStorage.getItem("token"));
+      if (hadToken && window.location.pathname !== "/login") {
+        window.location.href = "/login";
+      }
     }
     return Promise.reject(error);
   }
