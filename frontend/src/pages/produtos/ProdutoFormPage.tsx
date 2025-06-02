@@ -88,7 +88,7 @@ const ProdutoFormPage: React.FC = () => {
       try {
         const unidadesData = await unidadesService.getAll();
         setUnidades(unidadesData);
-      } catch (error) {
+      } catch {
         setUnidadesError("Erro ao carregar unidades");
       } finally {
         setUnidadesLoading(false);
@@ -102,7 +102,7 @@ const ProdutoFormPage: React.FC = () => {
       try {
         const categoriesData = await categoriesService.getAll();
         setCategories(categoriesData);
-      } catch (error) {
+      } catch {
         setCategoriesError("Erro ao carregar categorias");
       } finally {
         setCategoriesLoading(false);
@@ -142,7 +142,7 @@ const ProdutoFormPage: React.FC = () => {
 
   const handleSubmit = async (
     values: CreateProdutoDto | UpdateProdutoDto,
-    formikHelpers: FormikHelpers<any>
+    formikHelpers: FormikHelpers<Produto | CreateProdutoDto>
   ) => {
     try {
       if (isEditMode && id) {
@@ -185,7 +185,7 @@ const ProdutoFormPage: React.FC = () => {
 
   const handleImageUpload = (
     event: React.ChangeEvent<HTMLInputElement>,
-    setFieldValue: (field: string, value: any) => void
+    setFieldValue: (field: string, value: string) => void
   ) => {
     const file = event.target.files?.[0];
     if (file) {
