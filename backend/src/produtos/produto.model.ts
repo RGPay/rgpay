@@ -53,6 +53,6 @@ export class Produto extends Model<Produto> {
   @HasMany(() => ItemPedido)
   itensPedido: ItemPedido[];
 
-  @Column({ type: DataType.STRING, allowNull: true })
+  @Column({ type: DataType.TEXT, allowNull: true })
   imagem?: string;
 }
