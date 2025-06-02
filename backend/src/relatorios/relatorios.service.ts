@@ -121,8 +121,8 @@ export class RelatoriosService {
         'itensPedido.produto.nome',
       ],
       order: [
-        [literal('itensPedido.produto.category.name'), 'ASC'],
-        [literal('itensPedido.produto.nome'), 'ASC'],
+        [{ model: this.itemPedidoModel, as: 'itensPedido' }, { model: this.produtoModel, as: 'produto' }, { model: this.categoryModel, as: 'category' }, 'name', 'ASC'],
+        [{ model: this.itemPedidoModel, as: 'itensPedido' }, { model: this.produtoModel, as: 'produto' }, 'nome', 'ASC'],
       ],
       raw: true,
       nest: true,

@@ -3,7 +3,6 @@ import {
   Box,
   Paper,
   Typography,
-  TextField,
   FormControl,
   InputLabel,
   Select,
@@ -78,13 +77,6 @@ const ReportFilters: React.FC<ReportFiltersProps> = ({
     onFilterChange({
       ...filter,
       id_evento: eventId === '' ? undefined : Number(eventId),
-    });
-  };
-
-  const handleSearchChange = (search: string) => {
-    onFilterChange({
-      ...filter,
-      search: search || undefined,
     });
   };
 
@@ -214,18 +206,6 @@ const ReportFilters: React.FC<ReportFiltersProps> = ({
               </Select>
             </FormControl>
           )}
-
-          <TextField
-            label="Procurar Produto"
-            value={filter.search || ""}
-            onChange={(e) => handleSearchChange(e.target.value)}
-            size="small"
-            disabled={loading}
-            sx={{
-              minWidth: { xs: "100%", sm: 200 },
-              bgcolor: alpha(theme.palette.background.paper, 0.8),
-            }}
-          />
 
           <Box sx={{ flex: "1 1 auto" }} />
 

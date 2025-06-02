@@ -9,6 +9,7 @@ import {
   TableHead,
   TableRow,
   Typography,
+  TextField,
   useTheme,
   alpha,
   CircularProgress,
@@ -18,6 +19,7 @@ import {
 import {
   ExpandMore as ExpandMoreIcon,
   ExpandLess as ExpandLessIcon,
+  Search as SearchIcon,
 } from "@mui/icons-material";
 import { 
   FaturamentoProdutoResponse, 
@@ -29,6 +31,7 @@ interface ReportTableProps {
   data: FaturamentoProdutoResponse | null;
   loading?: boolean;
   searchTerm?: string;
+  onSearchChange?: (searchTerm: string) => void;
 }
 
 interface GroupRowProps {
@@ -162,6 +165,7 @@ const ReportTable: React.FC<ReportTableProps> = ({
   data,
   loading = false,
   searchTerm = "",
+  onSearchChange,
 }) => {
   const theme = useTheme();
 
@@ -216,6 +220,30 @@ const ReportTable: React.FC<ReportTableProps> = ({
           overflow: 'auto',
         }}
       >
+        {/* Search field inside table */}
+        <Box
+          sx={{
+            p: 2,
+            borderBottom: `1px solid ${theme.palette.divider}`,
+            backgroundColor: alpha(theme.palette.background.paper, 0.8),
+          }}
+        >
+          <TextField
+            label="Procurar Produto"
+            value={searchTerm}
+            onChange={(e) => onSearchChange?.(e.target.value)}
+            size="small"
+            fullWidth
+            disabled={loading}
+            InputProps={{
+              startAdornment: <SearchIcon sx={{ mr: 1, color: 'text.secondary' }} />,
+            }}
+            sx={{
+              maxWidth: 300,
+            }}
+          />
+        </Box>
+
         <Table>
           <TableHead>
             <TableRow

@@ -1,5 +1,7 @@
 import api from "./api";
 import { store } from "../store/store";
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 export interface RelatorioFilter {
   periodoInicio?: Date;
@@ -101,10 +103,99 @@ class RelatoriosService {
   }
 
   async exportToPDF(data: FaturamentoProdutoResponse): Promise<void> {
-    // This would require jsPDF - for now, we'll implement a simple solution
-    // TODO: Implement proper PDF export with jsPDF
-    console.log('PDF export not yet implemented', data);
-    alert('Exportação PDF será implementada em breve');
+    const doc = new jsPDF();
+    
+    // Set document properties
+    doc.setProperties({
+      title: 'Relatório de Faturamento por Produtos',
+      subject: 'Relatório de Vendas',
+      author: 'RGPay',
+      keywords: 'relatório, faturamento, produtos, vendas',
+      creator: 'RGPay Sistema'
+    });
+
+    // Add title
+    doc.setFontSize(18);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Relatório de Faturamento por Produtos', 14, 22);
+    
+    // Add date
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'normal');
+    doc.text(`Gerado em: ${new Date().toLocaleDateString('pt-BR')} às ${new Date().toLocaleTimeString('pt-BR')}`, 14, 30);
+
+    // Prepare data for the table
+    const tableData: any[] = [];
+    
+    data.grupos.forEach(grupo => {
+      // Add group header
+      tableData.push([
+        { content: grupo.grupo, styles: { fontStyle: 'bold', fillColor: [240, 240, 240] } },
+        '',
+        '',
+        '',
+        '',
+        '',
+        { content: `R$ ${grupo.subtotal.toFixed(2).replace('.', ',')}`, styles: { fontStyle: 'bold', fillColor: [240, 240, 240] } }
+      ]);
+      
+      // Add products
+      grupo.produtos.forEach(produto => {
+        tableData.push([
+          '',
+          produto.produto,
+          produto.vendas.toString(),
+          produto.qtd.toString(),
+          produto.qtd_estorno.toString(),
+          `R$ ${produto.unitario.toFixed(2).replace('.', ',')}`,
+          `R$ ${produto.total.toFixed(2).replace('.', ',')}`
+        ]);
+      });
+    });
+
+    // Add total row
+    tableData.push([
+      { content: 'TOTAL GERAL', styles: { fontStyle: 'bold', fillColor: [220, 220, 220] } },
+      '',
+      '',
+      '',
+      '',
+      '',
+      { content: `R$ ${data.total_geral.toFixed(2).replace('.', ',')}`, styles: { fontStyle: 'bold', fillColor: [220, 220, 220] } }
+    ]);
+
+    // Create table
+    autoTable(doc, {
+      head: [['Grupo', 'Produto', 'Vendas', 'QTD', 'QTD Estorno', 'Unitário', 'Total']],
+      body: tableData,
+      startY: 40,
+      theme: 'grid',
+      styles: {
+        fontSize: 8,
+        cellPadding: 3,
+      },
+      headStyles: {
+        fillColor: [66, 139, 202],
+        textColor: 255,
+        fontStyle: 'bold',
+      },
+      alternateRowStyles: {
+        fillColor: [245, 245, 245],
+      },
+      columnStyles: {
+        0: { cellWidth: 25 },
+        1: { cellWidth: 35 },
+        2: { cellWidth: 15, halign: 'center' },
+        3: { cellWidth: 15, halign: 'center' },
+        4: { cellWidth: 20, halign: 'center' },
+        5: { cellWidth: 25, halign: 'right' },
+        6: { cellWidth: 25, halign: 'right' },
+      }
+    });
+
+    // Save the PDF
+    const fileName = `faturamento-produtos-${new Date().toISOString().split('T')[0]}.pdf`;
+    doc.save(fileName);
   }
 }
 

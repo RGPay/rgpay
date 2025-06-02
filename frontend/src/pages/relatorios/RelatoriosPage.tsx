@@ -74,6 +74,13 @@ const RelatoriosPage: React.FC = () => {
     setFilter(newFilter);
   };
 
+  const handleSearchChange = (searchTerm: string) => {
+    setFilter({
+      ...filter,
+      search: searchTerm || undefined,
+    });
+  };
+
   const handleExportCSV = async () => {
     if (!reportData) {
       setToast({
@@ -161,6 +168,7 @@ const RelatoriosPage: React.FC = () => {
         data={reportData}
         loading={loading}
         searchTerm={filter.search}
+        onSearchChange={handleSearchChange}
       />
 
       <Toast
