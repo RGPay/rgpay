@@ -13,6 +13,7 @@ import SettingsPage from "./pages/SettingsPage";
 import { ProdutosListPage, ProdutoFormPage } from "./pages/produtos";
 import { PedidosListPage, PedidoDetailsPage } from "./pages/pedidos";
 import { UnidadesListPage, UnidadeFormPage } from "./pages/unidades";
+import { RelatoriosPage } from "./pages/relatorios";
 import Dashboard from "./pages/Dashboard";
 import "./App.css";
 import { useSelector } from "react-redux";
@@ -87,6 +88,9 @@ function App() {
             <Route path="novo" element={<EventsFormPage />} />
             <Route path="editar/:id" element={<EventsFormPage />} />
           </Route>
+
+          {/* Reports routes */}
+          <Route path="/relatorios" element={<RelatoriosPage />} />
 
           {/* Categories routes */}
           <Route path="/categories">

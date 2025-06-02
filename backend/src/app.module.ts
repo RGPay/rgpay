@@ -7,6 +7,7 @@ import { ProdutosModule } from './produtos/produtos.module';
 import { PedidosModule } from './pedidos/pedidos.module';
 import { UnidadesModule } from './unidades/unidades.module';
 import { DashboardModule } from './dashboard/dashboard.module';
+import { RelatoriosModule } from './relatorios/relatorios.module';
 import * as dotenv from 'dotenv';
 import { Unidade } from './unidades/unidade.model';
 import { Usuario } from './auth/usuario.model';
@@ -48,6 +49,7 @@ dotenv.config();
     PedidosModule,
     UnidadesModule,
     DashboardModule,
+    RelatoriosModule,
     EventosModule,
     CategoryModule,
   ],
