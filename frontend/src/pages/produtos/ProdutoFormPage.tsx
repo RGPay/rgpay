@@ -9,9 +9,14 @@ import {
   CardContent,
   IconButton,
   Alert,
+  TextField,
+  MenuItem,
+  FormControlLabel,
+  Checkbox,
+  Grid,
 } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
-import { FormikForm, Toast } from "../../components";
+import { Toast } from "../../components";
 import * as Yup from "yup";
 import {
   produtosService,
@@ -22,7 +27,7 @@ import {
 import { FormikHelpers } from "formik";
 import unidadesService, { Unidade } from "../../services/unidades.service";
 import categoriesService, { Category } from "../../services/categories.service";
-import { Formik, Form } from "formik";
+import { Formik, Form, Field, FieldProps } from "formik";
 import { PhotoCamera, Delete as DeleteIcon } from "@mui/icons-material";
 
 const validationSchema = Yup.object({
@@ -42,6 +47,7 @@ const validationSchema = Yup.object({
     .required("Estoque é obrigatório")
     .min(0, "Estoque não pode ser negativo")
     .integer("Estoque deve ser um número inteiro"),
+  imagem: Yup.string().optional(),
 });
 
 const ProdutoFormPage: React.FC = () => {
@@ -59,6 +65,7 @@ const ProdutoFormPage: React.FC = () => {
     disponivel: true,
     id_unidade: 1,
     estoque: 0,
+    imagem: "",
   });
 
   const [loading, setLoading] = useState(isEditMode);
@@ -81,7 +88,7 @@ const ProdutoFormPage: React.FC = () => {
       try {
         const unidadesData = await unidadesService.getAll();
         setUnidades(unidadesData);
-      } catch (error) {
+      } catch {
         setUnidadesError("Erro ao carregar unidades");
       } finally {
         setUnidadesLoading(false);
@@ -95,7 +102,7 @@ const ProdutoFormPage: React.FC = () => {
       try {
         const categoriesData = await categoriesService.getAll();
         setCategories(categoriesData);
-      } catch (error) {
+      } catch {
         setCategoriesError("Erro ao carregar categorias");
       } finally {
         setCategoriesLoading(false);
@@ -115,6 +122,7 @@ const ProdutoFormPage: React.FC = () => {
               produto.category_id ??
                 (produto.category ? produto.category.id : 0)
             ),
+            imagem: produto.imagem || "",
           });
         } catch (error) {
           console.error("Error fetching product:", error);
@@ -134,7 +142,7 @@ const ProdutoFormPage: React.FC = () => {
 
   const handleSubmit = async (
     values: CreateProdutoDto | UpdateProdutoDto,
-    formikHelpers: FormikHelpers<any>
+    formikHelpers: FormikHelpers<Produto | CreateProdutoDto>
   ) => {
     try {
       if (isEditMode && id) {
@@ -177,7 +185,7 @@ const ProdutoFormPage: React.FC = () => {
 
   const handleImageUpload = (
     event: React.ChangeEvent<HTMLInputElement>,
-    setFieldValue: (field: string, value: any) => void
+    setFieldValue: (field: string, value: string) => void
   ) => {
     const file = event.target.files?.[0];
     if (file) {
@@ -208,67 +216,6 @@ const ProdutoFormPage: React.FC = () => {
       reader.readAsDataURL(file);
     }
   };
-
-  const unidadeOptions = unidades.map((u) => ({
-    value: u.id_unidade,
-    label: u.nome,
-  }));
-
-  const formFields = [
-    {
-      name: "nome",
-      label: "Nome do Produto",
-      type: "text" as const,
-      required: true,
-      autoFocus: true,
-    },
-    {
-      name: "preco_compra",
-      label: "Preço de Compra",
-      type: "number" as const,
-      required: true,
-    },
-    {
-      name: "preco_venda",
-      label: "Preço de Venda",
-      type: "number" as const,
-      required: true,
-    },
-    {
-      name: "category_id",
-      label: "Categoria",
-      type: "select" as const,
-      required: true,
-      options: categories.map((cat) => ({ value: cat.id, label: cat.name })),
-      xs: 12,
-      sm: 6,
-    },
-    {
-      name: "disponivel",
-      label: "Disponível",
-      type: "checkbox" as const,
-      xs: 12,
-      sm: 6,
-    },
-    {
-      name: "id_unidade",
-      label: "Unidade",
-      type: "select" as const,
-      required: true,
-      options: unidadeOptions,
-      xs: 12,
-      sm: 6,
-    },
-    {
-      name: "estoque",
-      label: "Estoque",
-      type: "number" as const,
-      required: true,
-      xs: 12,
-      sm: 6,
-      min: 0,
-    },
-  ];
 
   if (
     loading ||
@@ -309,6 +256,7 @@ const ProdutoFormPage: React.FC = () => {
         >
           {({ values, setFieldValue, isSubmitting, errors, touched }) => (
             <Form>
+              {/* Image Upload Section */}
               <Card sx={{ mb: 3 }}>
                 <CardContent>
                   <Typography variant="h6" gutterBottom>
@@ -432,15 +380,178 @@ const ProdutoFormPage: React.FC = () => {
                 </CardContent>
               </Card>
 
-              <FormikForm
-                initialValues={initialValues}
-                validationSchema={validationSchema}
-                onSubmit={handleSubmit}
-                onCancel={handleCancel}
-                fields={formFields}
-                submitButtonText={isEditMode ? "Atualizar" : "Criar"}
-                loading={loading || isSubmitting}
-              />
+              {/* Form Fields */}
+              <Grid container spacing={2}>
+                {/* Nome */}
+                <Grid item xs={12}>
+                  <Field name="nome">
+                    {({ field, meta }: FieldProps) => (
+                      <TextField
+                        {...field}
+                        label="Nome do Produto"
+                        fullWidth
+                        required
+                        autoFocus
+                        size="small"
+                        error={meta.touched && !!meta.error}
+                        helperText={meta.touched && meta.error}
+                      />
+                    )}
+                  </Field>
+                </Grid>
+
+                {/* Preço de Compra */}
+                <Grid item xs={12} sm={6}>
+                  <Field name="preco_compra">
+                    {({ field, meta }: FieldProps) => (
+                      <TextField
+                        {...field}
+                        type="number"
+                        label="Preço de Compra"
+                        fullWidth
+                        required
+                        size="small"
+                        error={meta.touched && !!meta.error}
+                        helperText={meta.touched && meta.error}
+                      />
+                    )}
+                  </Field>
+                </Grid>
+
+                {/* Preço de Venda */}
+                <Grid item xs={12} sm={6}>
+                  <Field name="preco_venda">
+                    {({ field, meta }: FieldProps) => (
+                      <TextField
+                        {...field}
+                        type="number"
+                        label="Preço de Venda"
+                        fullWidth
+                        required
+                        size="small"
+                        error={meta.touched && !!meta.error}
+                        helperText={meta.touched && meta.error}
+                      />
+                    )}
+                  </Field>
+                </Grid>
+
+                {/* Categoria */}
+                <Grid item xs={12} sm={6}>
+                  <Field name="category_id">
+                    {({ field, meta }: FieldProps) => (
+                      <TextField
+                        {...field}
+                        select
+                        label="Categoria"
+                        fullWidth
+                        required
+                        size="small"
+                        error={meta.touched && !!meta.error}
+                        helperText={meta.touched && meta.error}
+                      >
+                        {categories.map((category) => (
+                          <MenuItem key={category.id} value={category.id}>
+                            {category.name}
+                          </MenuItem>
+                        ))}
+                      </TextField>
+                    )}
+                  </Field>
+                </Grid>
+
+                {/* Unidade */}
+                <Grid item xs={12} sm={6}>
+                  <Field name="id_unidade">
+                    {({ field, meta }: FieldProps) => (
+                      <TextField
+                        {...field}
+                        select
+                        label="Unidade"
+                        fullWidth
+                        required
+                        size="small"
+                        error={meta.touched && !!meta.error}
+                        helperText={meta.touched && meta.error}
+                      >
+                        {unidades.map((unidade) => (
+                          <MenuItem
+                            key={unidade.id_unidade}
+                            value={unidade.id_unidade}
+                          >
+                            {unidade.nome}
+                          </MenuItem>
+                        ))}
+                      </TextField>
+                    )}
+                  </Field>
+                </Grid>
+
+                {/* Estoque */}
+                <Grid item xs={12} sm={6}>
+                  <Field name="estoque">
+                    {({ field, meta }: FieldProps) => (
+                      <TextField
+                        {...field}
+                        type="number"
+                        label="Estoque"
+                        fullWidth
+                        required
+                        size="small"
+                        inputProps={{ min: 0 }}
+                        error={meta.touched && !!meta.error}
+                        helperText={meta.touched && meta.error}
+                      />
+                    )}
+                  </Field>
+                </Grid>
+
+                {/* Disponível */}
+                <Grid item xs={12} sm={6}>
+                  <Field name="disponivel">
+                    {({ field }: FieldProps) => (
+                      <FormControlLabel
+                        control={<Checkbox {...field} checked={field.value} />}
+                        label="Disponível"
+                      />
+                    )}
+                  </Field>
+                </Grid>
+
+                {/* Submit Buttons */}
+                <Grid item xs={12}>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "flex-end",
+                      mt: 2,
+                      gap: 1,
+                    }}
+                  >
+                    <Button
+                      variant="outlined"
+                      color="inherit"
+                      onClick={handleCancel}
+                      disabled={isSubmitting}
+                    >
+                      Cancelar
+                    </Button>
+                    <Button
+                      type="submit"
+                      variant="contained"
+                      color="primary"
+                      disabled={isSubmitting}
+                      startIcon={
+                        isSubmitting ? (
+                          <CircularProgress size={20} color="inherit" />
+                        ) : null
+                      }
+                    >
+                      {isEditMode ? "Atualizar" : "Criar"}
+                    </Button>
+                  </Box>
+                </Grid>
+              </Grid>
             </Form>
           )}
         </Formik>
