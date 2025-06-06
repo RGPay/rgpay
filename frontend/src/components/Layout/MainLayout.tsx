@@ -132,7 +132,9 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
     if (user && user.sub) {
       try {
         await AuthService.revokeRefreshTokens(user.sub);
-      } catch (e) {}
+      } catch {
+        // Ignore errors when revoking tokens
+      }
     }
     localStorage.removeItem("token");
     localStorage.removeItem("refresh_token");
@@ -429,6 +431,31 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                   />
                 </ListItemButton>
               </ListItem>
+              {user?.tipo_usuario === "master" && (
+                <ListItem disablePadding sx={{ mb: 0.5 }}>
+                  <ListItemButton
+                    onClick={() => navigate("/settings")}
+                    selected={isActiveRoute("/settings")}
+                    sx={{
+                      borderRadius: 2,
+                      py: 1.2,
+                    }}
+                  >
+                    <ListItemIcon
+                      sx={{ color: "text.secondary", minWidth: 40 }}
+                    >
+                      <SettingsIcon />
+                    </ListItemIcon>
+                    <ListItemText
+                      primary="Configurações"
+                      primaryTypographyProps={{
+                        fontWeight: isActiveRoute("/settings") ? 600 : 400,
+                        fontSize: "0.95rem",
+                      }}
+                    />
+                  </ListItemButton>
+                </ListItem>
+              )}
               <ListItem disablePadding sx={{ mb: 0.5 }}>
                 <ListItemButton
                   onClick={handleLogout}
