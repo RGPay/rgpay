@@ -18,8 +18,8 @@ export class Unidade extends Model<Unidade> {
   @Column(DataType.STRING)
   declare nome: string;
 
-  @Column(DataType.STRING)
-  declare cnpj: string;
+  @Column({ type: DataType.STRING, allowNull: true })
+  declare cnpj?: string;
 
   @Column(DataType.STRING)
   declare cidade: string;

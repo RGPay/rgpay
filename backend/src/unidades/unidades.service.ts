@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Unidade } from './unidade.model';
+import { CreateUnidadeDto, UpdateUnidadeDto } from './unidades.dto';
 
 @Injectable()
 export class UnidadesService {
@@ -21,11 +22,11 @@ export class UnidadesService {
     return unidade;
   }
 
-  async create(data: Partial<Unidade>): Promise<Unidade> {
+  async create(data: CreateUnidadeDto): Promise<Unidade> {
     return this.unidadeModel.create(data as any);
   }
 
-  async update(id: number, data: Partial<Unidade>): Promise<Unidade> {
+  async update(id: number, data: UpdateUnidadeDto): Promise<Unidade> {
     const unidade = await this.findOne(id);
     await unidade.update(data);
     return unidade;

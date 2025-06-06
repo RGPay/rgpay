@@ -13,7 +13,7 @@ import unidadesService, {
 // Form validation schema
 const validationSchema = Yup.object({
   nome: Yup.string().required("O nome da unidade é obrigatório"),
-  cnpj: Yup.string().required("O CNPJ da unidade é obrigatório"),
+  cnpj: Yup.string().optional(),
   cidade: Yup.string().required("A cidade da unidade é obrigatória"),
   estado: Yup.string().required("O estado da unidade é obrigatório"),
   endereco: Yup.string().required("O endereço da unidade é obrigatório"),
@@ -113,7 +113,7 @@ const UnidadeFormPage: React.FC = () => {
       name: "cnpj",
       label: "CNPJ",
       type: "text" as const,
-      required: true,
+      required: false,
       fullWidth: true,
       xs: 12,
       md: 6,

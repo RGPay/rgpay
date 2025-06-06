@@ -3,7 +3,7 @@ import api from "./api";
 export interface Unidade {
   id_unidade: number;
   nome: string;
-  cnpj: string;
+  cnpj?: string;
   cidade: string;
   estado: string;
   endereco: string;
@@ -11,7 +11,7 @@ export interface Unidade {
 
 export interface CreateUnidadeDto {
   nome: string;
-  cnpj: string;
+  cnpj?: string;
   cidade: string;
   estado: string;
   endereco: string;
