@@ -4,6 +4,8 @@ import {
   Typography,
 } from "@mui/material";
 import { startOfMonth } from "date-fns";
+import { useSelector } from "react-redux";
+import type { RootState } from "../../store/store";
 import relatoriosService, {
   RelatorioFilter,
   FaturamentoProdutoResponse,
@@ -15,6 +17,10 @@ import ExportButtons from "./ExportButtons";
 import ReportTable from "./ReportTable";
 
 const RelatoriosPage: React.FC = () => {
+  const selectedUnidade = useSelector(
+    (state: RootState) => state.unidade.selectedUnidade
+  );
+
   const [filter, setFilter] = useState<RelatorioFilter>({
     periodoInicio: startOfMonth(new Date()),
     periodoFim: new Date(),
@@ -33,12 +39,26 @@ const RelatoriosPage: React.FC = () => {
   // Use ref to track if we're currently debouncing to avoid conflicts
   const debounceRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Load eventos on mount
+  // Load eventos when selectedUnidade changes
   useEffect(() => {
     const loadEventos = async () => {
       try {
         const data = await eventosService.getAll();
         setEventos(data);
+        
+        // Clear event filter if the current selected event is not available for the new unit
+        if (filter.id_evento && selectedUnidade) {
+          const eventBelongsToUnit = data.some(evento => 
+            evento.id_evento === filter.id_evento && 
+            evento.id_unidade === Number(selectedUnidade)
+          );
+          if (!eventBelongsToUnit) {
+            setFilter(prevFilter => ({
+              ...prevFilter,
+              id_evento: undefined,
+            }));
+          }
+        }
       } catch (error) {
         console.error("Error loading eventos:", error);
         setToast({
@@ -50,7 +70,7 @@ const RelatoriosPage: React.FC = () => {
     };
 
     loadEventos();
-  }, []);
+  }, [selectedUnidade, filter.id_evento]);
 
   // Debounced effect for search term - only update filter after user stops typing
   useEffect(() => {
@@ -77,10 +97,10 @@ const RelatoriosPage: React.FC = () => {
     };
   }, [searchTerm]);
 
-  // Load report data when filter changes
+  // Load report data when filter changes or selectedUnidade changes
   useEffect(() => {
     loadReportData();
-  }, [filter.periodoInicio, filter.periodoFim, filter.id_evento, filter.id_unidade, filter.search]);
+  }, [filter.periodoInicio, filter.periodoFim, filter.id_evento, filter.search, selectedUnidade]);
 
   const loadReportData = async () => {
     setLoading(true);

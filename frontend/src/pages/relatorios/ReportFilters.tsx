@@ -21,6 +21,8 @@ import {
   FilterAlt as FilterAltIcon,
   Refresh as RefreshIcon,
 } from "@mui/icons-material";
+import { useSelector } from "react-redux";
+import type { RootState } from "../../store/store";
 import { Evento } from "../../services/eventos.service";
 import { RelatorioFilter } from "../../services/relatorios.service";
 
@@ -40,6 +42,15 @@ const ReportFilters: React.FC<ReportFiltersProps> = ({
   loading = false,
 }) => {
   const theme = useTheme();
+  const selectedUnidade = useSelector(
+    (state: RootState) => state.unidade.selectedUnidade
+  );
+
+  // Filter eventos to show only those related to the selected unit
+  const filteredEventos = React.useMemo(() => {
+    if (!selectedUnidade) return eventos;
+    return eventos.filter(evento => evento.id_unidade === Number(selectedUnidade));
+  }, [eventos, selectedUnidade]);
 
   // Track filter mode separately from filter values
   const [filterMode, setFilterMode] = React.useState<FilterMode>(() => {
@@ -61,7 +72,6 @@ const ReportFilters: React.FC<ReportFiltersProps> = ({
         search: undefined,
         periodoInicio: filter.periodoInicio,
         periodoFim: filter.periodoFim,
-        id_unidade: filter.id_unidade,
         id_evento: undefined,
       });
     } else {
@@ -69,7 +79,6 @@ const ReportFilters: React.FC<ReportFiltersProps> = ({
       onFilterChange({
         search: undefined,
         id_evento: filter.id_evento,
-        id_unidade: filter.id_unidade,
         periodoInicio: undefined,
         periodoFim: undefined,
       });
@@ -97,6 +106,7 @@ const ReportFilters: React.FC<ReportFiltersProps> = ({
       periodoFim: undefined,
       id_evento: undefined,
     });
+    setFilterMode('date');
   };
 
   return (
@@ -207,8 +217,12 @@ const ReportFilters: React.FC<ReportFiltersProps> = ({
                 label="Evento"
                 onChange={(e) => handleEventChange(e.target.value as number | '')}
               >
-                <MenuItem value="">Selecione um evento</MenuItem>
-                {eventos.map((evento) => (
+                <MenuItem value="">
+                  {filteredEventos.length === 0 
+                    ? "Nenhum evento disponível para esta unidade" 
+                    : "Selecione um evento"}
+                </MenuItem>
+                {filteredEventos.map((evento) => (
                   <MenuItem key={evento.id_evento} value={evento.id_evento}>
                     {evento.nome}
                   </MenuItem>
