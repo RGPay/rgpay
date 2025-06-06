@@ -32,6 +32,7 @@ import {
   Settings as SettingsIcon,
   Event as EventIcon,
   Category as CategoryIcon,
+  Assessment as AssessmentIcon,
 } from "@mui/icons-material";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -57,6 +58,7 @@ const pageTitles: Record<string, string> = {
   "/pedidos": "Pedidos",
   "/unidades": "Unidades",
   "/unidades/nova": "Nova Unidade",
+  "/relatorios": "Relatórios",
   "/profile": "Perfil",
   "/settings": "Configurações",
 };
@@ -144,6 +146,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
     { text: "Categorias", icon: <CategoryIcon />, path: "/categories" },
     { text: "Pedidos", icon: <ShoppingCartIcon />, path: "/pedidos" },
     { text: "Eventos", icon: <EventIcon />, path: "/eventos" },
+    { text: "Relatórios", icon: <AssessmentIcon />, path: "/relatorios" },
     { text: "Unidades", icon: <LocationOnIcon />, path: "/unidades" },
   ];
 
