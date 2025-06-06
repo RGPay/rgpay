@@ -19,6 +19,7 @@ import { Evento } from './eventos/evento.model';
 import { EventosModule } from './eventos/eventos.module';
 import { Category } from './categorias/category.model';
 import { CategoryModule } from './categorias/category.module';
+import { MaquinetasModule } from './maquinetas/maquinetas.module';
 
 dotenv.config();
 
@@ -52,6 +53,7 @@ dotenv.config();
     RelatoriosModule,
     EventosModule,
     CategoryModule,
+    MaquinetasModule,
   ],
   controllers: [AppController],
   providers: [AppService],

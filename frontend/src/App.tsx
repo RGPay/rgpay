@@ -22,6 +22,7 @@ import { MainLayout } from "./components/Layout";
 import EventsListPage from "./pages/events/EventsListPage";
 import EventsFormPage from "./pages/events/EventsFormPage";
 import { CategoriesListPage, CategoriesFormPage } from "./pages/categories";
+import { MaquinetasListPage, MaquinetaFormPage } from "./pages/maquinetas";
 
 // Protected Layout component that checks authentication and applies the MainLayout
 function ProtectedLayout() {
@@ -87,6 +88,13 @@ function App() {
             <Route index element={<EventsListPage />} />
             <Route path="novo" element={<EventsFormPage />} />
             <Route path="editar/:id" element={<EventsFormPage />} />
+          </Route>
+
+          {/* Maquinetas routes */}
+          <Route path="/maquinetas">
+            <Route index element={<MaquinetasListPage />} />
+            <Route path="nova" element={<MaquinetaFormPage />} />
+            <Route path="editar/:id" element={<MaquinetaFormPage />} />
           </Route>
 
           {/* Reports routes */}

@@ -34,7 +34,7 @@ class EventosService {
   async getAll(): Promise<Evento[]> {
     const selectedUnidade = store.getState().unidade.selectedUnidade;
     const params = selectedUnidade
-      ? { id_unidade: Number(selectedUnidade) }
+      ? { id_unidade: selectedUnidade }
       : {};
     const response = await api.get("/eventos", { params });
     return response.data;
