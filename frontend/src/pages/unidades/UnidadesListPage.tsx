@@ -86,7 +86,12 @@ const UnidadesListPage: React.FC = () => {
   const columns = [
     { id: "id_unidade", label: "ID", minWidth: 50 },
     { id: "nome", label: "Nome", minWidth: 180 },
-    { id: "cnpj", label: "CNPJ", minWidth: 150 },
+    {
+      id: "cnpj",
+      label: "CNPJ",
+      minWidth: 150,
+      format: (value: unknown) => (value as string) || "-",
+    },
     { id: "cidade", label: "Cidade", minWidth: 120 },
     { id: "estado", label: "Estado", minWidth: 80 },
     { id: "endereco", label: "Endereço", minWidth: 250 },

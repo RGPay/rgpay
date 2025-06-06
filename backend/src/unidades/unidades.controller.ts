@@ -9,6 +9,7 @@ import {
 } from '@nestjs/common';
 import { UnidadesService } from './unidades.service';
 import { Unidade } from './unidade.model';
+import { CreateUnidadeDto, UpdateUnidadeDto } from './unidades.dto';
 
 @Controller('unidades')
 export class UnidadesController {
@@ -25,14 +26,14 @@ export class UnidadesController {
   }
 
   @Post()
-  async create(@Body() data: Partial<Unidade>): Promise<Unidade> {
+  async create(@Body() data: CreateUnidadeDto): Promise<Unidade> {
     return this.unidadesService.create(data);
   }
 
   @Put(':id')
   async update(
     @Param('id') id: number,
-    @Body() data: Partial<Unidade>,
+    @Body() data: UpdateUnidadeDto,
   ): Promise<Unidade> {
     return this.unidadesService.update(id, data);
   }
