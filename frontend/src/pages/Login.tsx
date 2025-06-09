@@ -41,12 +41,18 @@ export default function Login() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [hasAttemptedAutoLogin, setHasAttemptedAutoLogin] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const theme = useTheme();
 
   useEffect(() => {
+    // Only attempt auto-login once to prevent redirect loops
+    if (hasAttemptedAutoLogin) return;
+    
     const attemptAutoLogin = async () => {
+      setHasAttemptedAutoLogin(true);
+      
       try {
         // Check localStorage first (persistent login)
         let token = localStorage.getItem("token");
@@ -124,7 +130,7 @@ export default function Login() {
     };
 
     attemptAutoLogin();
-  }, [dispatch, navigate]);
+  }, [hasAttemptedAutoLogin, dispatch, navigate]);
 
   const handleTogglePasswordVisibility = () => {
     setShowPassword(!showPassword);
