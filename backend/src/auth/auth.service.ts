@@ -74,10 +74,21 @@ export class AuthService {
       expires_at,
     } as import('./refresh-token.model').RefreshToken);
 
+    // Return the full user object instead of just the payload
+    const userResponse = {
+      id_usuario: user.id_usuario,
+      nome: user.nome,
+      email: user.email,
+      tipo_usuario: user.tipo_usuario,
+      id_unidade: user.id_unidade,
+      sub: user.id_usuario, // JWT subject
+      name: user.nome, // alias for nome
+    };
+
     return {
       access_token,
       refresh_token,
-      user: payload,
+      user: userResponse,
     };
   }
 
@@ -103,10 +114,22 @@ export class AuthService {
     stored.token = new_refresh_token;
     stored.expires_at = expires_at;
     await stored.save();
+
+    // Return the full user object instead of just the payload
+    const userResponse = {
+      id_usuario: user.id_usuario,
+      nome: user.nome,
+      email: user.email,
+      tipo_usuario: user.tipo_usuario,
+      id_unidade: user.id_unidade,
+      sub: user.id_usuario, // JWT subject
+      name: user.nome, // alias for nome
+    };
+
     return {
       access_token,
       refresh_token: new_refresh_token,
-      user: payload,
+      user: userResponse,
     };
   }
 

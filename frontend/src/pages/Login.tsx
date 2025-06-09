@@ -87,8 +87,8 @@ export default function Login() {
                 }
                 
                 dispatch(loginAction({ 
-                  token: newTokens.access_token, 
-                  refreshToken: newTokens.refresh_token, 
+                  access_token: newTokens.access_token, 
+                  refresh_token: newTokens.refresh_token, 
                   user: newTokens.user 
                 }));
                 navigate("/");
@@ -113,7 +113,7 @@ export default function Login() {
             }
           } else {
             // Token is still valid, proceed with login
-            dispatch(loginAction({ token, refreshToken, user: JSON.parse(user) }));
+            dispatch(loginAction({ access_token: token, refresh_token: refreshToken, user: JSON.parse(user) }));
             navigate("/");
           }
         }
@@ -247,8 +247,8 @@ export default function Login() {
                   const data = response.data;
                   dispatch(
                     loginAction({
-                      token: data.access_token,
-                      refreshToken: data.refresh_token,
+                      access_token: data.access_token,
+                      refresh_token: data.refresh_token,
                       user: data.user,
                     })
                   );
@@ -305,74 +305,7 @@ export default function Login() {
               }}
             >
               {({ errors, touched, handleChange, handleBlur, values }) => (
-                <form onSubmit={async (e) => {
-                  e.preventDefault();
-                  setError("");
-                  setLoading(true);
-                  try {
-                    const response = await api.post("/auth/login", {
-                      email: values.email,
-                      senha: values.password,
-                    });
-                    const data = response.data;
-                    dispatch(
-                      loginAction({
-                        token: data.access_token,
-                        refreshToken: data.refresh_token,
-                        user: data.user,
-                      })
-                    );
-                    if (values.autoLogin) {
-                      localStorage.setItem("token", data.access_token);
-                      localStorage.setItem("refresh_token", data.refresh_token);
-                      localStorage.setItem("user", JSON.stringify(data.user));
-                    } else {
-                      sessionStorage.setItem("token", data.access_token);
-                      sessionStorage.setItem("refresh_token", data.refresh_token);
-                      sessionStorage.setItem("user", JSON.stringify(data.user));
-                    }
-                    navigate("/");
-                  } catch (err: unknown) {
-                    let errorMessage = "Erro desconhecido ao fazer login";
-
-                    if (err instanceof AxiosError) {
-                      const status = err.response?.status;
-                      const serverMessage = err.response?.data?.message;
-
-                      switch (status) {
-                        case 401:
-                          errorMessage =
-                            "Email ou senha incorretos. Verifique suas credenciais e tente novamente.";
-                          break;
-                        case 403:
-                          errorMessage =
-                            "Acesso negado. Sua conta pode estar bloqueada ou inativa.";
-                          break;
-                        case 429:
-                          errorMessage =
-                            "Muitas tentativas de login. Aguarde alguns minutos antes de tentar novamente.";
-                          break;
-                        case 500:
-                          errorMessage =
-                            "Erro interno do servidor. Tente novamente em alguns instantes.";
-                          break;
-                        case 503:
-                          errorMessage =
-                            "Serviço temporariamente indisponível. Tente novamente mais tarde.";
-                          break;
-                        default:
-                          errorMessage =
-                            serverMessage || (err as any).message || errorMessage;
-                      }
-                    } else if (err instanceof Error) {
-                      errorMessage = err.message;
-                    }
-
-                    setError(errorMessage);
-                  } finally {
-                    setLoading(false);
-                  }
-                }}>
+                <Form>
                   <TextField
                     fullWidth
                     margin="normal"
@@ -547,7 +480,7 @@ export default function Login() {
                       "Entrar"
                     )}
                   </Button>
-                </form>
+                </Form>
               )}
             </Formik>
           </Box>
