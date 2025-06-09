@@ -27,17 +27,34 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response: AxiosResponse) => response,
   async (error: AxiosError) => {
+    const originalRequest = error.config as InternalAxiosRequestConfig & { _retry?: boolean };
+    
     // Handle session expiration - try refresh token
-    if (error.response && error.response.status === 401) {
+    if (error.response && error.response.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true; // Prevent infinite loops
+      
+      // Skip refresh logic if the failing request is already a refresh request
+      if (originalRequest.url?.includes('/auth/refresh')) {
+        // Clear storage and redirect for refresh token failures
+        sessionStorage.removeItem("token");
+        sessionStorage.removeItem("refresh_token");
+        sessionStorage.removeItem("user");
+        localStorage.removeItem("token");
+        localStorage.removeItem("refresh_token");
+        localStorage.removeItem("user");
+        
+        if (window.location.pathname !== "/login") {
+          window.location.href = "/login";
+        }
+        return Promise.reject(error);
+      }
+      
       const refreshToken = sessionStorage.getItem("refresh_token") || localStorage.getItem("refresh_token");
       if (refreshToken) {
         try {
           const { default: AuthService } = await import("./auth.service");
           const newTokens = await AuthService.refreshToken(refreshToken);
-          if (newTokens && error.config) {
-            // Retry original request with new access token
-            error.config.headers = error.config.headers || {};
-            error.config.headers["Authorization"] = `Bearer ${newTokens.access_token}`;
+          if (newTokens && originalRequest) {
             // Update storage
             if (localStorage.getItem("refresh_token")) {
               localStorage.setItem("token", newTokens.access_token);
@@ -48,20 +65,37 @@ api.interceptors.response.use(
               sessionStorage.setItem("refresh_token", newTokens.refresh_token);
               sessionStorage.setItem("user", JSON.stringify(newTokens.user));
             }
-            return api(error.config);
+            
+            // Retry original request with new access token
+            originalRequest.headers = originalRequest.headers || {};
+            originalRequest.headers["Authorization"] = `Bearer ${newTokens.access_token}`;
+            return api(originalRequest);
           }
         } catch (refreshError) {
           // If refresh fails, clear storage and redirect
+          sessionStorage.removeItem("token");
+          sessionStorage.removeItem("refresh_token");
+          sessionStorage.removeItem("user");
+          localStorage.removeItem("token");
+          localStorage.removeItem("refresh_token");
+          localStorage.removeItem("user");
+          
+          if (window.location.pathname !== "/login") {
+            window.location.href = "/login";
+          }
+          return Promise.reject(refreshError);
         }
       }
+      
+      // Clear storage and redirect if no refresh token
       sessionStorage.removeItem("token");
       sessionStorage.removeItem("refresh_token");
       sessionStorage.removeItem("user");
       localStorage.removeItem("token");
       localStorage.removeItem("refresh_token");
       localStorage.removeItem("user");
-      const hadToken = !!(sessionStorage.getItem("token") || localStorage.getItem("token"));
-      if (hadToken && window.location.pathname !== "/login") {
+      
+      if (window.location.pathname !== "/login") {
         window.location.href = "/login";
       }
     }

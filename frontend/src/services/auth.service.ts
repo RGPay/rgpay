@@ -1,9 +1,17 @@
-import api from "./api";
+import axios from "axios";
+
+// Create a separate axios instance for auth operations to avoid interceptor loops
+const authApi = axios.create({
+  baseURL: import.meta.env.VITE_API_BASE_URL,
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
 
 class AuthService {
   async refreshToken(refreshToken: string) {
     try {
-      const response = await api.post("/auth/refresh", { refresh_token: refreshToken });
+      const response = await authApi.post("/auth/refresh", { refresh_token: refreshToken });
       return response.data;
     } catch (error) {
       return null;
@@ -11,7 +19,7 @@ class AuthService {
   }
 
   async revokeRefreshTokens(userId: number) {
-    return api.post("/auth/revoke-refresh-tokens", { userId });
+    return authApi.post("/auth/revoke-refresh-tokens", { userId });
   }
 }
 
