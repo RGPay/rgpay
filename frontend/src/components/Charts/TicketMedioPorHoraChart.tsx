@@ -38,7 +38,7 @@ const TicketMedioPorHoraChart: React.FC<TicketMedioPorHoraChartProps> = ({
 
   React.useEffect(() => {
     dashboardService
-      .getEventos(selectedUnidade ?? undefined)
+      .getEventos(selectedUnidade || undefined)
       .then((rawEventos) => {
         setEventos(
           rawEventos.map(
@@ -61,7 +61,7 @@ const TicketMedioPorHoraChart: React.FC<TicketMedioPorHoraChartProps> = ({
     dashboardService
       .getTicketMedioPorHora(
         selectedEvento ?? undefined,
-        selectedUnidade ?? undefined,
+        selectedUnidade || undefined,
         filter
       )
       .then(setTicketMedioPorHora)

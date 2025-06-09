@@ -38,7 +38,7 @@ const FaturamentoPorHoraChart: React.FC<FaturamentoPorHoraChartProps> = ({
 
   React.useEffect(() => {
     dashboardService
-      .getEventos(selectedUnidade ?? undefined)
+      .getEventos(selectedUnidade || undefined)
       .then((rawEventos) => {
         setEventos(
           rawEventos.map(
@@ -61,7 +61,7 @@ const FaturamentoPorHoraChart: React.FC<FaturamentoPorHoraChartProps> = ({
     dashboardService
       .getFaturamentoPorHora(
         selectedEvento ?? undefined,
-        selectedUnidade ?? undefined,
+        selectedUnidade || undefined,
         filter
       )
       .then(setFaturamentoPorHora)

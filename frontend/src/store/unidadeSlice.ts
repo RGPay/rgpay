@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface UnidadeState {
-  selectedUnidade: string | null;
+  selectedUnidade: number | null;
 }
 
 const initialState: UnidadeState = {
@@ -12,7 +12,7 @@ const unidadeSlice = createSlice({
   name: "unidade",
   initialState,
   reducers: {
-    setSelectedUnidade: (state, action: PayloadAction<string | null>) => {
+    setSelectedUnidade: (state, action: PayloadAction<number | null>) => {
       state.selectedUnidade = action.payload;
     },
   },
