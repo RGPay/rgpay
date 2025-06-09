@@ -28,6 +28,7 @@ import {
   Error as ErrorIcon,
 } from "@mui/icons-material";
 import { AutoLoginCheckbox } from "../components/Inputs";
+import { isTokenExpired } from "../utils/tokenUtils";
 
 const LoginSchema = Yup.object().shape({
   email: Yup.string().email("Email inválido").required("Email é obrigatório"),
@@ -45,19 +46,84 @@ export default function Login() {
   const theme = useTheme();
 
   useEffect(() => {
-    // Auto-login if credentials are stored in localStorage or sessionStorage
-    let token = localStorage.getItem("token");
-    let refreshToken = localStorage.getItem("refresh_token");
-    let user = localStorage.getItem("user");
-    if (!(token && refreshToken && user)) {
-      token = sessionStorage.getItem("token");
-      refreshToken = sessionStorage.getItem("refresh_token");
-      user = sessionStorage.getItem("user");
-    }
-    if (token && refreshToken && user) {
-      dispatch(loginAction({ token, refreshToken, user: JSON.parse(user) }));
-      navigate("/");
-    }
+    const attemptAutoLogin = async () => {
+      try {
+        // Check localStorage first (persistent login)
+        let token = localStorage.getItem("token");
+        let refreshToken = localStorage.getItem("refresh_token");
+        let user = localStorage.getItem("user");
+        
+        // If not found in localStorage, check sessionStorage
+        if (!(token && refreshToken && user)) {
+          token = sessionStorage.getItem("token");
+          refreshToken = sessionStorage.getItem("refresh_token");
+          user = sessionStorage.getItem("user");
+        }
+        
+        if (token && refreshToken && user) {
+          // Check if token is expired
+          if (isTokenExpired(token)) {
+            // Try to refresh the token
+            try {
+              const { default: AuthService } = await import("../services/auth.service");
+              const newTokens = await AuthService.refreshToken(refreshToken);
+              
+              if (newTokens) {
+                // Update storage with new tokens
+                if (localStorage.getItem("refresh_token")) {
+                  localStorage.setItem("token", newTokens.access_token);
+                  localStorage.setItem("refresh_token", newTokens.refresh_token);
+                  localStorage.setItem("user", JSON.stringify(newTokens.user));
+                } else {
+                  sessionStorage.setItem("token", newTokens.access_token);
+                  sessionStorage.setItem("refresh_token", newTokens.refresh_token);
+                  sessionStorage.setItem("user", JSON.stringify(newTokens.user));
+                }
+                
+                dispatch(loginAction({ 
+                  token: newTokens.access_token, 
+                  refreshToken: newTokens.refresh_token, 
+                  user: newTokens.user 
+                }));
+                navigate("/");
+              } else {
+                // Refresh failed, clear storage
+                localStorage.removeItem("token");
+                localStorage.removeItem("refresh_token");
+                localStorage.removeItem("user");
+                sessionStorage.removeItem("token");
+                sessionStorage.removeItem("refresh_token");
+                sessionStorage.removeItem("user");
+              }
+            } catch (error) {
+              console.error("Auto-login refresh failed:", error);
+              // Clear storage on error
+              localStorage.removeItem("token");
+              localStorage.removeItem("refresh_token");
+              localStorage.removeItem("user");
+              sessionStorage.removeItem("token");
+              sessionStorage.removeItem("refresh_token");
+              sessionStorage.removeItem("user");
+            }
+          } else {
+            // Token is still valid, proceed with login
+            dispatch(loginAction({ token, refreshToken, user: JSON.parse(user) }));
+            navigate("/");
+          }
+        }
+      } catch (error) {
+        console.error("Auto-login error:", error);
+        // Clear storage on any error
+        localStorage.removeItem("token");
+        localStorage.removeItem("refresh_token");
+        localStorage.removeItem("user");
+        sessionStorage.removeItem("token");
+        sessionStorage.removeItem("refresh_token");
+        sessionStorage.removeItem("user");
+      }
+    };
+
+    attemptAutoLogin();
   }, [dispatch, navigate]);
 
   const handleTogglePasswordVisibility = () => {
