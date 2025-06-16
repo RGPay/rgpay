@@ -21,6 +21,8 @@ import {
   DialogActions,
   Chip,
   Grid,
+  Tabs,
+  Tab,
 } from "@mui/material";
 import {
   Add as AddIcon,
@@ -29,8 +31,10 @@ import {
   Save as SaveIcon,
   Cancel as CancelIcon,
   People as PeopleIcon,
+  Palette as PaletteIcon,
+  Settings as SettingsIcon,
 } from "@mui/icons-material";
-import { Toast } from "../components";
+import { Toast, ThemeSettings } from "../components";
 import UsersService, {
   User,
   CreateUserDto,
@@ -49,6 +53,7 @@ const SettingsPage: React.FC = () => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [editingUser, setEditingUser] = useState<User | null>(null);
   const [userToDelete, setUserToDelete] = useState<User | null>(null);
+  const [activeTab, setActiveTab] = useState(0);
   const [formData, setFormData] = useState<CreateUserDto | UpdateUserDto>({
     nome: "",
     email: "",
@@ -228,69 +233,88 @@ const SettingsPage: React.FC = () => {
         }}
       >
         <Box sx={{ display: "flex", alignItems: "center" }}>
-          <PeopleIcon sx={{ mr: 1, color: "primary.main" }} />
+          <SettingsIcon sx={{ mr: 1, color: "primary.main" }} />
           <Typography variant="h5" component="h1">
-            Gerenciamento de Usuários
+            Configurações
           </Typography>
         </Box>
-        <Button
-          variant="contained"
-          startIcon={<AddIcon />}
-          onClick={() => handleOpenDialog()}
-        >
-          Novo Usuário
-        </Button>
+        {activeTab === 1 && currentUser?.tipo_usuario === "master" && (
+          <Button
+            variant="contained"
+            startIcon={<AddIcon />}
+            onClick={() => handleOpenDialog()}
+          >
+            Novo Usuário
+          </Button>
+        )}
       </Box>
 
-      <Card>
-        <CardContent>
-          <TableContainer component={Paper}>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>Nome</TableCell>
-                  <TableCell>Email</TableCell>
-                  <TableCell>Tipo</TableCell>
-                  <TableCell>Unidade</TableCell>
-                  <TableCell align="center">Ações</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {users.map((user) => (
-                  <TableRow key={user.id_usuario}>
-                    <TableCell>{user.nome}</TableCell>
-                    <TableCell>{user.email}</TableCell>
-                    <TableCell>
-                      {getTipoUsuarioChip(user.tipo_usuario)}
-                    </TableCell>
-                    <TableCell>{getUnidadeNome(user.id_unidade)}</TableCell>
-                    <TableCell align="center">
-                      <IconButton
-                        color="primary"
-                        onClick={() => handleOpenDialog(user)}
-                        size="small"
-                      >
-                        <EditIcon />
-                      </IconButton>
-                      <IconButton
-                        color="error"
-                        onClick={() => {
-                          setUserToDelete(user);
-                          setDeleteDialogOpen(true);
-                        }}
-                        size="small"
-                        disabled={user.id_usuario === currentUser?.sub}
-                      >
-                        <DeleteIcon />
-                      </IconButton>
-                    </TableCell>
+      <Box sx={{ borderBottom: 1, borderColor: "divider", mb: 3 }}>
+        <Tabs
+          value={activeTab}
+          onChange={(_, newValue) => setActiveTab(newValue)}
+        >
+          <Tab icon={<PaletteIcon />} label="Tema" iconPosition="start" />
+          {currentUser?.tipo_usuario === "master" && (
+            <Tab icon={<PeopleIcon />} label="Usuários" iconPosition="start" />
+          )}
+        </Tabs>
+      </Box>
+
+      {/* Tab Content */}
+      {activeTab === 0 && <ThemeSettings />}
+
+      {activeTab === 1 && currentUser?.tipo_usuario === "master" && (
+        <Card>
+          <CardContent>
+            <TableContainer component={Paper}>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Nome</TableCell>
+                    <TableCell>Email</TableCell>
+                    <TableCell>Tipo</TableCell>
+                    <TableCell>Unidade</TableCell>
+                    <TableCell align="center">Ações</TableCell>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </CardContent>
-      </Card>
+                </TableHead>
+                <TableBody>
+                  {users.map((user) => (
+                    <TableRow key={user.id_usuario}>
+                      <TableCell>{user.nome}</TableCell>
+                      <TableCell>{user.email}</TableCell>
+                      <TableCell>
+                        {getTipoUsuarioChip(user.tipo_usuario)}
+                      </TableCell>
+                      <TableCell>{getUnidadeNome(user.id_unidade)}</TableCell>
+                      <TableCell align="center">
+                        <IconButton
+                          color="primary"
+                          onClick={() => handleOpenDialog(user)}
+                          size="small"
+                        >
+                          <EditIcon />
+                        </IconButton>
+                        <IconButton
+                          color="error"
+                          onClick={() => {
+                            setUserToDelete(user);
+                            setDeleteDialogOpen(true);
+                          }}
+                          size="small"
+                          disabled={user.id_usuario === currentUser?.sub}
+                        >
+                          <DeleteIcon />
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </CardContent>
+        </Card>
+      )}
 
       {/* User Form Dialog */}
       <Dialog

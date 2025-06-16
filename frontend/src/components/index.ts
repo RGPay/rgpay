@@ -15,3 +15,6 @@ export * from "./Feedback";
 
 // Navigation components
 export * from "./Navigation";
+
+// Theme components
+export { default as ThemeSettings } from "./ThemeSettings";
