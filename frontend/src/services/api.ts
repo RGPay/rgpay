@@ -9,6 +9,25 @@ const api = axios.create({
   },
 });
 
+// Flag to prevent multiple simultaneous refresh attempts
+let isRefreshing = false;
+let failedQueue: Array<{
+  resolve: (value?: any) => void;
+  reject: (reason?: any) => void;
+}> = [];
+
+const processQueue = (error: any, token: string | null = null) => {
+  failedQueue.forEach(({ resolve, reject }) => {
+    if (error) {
+      reject(error);
+    } else {
+      resolve(token);
+    }
+  });
+  
+  failedQueue = [];
+};
+
 // Add request interceptor to include token in every request
 api.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
@@ -31,8 +50,6 @@ api.interceptors.response.use(
     
     // Handle session expiration - try refresh token
     if (error.response && error.response.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true; // Prevent infinite loops
-      
       // Skip refresh logic if the failing request is already a refresh request
       if (originalRequest.url?.includes('/auth/refresh')) {
         // Clear storage and redirect for refresh token failures
@@ -48,6 +65,23 @@ api.interceptors.response.use(
         }
         return Promise.reject(error);
       }
+
+      if (isRefreshing) {
+        // If already refreshing, queue this request
+        return new Promise((resolve, reject) => {
+          failedQueue.push({ resolve, reject });
+        }).then(token => {
+          if (originalRequest.headers) {
+            originalRequest.headers['Authorization'] = `Bearer ${token}`;
+          }
+          return api(originalRequest);
+        }).catch(err => {
+          return Promise.reject(err);
+        });
+      }
+
+      originalRequest._retry = true; // Prevent infinite loops
+      isRefreshing = true;
       
       const refreshToken = sessionStorage.getItem("refresh_token") || localStorage.getItem("refresh_token");
       if (refreshToken) {
@@ -66,6 +100,9 @@ api.interceptors.response.use(
               sessionStorage.setItem("user", JSON.stringify(newTokens.user));
             }
             
+            // Process queued requests
+            processQueue(null, newTokens.access_token);
+            
             // Retry original request with new access token
             originalRequest.headers = originalRequest.headers || {};
             originalRequest.headers["Authorization"] = `Bearer ${newTokens.access_token}`;
@@ -73,6 +110,7 @@ api.interceptors.response.use(
           }
         } catch (refreshError) {
           // If refresh fails, clear storage and redirect
+          processQueue(refreshError, null);
           sessionStorage.removeItem("token");
           sessionStorage.removeItem("refresh_token");
           sessionStorage.removeItem("user");
@@ -84,6 +122,8 @@ api.interceptors.response.use(
             window.location.href = "/login";
           }
           return Promise.reject(refreshError);
+        } finally {
+          isRefreshing = false;
         }
       }
       

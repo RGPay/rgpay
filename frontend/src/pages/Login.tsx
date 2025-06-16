@@ -49,48 +49,61 @@ export default function Login() {
   useEffect(() => {
     // Only attempt auto-login once to prevent redirect loops
     if (hasAttemptedAutoLogin) return;
-    
+
     const attemptAutoLogin = async () => {
       setHasAttemptedAutoLogin(true);
-      
+
       try {
         // Check localStorage first (persistent login)
         let token = localStorage.getItem("token");
         let refreshToken = localStorage.getItem("refresh_token");
         let user = localStorage.getItem("user");
-        
+
         // If not found in localStorage, check sessionStorage
         if (!(token && refreshToken && user)) {
           token = sessionStorage.getItem("token");
           refreshToken = sessionStorage.getItem("refresh_token");
           user = sessionStorage.getItem("user");
         }
-        
+
         if (token && refreshToken && user) {
           // Check if token is expired
           if (isTokenExpired(token)) {
             // Try to refresh the token
             try {
-              const { default: AuthService } = await import("../services/auth.service");
+              const { default: AuthService } = await import(
+                "../services/auth.service"
+              );
               const newTokens = await AuthService.refreshToken(refreshToken);
-              
+
               if (newTokens) {
                 // Update storage with new tokens
                 if (localStorage.getItem("refresh_token")) {
                   localStorage.setItem("token", newTokens.access_token);
-                  localStorage.setItem("refresh_token", newTokens.refresh_token);
+                  localStorage.setItem(
+                    "refresh_token",
+                    newTokens.refresh_token
+                  );
                   localStorage.setItem("user", JSON.stringify(newTokens.user));
                 } else {
                   sessionStorage.setItem("token", newTokens.access_token);
-                  sessionStorage.setItem("refresh_token", newTokens.refresh_token);
-                  sessionStorage.setItem("user", JSON.stringify(newTokens.user));
+                  sessionStorage.setItem(
+                    "refresh_token",
+                    newTokens.refresh_token
+                  );
+                  sessionStorage.setItem(
+                    "user",
+                    JSON.stringify(newTokens.user)
+                  );
                 }
-                
-                dispatch(loginAction({ 
-                  token: newTokens.access_token, 
-                  refreshToken: newTokens.refresh_token, 
-                  user: newTokens.user 
-                }));
+
+                dispatch(
+                  loginAction({
+                    access_token: newTokens.access_token,
+                    refresh_token: newTokens.refresh_token,
+                    user: newTokens.user,
+                  })
+                );
                 navigate("/");
               } else {
                 // Refresh failed, clear storage
@@ -113,7 +126,13 @@ export default function Login() {
             }
           } else {
             // Token is still valid, proceed with login
-            dispatch(loginAction({ token, refreshToken, user: JSON.parse(user) }));
+            dispatch(
+              loginAction({
+                access_token: token,
+                refresh_token: refreshToken,
+                user: JSON.parse(user),
+              })
+            );
             navigate("/");
           }
         }
@@ -245,8 +264,13 @@ export default function Login() {
                     senha: values.password,
                   });
                   const data = response.data;
-                  
-                  // Store tokens based on autoLogin preference
+                  dispatch(
+                    loginAction({
+                      access_token: data.access_token,
+                      refresh_token: data.refresh_token,
+                      user: data.user,
+                    })
+                  );
                   if (values.autoLogin) {
                     localStorage.setItem("token", data.access_token);
                     localStorage.setItem("refresh_token", data.refresh_token);
@@ -256,7 +280,7 @@ export default function Login() {
                     sessionStorage.setItem("refresh_token", data.refresh_token);
                     sessionStorage.setItem("user", JSON.stringify(data.user));
                   }
-                  
+
                   // Update Redux state
                   dispatch(
                     loginAction({
