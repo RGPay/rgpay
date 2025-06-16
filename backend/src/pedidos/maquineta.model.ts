@@ -33,6 +33,9 @@ export class Maquineta extends Model<Maquineta> {
   @BelongsTo(() => Unidade)
   declare unidade: Unidade;
 
+  @Column({ type: DataType.TEXT, allowNull: true })
+  declare logo?: string;
+
   @HasMany(() => Pedido)
   pedidos: Pedido[];
 }

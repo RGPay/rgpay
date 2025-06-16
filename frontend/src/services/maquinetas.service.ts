@@ -5,6 +5,7 @@ export interface Maquineta {
   numero_serie: string;
   status: 'ativa' | 'inativa';
   id_unidade: number;
+  logo?: string;
   unidade?: {
     id_unidade: number;
     nome: string;
@@ -19,12 +20,14 @@ export interface CreateMaquinetaData {
   numero_serie: string;
   status: 'ativa' | 'inativa';
   id_unidade: number;
+  logo?: string;
 }
 
 export interface UpdateMaquinetaData {
   numero_serie?: string;
   status?: 'ativa' | 'inativa';
   id_unidade?: number;
+  logo?: string;
 }
 
 class MaquinetasService {

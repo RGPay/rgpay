@@ -12,6 +12,10 @@ export class CreateMaquinetaDto {
   @IsNotEmpty()
   @IsInt()
   id_unidade: number;
+
+  @IsOptional()
+  @IsString()
+  logo?: string;
 }
 
 export class UpdateMaquinetaDto {
@@ -26,6 +30,10 @@ export class UpdateMaquinetaDto {
   @IsOptional()
   @IsInt()
   id_unidade?: number;
+
+  @IsOptional()
+  @IsString()
+  logo?: string;
 }
 
 export class MaquinetaResponseDto {
@@ -33,6 +41,7 @@ export class MaquinetaResponseDto {
   numero_serie: string;
   status: 'ativa' | 'inativa';
   id_unidade: number;
+  logo?: string;
   unidade?: {
     id_unidade: number;
     nome: string;
