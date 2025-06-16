@@ -167,6 +167,7 @@ const MaquinetasListPage: React.FC = () => {
                 <TableHead>
                   <TableRow>
                     <TableCell>Número de Série</TableCell>
+                    <TableCell>Logo</TableCell>
                     <TableCell>Status</TableCell>
                     <TableCell>Unidade</TableCell>
                     <TableCell>Data de Criação</TableCell>
@@ -180,6 +181,25 @@ const MaquinetasListPage: React.FC = () => {
                         <Typography variant="body2" fontWeight="medium">
                           {maquineta.numero_serie}
                         </Typography>
+                      </TableCell>
+                      <TableCell>
+                        {maquineta.logo ? (
+                          <img
+                            src={maquineta.logo}
+                            alt="Logo"
+                            style={{
+                              width: '40px',
+                              height: '40px',
+                              objectFit: 'cover',
+                              borderRadius: '4px',
+                              border: '1px solid #eee'
+                            }}
+                          />
+                        ) : (
+                          <Typography variant="body2" color="text.secondary">
+                            Sem logo
+                          </Typography>
+                        )}
                       </TableCell>
                       <TableCell>
                         <Chip

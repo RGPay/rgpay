@@ -13,10 +13,13 @@ import {
   Alert,
   CircularProgress,
   Grid,
+  IconButton,
 } from '@mui/material';
 import {
   Save as SaveIcon,
   ArrowBack as ArrowBackIcon,
+  PhotoCamera,
+  Delete as DeleteIcon,
 } from '@mui/icons-material';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
@@ -30,6 +33,7 @@ const validationSchema = Yup.object({
   numero_serie: Yup.string().required('Número de série é obrigatório'),
   status: Yup.string().oneOf(['ativa', 'inativa']).required('Status é obrigatório'),
   id_unidade: Yup.number().required('Unidade é obrigatória').min(1, 'Selecione uma unidade válida'),
+  logo: Yup.string().optional(),
 });
 
 const MaquinetaFormPage: React.FC = () => {
@@ -42,6 +46,7 @@ const MaquinetaFormPage: React.FC = () => {
     numero_serie: '',
     status: 'ativa',
     id_unidade: selectedUnidade || 0,
+    logo: '',
   });
 
   const [unidades, setUnidades] = useState<Unidade[]>([]);
@@ -77,6 +82,7 @@ const MaquinetaFormPage: React.FC = () => {
         numero_serie: maquineta.numero_serie,
         status: maquineta.status,
         id_unidade: maquineta.id_unidade,
+        logo: maquineta.logo || '',
       });
     } catch (err) {
       console.error('Erro ao carregar maquineta:', err);
@@ -92,18 +98,29 @@ const MaquinetaFormPage: React.FC = () => {
   ) => {
     try {
       setError(null);
+      
+      console.log('Submitting maquineta form with values:', {
+        numero_serie: values.numero_serie,
+        status: values.status,
+        id_unidade: values.id_unidade,
+        logo: values.logo ? 'Logo presente (base64 data)' : 'Sem logo',
+      });
 
       if (isEditing && id) {
         const updateData: UpdateMaquinetaData = {
           numero_serie: values.numero_serie,
           status: values.status,
           id_unidade: values.id_unidade,
+          logo: values.logo,
         };
+        console.log('Updating maquineta with ID:', id);
         await MaquinetasService.update(parseInt(id, 10), updateData);
       } else {
+        console.log('Creating new maquineta');
         await MaquinetasService.create(values);
       }
 
+      console.log('Maquineta saved successfully, navigating to list');
       navigate('/maquinetas');
     } catch (err: any) {
       console.error('Erro ao salvar maquineta:', err);
@@ -118,6 +135,32 @@ const MaquinetaFormPage: React.FC = () => {
 
   const handleCancel = () => {
     navigate('/maquinetas');
+  };
+
+  const handleLogoUpload = (
+    event: React.ChangeEvent<HTMLInputElement>,
+    setFieldValue: (field: string, value: string) => void
+  ) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      // Validate file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        setError('Logo muito grande. Máximo 5MB.');
+        return;
+      }
+
+      // Validate file type
+      if (!file.type.startsWith("image/")) {
+        setError('Apenas arquivos de imagem são permitidos.');
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFieldValue("logo", reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   if (loading || unidadesLoading) {
@@ -164,8 +207,129 @@ const MaquinetaFormPage: React.FC = () => {
             onSubmit={handleSubmit}
             enableReinitialize
           >
-            {({ isSubmitting, errors, touched }) => (
+            {({ isSubmitting, errors, touched, values, setFieldValue }) => (
               <Form>
+                {/* Logo Upload Section */}
+                <Card sx={{ mb: 3 }}>
+                  <CardContent>
+                    <Typography variant="h6" gutterBottom>
+                      Logo da Maquineta
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                      Este logo será impresso nos cupons emitidos por esta maquineta
+                    </Typography>
+
+                    {values.logo ? (
+                      <Box sx={{ position: "relative", display: "inline-block" }}>
+                        <img
+                          src={values.logo}
+                          alt="Logo da maquineta"
+                          style={{
+                            maxWidth: "200px",
+                            maxHeight: "200px",
+                            width: "100%",
+                            height: "auto",
+                            borderRadius: 8,
+                            border: "2px solid #eee",
+                            objectFit: "cover",
+                          }}
+                        />
+                        <IconButton
+                          sx={{
+                            position: "absolute",
+                            top: 8,
+                            right: 8,
+                            backgroundColor: "rgba(255, 255, 255, 0.9)",
+                            "&:hover": {
+                              backgroundColor: "rgba(255, 255, 255, 1)",
+                            },
+                          }}
+                          onClick={() => setFieldValue("logo", "")}
+                          size="small"
+                        >
+                          <DeleteIcon color="error" />
+                        </IconButton>
+                      </Box>
+                    ) : (
+                      <Box
+                        sx={{
+                          border: "2px dashed #ccc",
+                          borderRadius: 2,
+                          p: 4,
+                          textAlign: "center",
+                          backgroundColor: "#fafafa",
+                          cursor: "pointer",
+                          transition: "all 0.3s ease",
+                          "&:hover": {
+                            borderColor: "primary.main",
+                            backgroundColor: "primary.50",
+                          },
+                        }}
+                        onClick={() =>
+                          document.getElementById("logo-upload")?.click()
+                        }
+                      >
+                        <PhotoCamera
+                          sx={{ fontSize: 48, color: "text.secondary", mb: 2 }}
+                        />
+                        <Typography
+                          variant="body1"
+                          color="text.secondary"
+                          gutterBottom
+                        >
+                          Clique para selecionar um logo
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          Ou arraste e solte aqui
+                        </Typography>
+                        <Typography
+                          variant="caption"
+                          color="text.secondary"
+                          sx={{ mt: 1, display: "block" }}
+                        >
+                          Máximo 5MB • JPG, PNG, GIF
+                        </Typography>
+                      </Box>
+                    )}
+
+                    <input
+                      id="logo-upload"
+                      type="file"
+                      accept="image/*"
+                      style={{ display: "none" }}
+                      onChange={(e) => handleLogoUpload(e, setFieldValue)}
+                    />
+
+                    <Box sx={{ mt: 2, display: "flex", gap: 1 }}>
+                      <Button
+                        variant="outlined"
+                        component="label"
+                        startIcon={<PhotoCamera />}
+                        size="small"
+                      >
+                        Selecionar Logo
+                        <input
+                          type="file"
+                          accept="image/*"
+                          hidden
+                          onChange={(e) => handleLogoUpload(e, setFieldValue)}
+                        />
+                      </Button>
+                      {values.logo && (
+                        <Button
+                          variant="outlined"
+                          color="error"
+                          startIcon={<DeleteIcon />}
+                          size="small"
+                          onClick={() => setFieldValue("logo", "")}
+                        >
+                          Remover
+                        </Button>
+                      )}
+                    </Box>
+                  </CardContent>
+                </Card>
+
                 <Grid container spacing={3}>
                   <Grid item xs={12} md={6}>
                     <Field name="numero_serie">
