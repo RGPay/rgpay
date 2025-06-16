@@ -28,6 +28,7 @@ import {
   Error as ErrorIcon,
 } from "@mui/icons-material";
 import { AutoLoginCheckbox } from "../components/Inputs";
+import { isTokenExpired } from "../utils/tokenUtils";
 
 const LoginSchema = Yup.object().shape({
   email: Yup.string().email("Email inválido").required("Email é obrigatório"),
@@ -40,25 +41,115 @@ export default function Login() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [hasAttemptedAutoLogin, setHasAttemptedAutoLogin] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const theme = useTheme();
 
   useEffect(() => {
-    // Auto-login if credentials are stored in localStorage or sessionStorage
-    let token = localStorage.getItem("token");
-    let refreshToken = localStorage.getItem("refresh_token");
-    let user = localStorage.getItem("user");
-    if (!(token && refreshToken && user)) {
-      token = sessionStorage.getItem("token");
-      refreshToken = sessionStorage.getItem("refresh_token");
-      user = sessionStorage.getItem("user");
-    }
-    if (token && refreshToken && user) {
-      dispatch(loginAction({ token, refreshToken, user: JSON.parse(user) }));
-      navigate("/");
-    }
-  }, [dispatch, navigate]);
+    // Only attempt auto-login once to prevent redirect loops
+    if (hasAttemptedAutoLogin) return;
+
+    const attemptAutoLogin = async () => {
+      setHasAttemptedAutoLogin(true);
+
+      try {
+        // Check localStorage first (persistent login)
+        let token = localStorage.getItem("token");
+        let refreshToken = localStorage.getItem("refresh_token");
+        let user = localStorage.getItem("user");
+
+        // If not found in localStorage, check sessionStorage
+        if (!(token && refreshToken && user)) {
+          token = sessionStorage.getItem("token");
+          refreshToken = sessionStorage.getItem("refresh_token");
+          user = sessionStorage.getItem("user");
+        }
+
+        if (token && refreshToken && user) {
+          // Check if token is expired
+          if (isTokenExpired(token)) {
+            // Try to refresh the token
+            try {
+              const { default: AuthService } = await import(
+                "../services/auth.service"
+              );
+              const newTokens = await AuthService.refreshToken(refreshToken);
+
+              if (newTokens) {
+                // Update storage with new tokens
+                if (localStorage.getItem("refresh_token")) {
+                  localStorage.setItem("token", newTokens.access_token);
+                  localStorage.setItem(
+                    "refresh_token",
+                    newTokens.refresh_token
+                  );
+                  localStorage.setItem("user", JSON.stringify(newTokens.user));
+                } else {
+                  sessionStorage.setItem("token", newTokens.access_token);
+                  sessionStorage.setItem(
+                    "refresh_token",
+                    newTokens.refresh_token
+                  );
+                  sessionStorage.setItem(
+                    "user",
+                    JSON.stringify(newTokens.user)
+                  );
+                }
+
+                dispatch(
+                  loginAction({
+                    access_token: newTokens.access_token,
+                    refresh_token: newTokens.refresh_token,
+                    user: newTokens.user,
+                  })
+                );
+                navigate("/");
+              } else {
+                // Refresh failed, clear storage
+                localStorage.removeItem("token");
+                localStorage.removeItem("refresh_token");
+                localStorage.removeItem("user");
+                sessionStorage.removeItem("token");
+                sessionStorage.removeItem("refresh_token");
+                sessionStorage.removeItem("user");
+              }
+            } catch (error) {
+              console.error("Auto-login refresh failed:", error);
+              // Clear storage on error
+              localStorage.removeItem("token");
+              localStorage.removeItem("refresh_token");
+              localStorage.removeItem("user");
+              sessionStorage.removeItem("token");
+              sessionStorage.removeItem("refresh_token");
+              sessionStorage.removeItem("user");
+            }
+          } else {
+            // Token is still valid, proceed with login
+            dispatch(
+              loginAction({
+                access_token: token,
+                refresh_token: refreshToken,
+                user: JSON.parse(user),
+              })
+            );
+            navigate("/");
+          }
+        }
+      } catch (error) {
+        console.error("Auto-login error:", error);
+        // Clear storage on any error
+        localStorage.removeItem("token");
+        localStorage.removeItem("refresh_token");
+        localStorage.removeItem("user");
+        sessionStorage.removeItem("token");
+        sessionStorage.removeItem("refresh_token");
+        sessionStorage.removeItem("user");
+      }
+    };
+
+    attemptAutoLogin();
+  }, [hasAttemptedAutoLogin, dispatch, navigate]);
 
   const handleTogglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -175,8 +266,8 @@ export default function Login() {
                   const data = response.data;
                   dispatch(
                     loginAction({
-                      token: data.access_token,
-                      refreshToken: data.refresh_token,
+                      access_token: data.access_token,
+                      refresh_token: data.refresh_token,
                       user: data.user,
                     })
                   );
@@ -189,6 +280,15 @@ export default function Login() {
                     sessionStorage.setItem("refresh_token", data.refresh_token);
                     sessionStorage.setItem("user", JSON.stringify(data.user));
                   }
+
+                  // Update Redux state
+                  dispatch(
+                    loginAction({
+                      token: data.access_token,
+                      refreshToken: data.refresh_token,
+                      user: data.user,
+                    })
+                  );
                   navigate("/");
                 } catch (err: unknown) {
                   let errorMessage = "Erro desconhecido ao fazer login";
@@ -233,74 +333,7 @@ export default function Login() {
               }}
             >
               {({ errors, touched, handleChange, handleBlur, values }) => (
-                <form onSubmit={async (e) => {
-                  e.preventDefault();
-                  setError("");
-                  setLoading(true);
-                  try {
-                    const response = await api.post("/auth/login", {
-                      email: values.email,
-                      senha: values.password,
-                    });
-                    const data = response.data;
-                    dispatch(
-                      loginAction({
-                        token: data.access_token,
-                        refreshToken: data.refresh_token,
-                        user: data.user,
-                      })
-                    );
-                    if (values.autoLogin) {
-                      localStorage.setItem("token", data.access_token);
-                      localStorage.setItem("refresh_token", data.refresh_token);
-                      localStorage.setItem("user", JSON.stringify(data.user));
-                    } else {
-                      sessionStorage.setItem("token", data.access_token);
-                      sessionStorage.setItem("refresh_token", data.refresh_token);
-                      sessionStorage.setItem("user", JSON.stringify(data.user));
-                    }
-                    navigate("/");
-                  } catch (err: unknown) {
-                    let errorMessage = "Erro desconhecido ao fazer login";
-
-                    if (err instanceof AxiosError) {
-                      const status = err.response?.status;
-                      const serverMessage = err.response?.data?.message;
-
-                      switch (status) {
-                        case 401:
-                          errorMessage =
-                            "Email ou senha incorretos. Verifique suas credenciais e tente novamente.";
-                          break;
-                        case 403:
-                          errorMessage =
-                            "Acesso negado. Sua conta pode estar bloqueada ou inativa.";
-                          break;
-                        case 429:
-                          errorMessage =
-                            "Muitas tentativas de login. Aguarde alguns minutos antes de tentar novamente.";
-                          break;
-                        case 500:
-                          errorMessage =
-                            "Erro interno do servidor. Tente novamente em alguns instantes.";
-                          break;
-                        case 503:
-                          errorMessage =
-                            "Serviço temporariamente indisponível. Tente novamente mais tarde.";
-                          break;
-                        default:
-                          errorMessage =
-                            serverMessage || (err as any).message || errorMessage;
-                      }
-                    } else if (err instanceof Error) {
-                      errorMessage = err.message;
-                    }
-
-                    setError(errorMessage);
-                  } finally {
-                    setLoading(false);
-                  }
-                }}>
+                <Form>
                   <TextField
                     fullWidth
                     margin="normal"
@@ -475,7 +508,7 @@ export default function Login() {
                       "Entrar"
                     )}
                   </Button>
-                </form>
+                </Form>
               )}
             </Formik>
           </Box>

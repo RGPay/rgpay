@@ -32,6 +32,7 @@ import {
   Event as EventIcon,
   Category as CategoryIcon,
   Assessment as AssessmentIcon,
+  Memory as MemoryIcon,
 } from "@mui/icons-material";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -55,6 +56,8 @@ const pageTitles: Record<string, string> = {
   "/produtos": "Produtos",
   "/produtos/novo": "Novo Produto",
   "/pedidos": "Pedidos",
+  "/maquinetas": "Maquinetas",
+  "/maquinetas/nova": "Nova Maquineta",
   "/unidades": "Unidades",
   "/unidades/nova": "Nova Unidade",
   "/relatorios": "Relatórios",
@@ -102,6 +105,10 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
       return "Detalhes do Pedido";
     }
 
+    if (path.match(/\/maquinetas\/editar\/\d+/)) {
+      return "Editar Maquineta";
+    }
+
     if (path.match(/\/unidades\/editar\/\d+/)) {
       return "Editar Unidade";
     }
@@ -146,6 +153,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
     { text: "Produtos", icon: <RestaurantIcon />, path: "/produtos" },
     { text: "Categorias", icon: <CategoryIcon />, path: "/categories" },
     { text: "Pedidos", icon: <ShoppingCartIcon />, path: "/pedidos" },
+    { text: "Maquinetas", icon: <MemoryIcon />, path: "/maquinetas" },
     { text: "Eventos", icon: <EventIcon />, path: "/eventos" },
     { text: "Relatórios", icon: <AssessmentIcon />, path: "/relatorios" },
     { text: "Unidades", icon: <LocationOnIcon />, path: "/unidades" },

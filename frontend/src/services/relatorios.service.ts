@@ -39,7 +39,7 @@ class RelatoriosService {
 
     // Add unidade filter
     if (selectedUnidade) {
-      params.id_unidade = Number(selectedUnidade);
+      params.id_unidade = selectedUnidade;
     }
 
     // Add date filters

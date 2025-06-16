@@ -21,6 +21,7 @@ import { Category } from './categorias/category.model';
 import { CategoryModule } from './categorias/category.module';
 import { SettingsModule } from './settings/settings.module';
 import { UserSettings } from './settings/user-settings.model';
+import { MaquinetasModule } from './maquinetas/maquinetas.module';
 
 dotenv.config();
 
@@ -56,6 +57,7 @@ dotenv.config();
     EventosModule,
     CategoryModule,
     SettingsModule,
+    MaquinetasModule,
   ],
   controllers: [AppController],
   providers: [AppService],

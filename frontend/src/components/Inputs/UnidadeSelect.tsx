@@ -31,7 +31,8 @@ const UnidadeSelect: React.FC = () => {
   }, []);
 
   const handleChange = (event: SelectChangeEvent<string>) => {
-    dispatch(setSelectedUnidade(event.target.value as string));
+    const value = event.target.value;
+    dispatch(setSelectedUnidade(value ? parseInt(value, 10) : null));
   };
 
   return (
@@ -42,7 +43,7 @@ const UnidadeSelect: React.FC = () => {
       ) : (
         <Select
           labelId="unidade-select-label"
-          value={selectedUnidade || ""}
+          value={selectedUnidade ? String(selectedUnidade) : ""}
           label="Unidade"
           onChange={handleChange}
         >

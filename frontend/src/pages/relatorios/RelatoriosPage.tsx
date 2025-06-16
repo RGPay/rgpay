@@ -50,7 +50,7 @@ const RelatoriosPage: React.FC = () => {
         if (filter.id_evento && selectedUnidade) {
           const eventBelongsToUnit = data.some(evento => 
             evento.id_evento === filter.id_evento && 
-            evento.id_unidade === Number(selectedUnidade)
+            evento.id_unidade === selectedUnidade
           );
           if (!eventBelongsToUnit) {
             setFilter(prevFilter => ({

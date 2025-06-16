@@ -51,7 +51,7 @@ class ProdutosService {
     const selectedUnidade = store.getState().unidade.selectedUnidade;
     const mergedFilters = {
       ...filters,
-      id_unidade: selectedUnidade ? Number(selectedUnidade) : undefined,
+      id_unidade: selectedUnidade || undefined,
     };
     const response = await api.get("/produtos", { params: mergedFilters });
     return response.data;

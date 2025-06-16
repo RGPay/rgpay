@@ -49,7 +49,7 @@ const ReportFilters: React.FC<ReportFiltersProps> = ({
   // Filter eventos to show only those related to the selected unit
   const filteredEventos = React.useMemo(() => {
     if (!selectedUnidade) return eventos;
-    return eventos.filter(evento => evento.id_unidade === Number(selectedUnidade));
+    return eventos.filter(evento => evento.id_unidade === selectedUnidade);
   }, [eventos, selectedUnidade]);
 
   // Track filter mode separately from filter values

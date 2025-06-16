@@ -55,7 +55,7 @@ const ProdutosMaisVendidosTable: React.FC<ProdutosMaisVendidosTableProps> = ({
   // Fetch eventos
   React.useEffect(() => {
     dashboardService
-      .getEventos(selectedUnidade ?? undefined)
+      .getEventos(selectedUnidade || undefined)
       .then((rawEventos) => {
         setEventos(
           rawEventos.map(
@@ -79,7 +79,7 @@ const ProdutosMaisVendidosTable: React.FC<ProdutosMaisVendidosTableProps> = ({
     dashboardService
       .getMetrics({
         ...filter,
-        id_evento: selectedEvento ?? undefined,
+        id_evento: selectedEvento || undefined,
       } as Partial<DashboardFilter & { id_evento?: number }>)
       .then((data) => setProdutos(data.produtosMaisVendidos || []))
       .finally(() => setLoading(false));
