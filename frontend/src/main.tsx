@@ -4,9 +4,7 @@ import "./index.css";
 import App from "./App.tsx";
 import { Provider } from "react-redux";
 import { store } from "./store/store";
-import { ThemeProvider } from "@mui/material/styles";
-import CssBaseline from "@mui/material/CssBaseline";
-import theme from "./theme";
+import ThemeProvider from "./theme/ThemeProvider";
 
 // Register service worker for PWA functionality
 if ("serviceWorker" in navigator) {
@@ -27,11 +25,10 @@ if ("serviceWorker" in navigator) {
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <Provider store={store}>
+    <Provider store={store}>
+      <ThemeProvider>
         <App />
-      </Provider>
-    </ThemeProvider>
+      </ThemeProvider>
+    </Provider>
   </StrictMode>
 );

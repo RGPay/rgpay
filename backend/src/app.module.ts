@@ -19,6 +19,8 @@ import { Evento } from './eventos/evento.model';
 import { EventosModule } from './eventos/eventos.module';
 import { Category } from './categorias/category.model';
 import { CategoryModule } from './categorias/category.module';
+import { SettingsModule } from './settings/settings.module';
+import { UserSettings } from './settings/user-settings.model';
 import { MaquinetasModule } from './maquinetas/maquinetas.module';
 
 dotenv.config();
@@ -43,6 +45,7 @@ dotenv.config();
         Maquineta,
         Evento,
         Category,
+        UserSettings,
       ],
     }),
     AuthModule,
@@ -53,6 +56,7 @@ dotenv.config();
     RelatoriosModule,
     EventosModule,
     CategoryModule,
+    SettingsModule,
     MaquinetasModule,
   ],
   controllers: [AppController],

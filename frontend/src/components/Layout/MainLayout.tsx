@@ -18,7 +18,6 @@ import {
   MenuItem,
   Tooltip,
   Container,
-  alpha,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import {
@@ -196,7 +195,6 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.leavingScreen,
           }),
-          borderBottom: `1px solid ${alpha(theme.palette.common.white, 0.05)}`,
         }}
       >
         <Toolbar>
@@ -269,12 +267,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
             anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
             PaperProps={{
               sx: {
-                borderRadius: 2,
                 minWidth: 200,
-                boxShadow: "0 8px 32px rgba(0, 0, 0, 0.2)",
-                background: "rgba(31, 41, 55, 0.9)",
-                backdropFilter: "blur(8px)",
-                border: "1px solid rgba(255, 255, 255, 0.05)",
                 mt: 1,
               },
             }}
@@ -284,7 +277,8 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                 p: 2,
                 pt: 1.5,
                 pb: 1.5,
-                borderBottom: "1px solid rgba(255, 255, 255, 0.05)",
+                borderBottom: 1,
+                borderColor: "divider",
               }}
             >
               <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
