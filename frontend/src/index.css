@@ -1,0 +1,179 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  scroll-behavior: smooth;
+}
+
+/* Scrollbar styling - Dark theme */
+body[data-theme="dark"] ::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+body[data-theme="dark"] ::-webkit-scrollbar-track {
+  background: #1f2937;
+}
+
+body[data-theme="dark"] ::-webkit-scrollbar-thumb {
+  background-color: #4b5563;
+  border-radius: 4px;
+}
+
+body[data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
+  background-color: #6b7280;
+}
+
+/* Scrollbar styling - Light theme */
+body[data-theme="light"] ::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+body[data-theme="light"] ::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+body[data-theme="light"] ::-webkit-scrollbar-thumb {
+  background-color: #bdbdbd;
+  border-radius: 4px;
+}
+
+body[data-theme="light"] ::-webkit-scrollbar-thumb:hover {
+  background-color: #9e9e9e;
+}
+
+/* Firefox scrollbar */
+body[data-theme="dark"] {
+  scrollbar-width: thin;
+  scrollbar-color: #4b5563 #1f2937;
+}
+
+body[data-theme="light"] {
+  scrollbar-width: thin;
+  scrollbar-color: #bdbdbd #f1f1f1;
+}
+
+a {
+  font-weight: 500;
+  color: #3070ff;
+  text-decoration: none;
+  transition: color 0.2s ease-in-out;
+}
+
+a:hover {
+  color: #5a8fff;
+  text-decoration: none;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  transition: background-color 0.3s ease, background-image 0.3s ease;
+}
+
+/* Dark theme background */
+body[data-theme="dark"] {
+  background-color: #111827;
+  background-image: radial-gradient(
+      at 0% 0%,
+      rgba(48, 112, 255, 0.15) 0,
+      transparent 50%
+    ),
+    radial-gradient(at 100% 0%, rgba(0, 229, 224, 0.15) 0, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(0, 217, 126, 0.15) 0, transparent 50%),
+    radial-gradient(at 0% 100%, rgba(156, 39, 176, 0.15) 0, transparent 50%);
+  background-attachment: fixed;
+}
+
+/* Light theme background */
+body[data-theme="light"] {
+  background-color: #fafafa;
+  background-image: radial-gradient(
+      at 0% 0%,
+      rgba(48, 112, 255, 0.08) 0,
+      transparent 50%
+    ),
+    radial-gradient(at 100% 0%, rgba(0, 229, 224, 0.08) 0, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(0, 217, 126, 0.08) 0, transparent 50%),
+    radial-gradient(at 0% 100%, rgba(156, 39, 176, 0.08) 0, transparent 50%);
+  background-attachment: fixed;
+}
+
+#root {
+  width: 100%;
+  height: 100vh;
+}
+
+/* Typography enhancements */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 600;
+  line-height: 1.2;
+  margin-bottom: 0.5em;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 2px 4px;
+  border-radius: 4px;
+}
+
+/* Responsive design improvements */
+@media (max-width: 600px) {
+  body {
+    font-size: 14px;
+  }
+}
+
+/* Remove default button styling */
+button {
+  border: none;
+  background: none;
+  font: inherit;
+  cursor: pointer;
+}
+
+/* Helper classes */
+.text-gradient {
+  background: linear-gradient(45deg, #3070ff 30%, #00e5e0 90%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Theme-aware text colors */
+body[data-theme="light"] .text-gradient {
+  background: linear-gradient(45deg, #1e40af 30%, #0891b2 90%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.blur-backdrop {
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}

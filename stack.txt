@@ -9,6 +9,7 @@ Redux Toolkit (gestão de dados)
 Formik com Yup (formulários e validações)
 Echarts (gráficos)
 Axios (Rest API)
+React Router
 
 Back-end
 NodeJS
