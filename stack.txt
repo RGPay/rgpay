@@ -1,7 +1,7 @@
-Linguagem
+LINGUAGEM
 TypeScript
 
-Front-end
+FRONTEND
 React puro (framework)
 Material-UI (componentes UI)
 Tailwind (estilização CSS, somente se não tiver pronto no Material)
@@ -11,17 +11,16 @@ Echarts (gráficos)
 Axios (Rest API)
 React Router
 
-Back-end
+BACKEND
 NodeJS
 Express
 NestJS
 Sequelize (ORM)
 
-Banco de dados
-MySQL
+DATABASE
+PostgreSQL
 
-Nuvem
-Azure Cloud
-Static Web App (front)
-Azure App Service (back)
-Azure Database for MySQL
+CLOUD
+Vercel (frontend)
+Heroku (backend)
+Supabase (database)

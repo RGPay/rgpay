@@ -1,26 +1,47 @@
-Minimundo
-O sistema a ser desenvolvido visa modernizar a operação de estabelecimentos comerciais de um cliente que utiliza maquinetas Cielo, especialmente do modelo Cielo Lio, fornecendo uma plataforma centralizada, fluida e intuitiva para o registro e gestão de pedidos. 🔵
+Minimundo - RGPay
 
-O novo sistema permitirá que o cliente cadastre e gerencie seu cardápio de produtos, incluindo itens, preços e categorias, diretamente via web. 🟢 Esse cardápio será exibido nas maquinetas Cielo, por meio de um app que será desenvolvido para a Cielo Lio, permitindo o registro de pedidos de forma ágil. 🟢 Ao final da operação, um ticket será impresso para o cliente, que servirá como comprovante para retirada do pedido. 🔵 Não serão permitidos descontos via gerente, conforme definido em regra de negócio. 🔵🟠 Todo pagamento feito com dinheiro em espécie ficará registrado como pendente naquela maquineta para fins de prestação de contas do garçom com o gerente no final do dia ou evento. 🔵
+O sistema RGPay é uma solução SaaS voltada para casas de show, bares com música ao vivo e estabelecimentos similares, onde os pedidos são realizados por garçons utilizando maquinetas portáteis. O sistema é dividido em duas partes principais: um aplicativo para as maquinetas (uso operacional) e um sistema web para os contratantes (uso administrativo e gerencial).
 
-Como parte da solução, haverá um painel administrativo web, onde será possível visualizar pedidos, acompanhar vendas, cadastrar eventos, configurar itens, cadastrar maquinetas e acessar relatórios operacionais. 🟢 O sistema suportará múltiplas unidades, permitindo visualizações distintas por unidade a partir de um mesmo login, inclusive em diferentes cidades ou estados, com visualizações personalizadas por contexto. 🟢
+Atores principais:
+- Cliente final: Pessoa que realiza um pedido para consumo.
+- Garçom: Realiza os pedidos através da maquineta e recebe os pagamentos.
+- Balconista/Barman: Prepara e entrega os pedidos no balcão.
+- Gerente: Acompanha pedidos, valores recebidos em dinheiro e eventos.
+- Administrador do sistema: Gerencia o sistema como um todo, incluindo o cardápio, maquinetas, usuários e eventos.
 
-Os níveis de acesso serão configuráveis por grupos de usuários, permitindo diferentes permissões como apenas leitura, apenas escrita ou acesso total. 🟢 Essa organização facilitará a delegação de tarefas dentro de equipes operacionais e administrativas. 🟢
+Entidades principais:
+- Unidade: Representa um estabelecimento físico. Pode haver múltiplas unidades por contratante.
+- Evento: Representa uma ocasião específica (ex: "Noite do Rock"). É vinculado a uma unidade.
+- Garçom (Usuário): Vinculado a uma ou mais maquinetas, pode registrar pedidos e pagamentos.
+- Maquineta: Dispositivo onde os garçons registram pedidos e processam pagamentos.
+- Produto: Item do cardápio. Pertence a uma categoria e tem um preço.
+- Categoria de Produto: Agrupa os produtos no cardápio (ex: bebidas, comidas, etc).
+- Pedido: Conjunto de produtos solicitados por um cliente, contendo forma de pagamento e valor total.
+- Cupom: Comprovante impresso após o pagamento, com discriminação do pedido e logotipo da unidade.
+- Pagamento: Forma como o pedido foi quitado (cartão, pix, dinheiro).
+- Usuário: Pessoa com acesso ao sistema. Pode ter permissões diferentes por grupo (leitura, escrita, total).
+- Grupo de Acesso: Define os níveis de permissão para os usuários do sistema.
+- Relatório Operacional: Documento gerado por período ou evento, com informações sobre vendas e recebimentos.
 
-Apesar de o sistema lidar com pedidos e operações financeiras, não há exigência de armazenamento prolongado dos dados, portanto o sistema priorizará performance, com persistência temporária dos dados conforme necessário para as operações. 🟢🟠
+Regras e comportamentos do sistema:
 
-O sistema será desenvolvido exclusivamente em português, e não contemplará suporte a múltiplos idiomas neste momento, por decisão estratégica. 🟠
+1. Os clientes fazem pedidos diretamente aos garçons, que os registram na maquineta.
+2. A maquineta exibe o cardápio atualizado conforme as configurações do sistema web.
+3. O pagamento pode ser feito via cartão, pix ou dinheiro. Se for em dinheiro, o valor fica registrado para prestação de contas posterior.
+4. Após o pagamento, um cupom impresso é gerado e entregue ao cliente.
+5. O cliente entrega o cupom no balcão, onde o balconista/barman prepara e entrega o pedido.
+6. O contratante acessa o web app para:
+   - Gerenciar produtos, categorias e preços;
+   - Cadastrar e configurar maquinetas;
+   - Cadastrar eventos por unidade;
+   - Visualizar e gerar relatórios de vendas por período ou por evento;
+   - Acompanhar os valores recebidos em dinheiro por cada garçom;
+   - Gerenciar múltiplas unidades;
+   - Controlar o acesso dos usuários por meio de grupos de permissão.
+7. O sistema não exige armazenamento prolongado dos dados, priorizando performance e persistência temporária.
+8. A comunicação entre maquineta e bar/cozinha não é automatizada — o cupom serve como token físico.
 
-
-🗂️ Legenda
-Ícone
-Significado
-🟢
-Requisito funcional (função ou recurso desejado no novo sistema)
-🔵
-Regra de negócio (definição do cliente sobre como o sistema deve operar)
-🔴
-Dor atual do cliente (problema que o sistema novo visa resolver ou contornar)
-🟠
-Restrição de escopo (decisões conscientes que limitam funcionalidades ou abrangência)
-
+Considerações:
+- O sistema será inicialmente monolíngue (português).
+- Toda comunicação entre maquineta e sistema será via REST API.
+- O sistema é multiunidade, com controle de acesso flexível e personalizável.
