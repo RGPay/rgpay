@@ -1,13 +1,11 @@
 Minimundo
 O sistema a ser desenvolvido visa modernizar a operação de estabelecimentos comerciais de um cliente que utiliza maquinetas Cielo, especialmente do modelo Cielo Lio, fornecendo uma plataforma centralizada, fluida e intuitiva para o registro e gestão de pedidos. 🔵
 
-O novo sistema permitirá que o cliente cadastre e gerencie seu cardápio de produtos, incluindo itens, preços e categorias, diretamente via web. 🟢 Esse cardápio será exibido nas maquinetas Cielo, por meio do controle das maquinetas via API, permitindo o registro de pedidos de forma ágil. 🟢 Ao final da operação, um ticket será impresso para o cliente, que servirá como comprovante para retirada do pedido. 🔵 Não serão permitidos descontos via gerente, conforme definido em regra de negócio. 🔵🟠
+O novo sistema permitirá que o cliente cadastre e gerencie seu cardápio de produtos, incluindo itens, preços e categorias, diretamente via web. 🟢 Esse cardápio será exibido nas maquinetas Cielo, por meio de um app que será desenvolvido para a Cielo Lio, permitindo o registro de pedidos de forma ágil. 🟢 Ao final da operação, um ticket será impresso para o cliente, que servirá como comprovante para retirada do pedido. 🔵 Não serão permitidos descontos via gerente, conforme definido em regra de negócio. 🔵🟠 Todo pagamento feito com dinheiro em espécie ficará registrado como pendente naquela maquineta para fins de prestação de contas do garçom com o gerente no final do dia ou evento. 🔵
 
-Como parte da solução, haverá um painel administrativo web similar ao MitPay, onde será possível visualizar pedidos, acompanhar vendas, cadastrar eventos, configurar itens e acessar relatórios operacionais. 🟢 O sistema suportará múltiplas unidades, permitindo visualizações distintas por unidade a partir de um mesmo login, inclusive em diferentes cidades ou estados, com visualizações personalizadas por contexto. 🟢
+Como parte da solução, haverá um painel administrativo web, onde será possível visualizar pedidos, acompanhar vendas, cadastrar eventos, configurar itens, cadastrar maquinetas e acessar relatórios operacionais. 🟢 O sistema suportará múltiplas unidades, permitindo visualizações distintas por unidade a partir de um mesmo login, inclusive em diferentes cidades ou estados, com visualizações personalizadas por contexto. 🟢
 
 Os níveis de acesso serão configuráveis por grupos de usuários, permitindo diferentes permissões como apenas leitura, apenas escrita ou acesso total. 🟢 Essa organização facilitará a delegação de tarefas dentro de equipes operacionais e administrativas. 🟢
-
-Além disso, será disponibilizado um aplicativo mobile, que será apenas uma versão mobile da plataforma web, sem complementar diretamente as funções das maquinetas. 🟢 O app permitirá o acesso às mesmas funcionalidades da web, com foco inicial em dispositivos Android, considerando o perfil dos clientes atuais. 🔴
 
 Apesar de o sistema lidar com pedidos e operações financeiras, não há exigência de armazenamento prolongado dos dados, portanto o sistema priorizará performance, com persistência temporária dos dados conforme necessário para as operações. 🟢🟠
 
