@@ -24,7 +24,12 @@
 
     /* Type Checking */
     "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    
+    /* Skip type checking for problematic libraries */
+    "types": ["vite/client"],
+    "typeRoots": ["./node_modules/@types"]
   },
-  "include": ["src"]
+  "include": ["src"],
+  "exclude": ["node_modules", "dist"]
 }
