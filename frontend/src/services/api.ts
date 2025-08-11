@@ -1,9 +1,21 @@
-import axios, { AxiosError, AxiosResponse } from "axios";
-import type { InternalAxiosRequestConfig } from "axios";
+import axios, {
+  AxiosError,
+  AxiosResponse,
+  type InternalAxiosRequestConfig,
+} from "axios";
+
+const baseURL = import.meta.env.VITE_API_BASE_URL;
+
+if (!baseURL || baseURL === "http://localhost") {
+  console.warn(
+    "[RGPay] Atenção: VITE_API_BASE_URL não está configurada para produção. Valor atual:",
+    baseURL
+  );
+}
 
 // Create an axios instance with base settings
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL, // Backend URL from .env
+  baseURL: baseURL, // Backend URL from .env
   headers: {
     "Content-Type": "application/json",
   },

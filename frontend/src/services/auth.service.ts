@@ -1,8 +1,17 @@
 import axios from "axios";
 
-// Create a separate axios instance for auth operations to avoid interceptor loops
+const baseURL = import.meta.env.VITE_API_BASE_URL;
+
+if (!baseURL || baseURL === "http://localhost") {
+  console.warn(
+    "[RGPay] Atenção: VITE_API_BASE_URL não está configurada para produção. Valor atual:",
+    baseURL
+  );
+}
+
+// Separate axios instance for auth operations to avoid interceptor loops
 const authApi = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL,
+  baseURL: baseURL,
   headers: {
     "Content-Type": "application/json",
   },
