@@ -12,6 +12,7 @@ import {
   InputLabel,
   Select,
 } from "@mui/material";
+import type { SelectChangeEvent } from "@mui/material/Select";
 import {
   Add as AddIcon,
   Search as SearchIcon,
@@ -167,22 +168,24 @@ const ProdutosListPage: React.FC = () => {
       label: "Imagem",
       minWidth: 60,
       align: "center" as const,
-      format: (value: string) =>
-        value ? (
-          <img
-            src={value}
-            alt="Produto"
-            style={{
-              width: 40,
-              height: 40,
-              objectFit: "cover",
-              borderRadius: 4,
-              border: "1px solid #eee",
-            }}
-          />
-        ) : (
-          <span style={{ color: "#bbb" }}>-</span>
-        ),
+      format: (value: unknown) =>
+        typeof value === "string" && value
+          ? (
+              <img
+                src={value}
+                alt="Produto"
+                style={{
+                  width: 40,
+                  height: 40,
+                  objectFit: "cover",
+                  borderRadius: 4,
+                  border: "1px solid #eee",
+                }}
+              />
+            )
+          : (
+              <span style={{ color: "#bbb" }}>-</span>
+            ),
     },
     { id: "id_produto", label: "ID", minWidth: 50, sortable: true },
     { id: "nome", label: "Nome", minWidth: 180, sortable: true },
@@ -191,9 +194,9 @@ const ProdutosListPage: React.FC = () => {
       label: "Categoria",
       minWidth: 120,
       sortable: true,
-      format: (value: Produto["category"]) => (
+      format: (_value: unknown, row: Produto) => (
         <Chip
-          label={value?.name || "-"}
+          label={row.category?.name || "-"}
           size="small"
           color="primary"
           variant="outlined"
@@ -206,7 +209,7 @@ const ProdutosListPage: React.FC = () => {
       minWidth: 120,
       align: "right" as const,
       sortable: true,
-      format: (value: number) => formatCurrency(value),
+      format: (value: unknown) => formatCurrency(value as number),
     },
     {
       id: "preco_venda",
@@ -214,7 +217,7 @@ const ProdutosListPage: React.FC = () => {
       minWidth: 120,
       align: "right" as const,
       sortable: true,
-      format: (value: number) => formatCurrency(value),
+      format: (value: unknown) => formatCurrency(value as number),
     },
     {
       id: "estoque",
@@ -222,17 +225,17 @@ const ProdutosListPage: React.FC = () => {
       minWidth: 100,
       align: "right" as const,
       sortable: true,
-      format: (value: number) => value,
+      format: (value: unknown) => value as number,
     },
     {
       id: "disponivel",
       label: "Disponível",
       minWidth: 120,
       sortable: true,
-      format: (value: boolean) => (
+      format: (value: unknown) => (
         <Chip
-          label={value ? "Sim" : "Não"}
-          color={value ? "success" : "error"}
+          label={(value as boolean) ? "Sim" : "Não"}
+          color={(value as boolean) ? "success" : "error"}
           size="small"
         />
       ),
@@ -242,7 +245,7 @@ const ProdutosListPage: React.FC = () => {
       label: "Unidade",
       minWidth: 120,
       sortable: true,
-      format: (value: Produto["unidade"]) => value?.nome || "-",
+      format: (_value: unknown, row: Produto) => row.unidade?.nome || "-",
     },
   ];
 
@@ -315,9 +318,9 @@ const ProdutosListPage: React.FC = () => {
           <Select
             labelId="category-filter-label"
             id="category-filter"
-            value={filter.category_id || ""}
+            value={(filter.category_id ?? "").toString()}
             label="Categoria"
-            onChange={(e) =>
+            onChange={(e: SelectChangeEvent<string>) =>
               setFilter({
                 ...filter,
                 category_id: e.target.value
@@ -348,8 +351,8 @@ const ProdutosListPage: React.FC = () => {
                 : "false"
             }
             label="Status"
-            onChange={(e) => {
-              const value = e.target.value;
+            onChange={(e: SelectChangeEvent<string>) => {
+              const value = e.target.value as string;
               setFilter({
                 ...filter,
                 disponivel: value === "" ? undefined : value === "true",

@@ -15,7 +15,7 @@ import {
   LinearProgress,
   Avatar,
 } from "@mui/material";
-import Grid from "@mui/material/Grid";
+import Grid from "@mui/material/GridLegacy";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
@@ -710,7 +710,7 @@ const Dashboard: React.FC = () => {
       return (
         <Grid container spacing={3}>
           {[1, 2, 3, 4].map((i) => (
-            <Grid key={i} xs={12} sm={6} md={3}>
+            <Grid item key={i} xs={12} sm={6} md={3}>
               <Card sx={{ height: "100%", p: 3 }}>
                 <Box sx={{ mb: 2 }}>
                   <LinearProgress />
@@ -727,7 +727,7 @@ const Dashboard: React.FC = () => {
 
     return (
       <Grid container spacing={3}>
-        <Grid xs={12} sm={6} md={3}>
+        <Grid item xs={12} sm={6} md={3}>
           <GradientCard
             title="Faturamento Total"
             value={formatCurrency(metrics.faturamentoTotal || 0)}
@@ -738,7 +738,7 @@ const Dashboard: React.FC = () => {
             onClick={() => navigate("/pedidos")}
           />
         </Grid>
-        <Grid xs={12} sm={6} md={3}>
+        <Grid item xs={12} sm={6} md={3}>
           <GradientCard
             title="Ticket Médio"
             value={formatCurrency(metrics.ticketMedio || 0)}
@@ -748,7 +748,7 @@ const Dashboard: React.FC = () => {
             change={5.2}
           />
         </Grid>
-        <Grid xs={12} sm={6} md={3}>
+        <Grid item xs={12} sm={6} md={3}>
           <GradientCard
             title="Produtos Vendidos"
             value={`${metrics.totalItensVendidos || 0}`}
@@ -761,7 +761,7 @@ const Dashboard: React.FC = () => {
             onClick={() => navigate("/produtos")}
           />
         </Grid>
-        <Grid xs={12} sm={6} md={3}>
+        <Grid item xs={12} sm={6} md={3}>
           <GradientCard
             title="Unidades Ativas"
             value={`${metrics.totalUnidades || 0}`}
@@ -873,28 +873,28 @@ const Dashboard: React.FC = () => {
         <MetricCards />
 
         <Grid container spacing={4} sx={{ mt: 2 }}>
-          <Grid xs={12} md={6}>
+          <Grid item xs={12} md={6}>
             <ChartCard
               title="Faturamento por Hora"
               isLoading={false}
               chart={<FaturamentoPorHoraChart filter={filter} />}
             />
           </Grid>
-          <Grid xs={12} md={6}>
+          <Grid item xs={12} md={6}>
             <ChartCard
               title="Ticket Médio por Hora"
               isLoading={false}
               chart={<TicketMedioPorHoraChart filter={filter} />}
             />
           </Grid>
-          <Grid xs={12} md={6}>
+          <Grid item xs={12} md={6}>
             <ChartCard
               title="Faturamento por Produto"
               isLoading={loading}
               chart={<ProdutosMaisVendidosTable filter={filter} />}
             />
           </Grid>
-          <Grid xs={12} md={6}>
+          <Grid item xs={12} md={6}>
             <ChartCard
               title="Faturamento por Forma de Pagamento"
               isLoading={loading}
@@ -906,7 +906,7 @@ const Dashboard: React.FC = () => {
               }
             />
           </Grid>
-          <Grid xs={12} md={6}>
+          <Grid item xs={12} md={6}>
             <ChartCard
               title="Faturamento por Unidade"
               isLoading={loading}

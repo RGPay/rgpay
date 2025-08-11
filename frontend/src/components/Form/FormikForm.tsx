@@ -11,7 +11,6 @@ import {
   TextField,
   Button,
   Box,
-  Grid,
   FormControl,
   FormLabel,
   RadioGroup,
@@ -24,6 +23,7 @@ import {
   Typography,
   Paper,
 } from "@mui/material";
+import Grid from "@mui/material/GridLegacy";
 import { Schema } from "yup";
 
 export type FormikFieldConfig = {
@@ -55,7 +55,7 @@ export type FormikFieldConfig = {
   helperText?: string;
 };
 
-interface FormikFormProps<T> {
+interface FormikFormProps<T extends Record<string, any>> {
   title?: string;
   initialValues: T;
   validationSchema: Schema<T>;
@@ -67,7 +67,7 @@ interface FormikFormProps<T> {
   loading?: boolean;
 }
 
-function FormikForm<T>({
+function FormikForm<T extends Record<string, any>>({
   title,
   initialValues,
   validationSchema,
@@ -248,7 +248,6 @@ function FormikForm<T>({
             <Grid container spacing={2}>
               {fields.map((field) => (
                 <Grid
-                  item
                   key={field.name}
                   xs={field.xs}
                   sm={field.sm}
@@ -260,7 +259,7 @@ function FormikForm<T>({
                 </Grid>
               ))}
 
-              <Grid xs={12}>
+              <Grid item xs={12}>
                 <Box
                   sx={{
                     display: "flex",

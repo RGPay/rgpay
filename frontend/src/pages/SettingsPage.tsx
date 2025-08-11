@@ -20,10 +20,10 @@ import {
   DialogContent,
   DialogActions,
   Chip,
-  Grid,
   Tabs,
   Tab,
 } from "@mui/material";
+import Grid from "@mui/material/GridLegacy";
 import {
   Add as AddIcon,
   Edit as EditIcon,
@@ -328,7 +328,7 @@ const SettingsPage: React.FC = () => {
         </DialogTitle>
         <DialogContent>
           <Grid container spacing={2} sx={{ mt: 1 }}>
-            <Grid xs={12}>
+            <Grid item xs={12}>
               <TextField
                 fullWidth
                 label="Nome"
@@ -338,7 +338,7 @@ const SettingsPage: React.FC = () => {
                 }
               />
             </Grid>
-            <Grid xs={12}>
+            <Grid item xs={12}>
               <TextField
                 fullWidth
                 label="Email"
@@ -349,7 +349,7 @@ const SettingsPage: React.FC = () => {
                 }
               />
             </Grid>
-            <Grid xs={12}>
+            <Grid item xs={12}>
               <TextField
                 fullWidth
                 label={
@@ -365,7 +365,7 @@ const SettingsPage: React.FC = () => {
                 required={!editingUser}
               />
             </Grid>
-            <Grid xs={12} sm={6}>
+            <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth
                 select
@@ -382,7 +382,7 @@ const SettingsPage: React.FC = () => {
                 <MenuItem value="master">Master</MenuItem>
               </TextField>
             </Grid>
-            <Grid xs={12} sm={6}>
+            <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth
                 select

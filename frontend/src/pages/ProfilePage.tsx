@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import {
   Box,
   Typography,
-  Grid,
   Avatar,
   Button,
   TextField,
@@ -11,6 +10,7 @@ import {
   Divider,
   IconButton,
 } from "@mui/material";
+import Grid from "@mui/material/GridLegacy";
 import {
   Edit as EditIcon,
   Save as SaveIcon,
@@ -117,7 +117,7 @@ const ProfilePage: React.FC = () => {
 
       <Grid container spacing={3}>
         {/* Profile Card */}
-        <Grid xs={12} md={4}>
+        <Grid item xs={12} md={4}>
           <Card>
             <CardContent sx={{ textAlign: "center", p: 4 }}>
               <Box
@@ -178,7 +178,7 @@ const ProfilePage: React.FC = () => {
         </Grid>
 
         {/* Profile Information */}
-        <Grid xs={12} md={8}>
+        <Grid item xs={12} md={8}>
           <Card>
             <CardContent>
               <Box
@@ -218,7 +218,7 @@ const ProfilePage: React.FC = () => {
                 }) => (
                   <Form onSubmit={handleSubmit}>
                     <Grid container spacing={3}>
-                      <Grid xs={12} sm={6}>
+                      <Grid item xs={12} sm={6}>
                         <TextField
                           fullWidth
                           name="name"
@@ -233,7 +233,7 @@ const ProfilePage: React.FC = () => {
                         />
                       </Grid>
 
-                      <Grid xs={12} sm={6}>
+                      <Grid item xs={12} sm={6}>
                         <TextField
                           fullWidth
                           name="email"
@@ -249,7 +249,7 @@ const ProfilePage: React.FC = () => {
                         />
                       </Grid>
 
-                      <Grid xs={12}>
+                      <Grid item xs={12}>
                         <TextField
                           fullWidth
                           name="role"
@@ -260,7 +260,7 @@ const ProfilePage: React.FC = () => {
                         />
                       </Grid>
 
-                      <Grid xs={12}>
+                      <Grid item xs={12}>
                         <TextField
                           fullWidth
                           name="lastLogin"
@@ -305,12 +305,12 @@ const ProfilePage: React.FC = () => {
               </Typography>
 
               <Grid container spacing={2}>
-                <Grid xs={12} sm={6}>
+                <Grid item xs={12} sm={6}>
                   <Button variant="outlined" fullWidth sx={{ py: 1.5 }}>
                     Alterar Senha
                   </Button>
                 </Grid>
-                <Grid xs={12} sm={6}>
+                <Grid item xs={12} sm={6}>
                   <Button
                     variant="outlined"
                     color="warning"

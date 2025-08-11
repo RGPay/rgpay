@@ -13,8 +13,8 @@ import {
   MenuItem,
   FormControlLabel,
   Checkbox,
-  Grid,
 } from "@mui/material";
+import Grid from "@mui/material/GridLegacy";
 import { useNavigate, useParams } from "react-router-dom";
 import { Toast } from "../../components";
 import * as Yup from "yup";
@@ -383,7 +383,7 @@ const ProdutoFormPage: React.FC = () => {
               {/* Form Fields */}
               <Grid container spacing={2}>
                 {/* Nome */}
-                <Grid xs={12}>
+                <Grid item xs={12}>
                   <Field name="nome">
                     {({ field, meta }: FieldProps) => (
                       <TextField
@@ -401,7 +401,7 @@ const ProdutoFormPage: React.FC = () => {
                 </Grid>
 
                 {/* Preço de Compra */}
-                <Grid xs={12} sm={6}>
+                <Grid item xs={12} sm={6}>
                   <Field name="preco_compra">
                     {({ field, meta }: FieldProps) => (
                       <TextField
@@ -419,7 +419,7 @@ const ProdutoFormPage: React.FC = () => {
                 </Grid>
 
                 {/* Preço de Venda */}
-                <Grid xs={12} sm={6}>
+                <Grid item xs={12} sm={6}>
                   <Field name="preco_venda">
                     {({ field, meta }: FieldProps) => (
                       <TextField
@@ -437,7 +437,7 @@ const ProdutoFormPage: React.FC = () => {
                 </Grid>
 
                 {/* Categoria */}
-                <Grid xs={12} sm={6}>
+                <Grid item xs={12} sm={6}>
                   <Field name="category_id">
                     {({ field, meta }: FieldProps) => (
                       <TextField
@@ -461,7 +461,7 @@ const ProdutoFormPage: React.FC = () => {
                 </Grid>
 
                 {/* Unidade */}
-                <Grid xs={12} sm={6}>
+                <Grid item xs={12} sm={6}>
                   <Field name="id_unidade">
                     {({ field, meta }: FieldProps) => (
                       <TextField
@@ -488,7 +488,7 @@ const ProdutoFormPage: React.FC = () => {
                 </Grid>
 
                 {/* Estoque */}
-                <Grid xs={12} sm={6}>
+                <Grid item xs={12} sm={6}>
                   <Field name="estoque">
                     {({ field, meta }: FieldProps) => (
                       <TextField
@@ -507,7 +507,7 @@ const ProdutoFormPage: React.FC = () => {
                 </Grid>
 
                 {/* Disponível */}
-                <Grid xs={12} sm={6}>
+                <Grid item xs={12} sm={6}>
                   <Field name="disponivel">
                     {({ field }: FieldProps) => (
                       <FormControlLabel
@@ -519,7 +519,7 @@ const ProdutoFormPage: React.FC = () => {
                 </Grid>
 
                 {/* Submit Buttons */}
-                <Grid xs={12}>
+                <Grid item xs={12}>
                   <Box
                     sx={{
                       display: "flex",

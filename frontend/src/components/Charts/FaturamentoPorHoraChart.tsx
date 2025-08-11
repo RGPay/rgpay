@@ -83,7 +83,7 @@ const FaturamentoPorHoraChart: React.FC<FaturamentoPorHoraChartProps> = ({
   const getOptions = () => {
     const maxValue = Math.max(...faturamentoPorHora.map((item) => item.value));
 
-    return {
+    const option: any = {
       tooltip: {
         trigger: "axis",
         axisPointer: {
@@ -265,6 +265,7 @@ const FaturamentoPorHoraChart: React.FC<FaturamentoPorHoraChartProps> = ({
       animationDuration: 800,
       animationEasing: "cubicInOut",
     };
+    return option;
   };
 
   return (
@@ -298,7 +299,7 @@ const FaturamentoPorHoraChart: React.FC<FaturamentoPorHoraChartProps> = ({
           <CircularProgress />
         </Box>
       ) : (
-        <ReactECharts option={getOptions()} style={{ height, width: "100%" }} />
+        <ReactECharts option={getOptions() as any} style={{ height, width: "100%" }} />
       )}
     </>
   );
