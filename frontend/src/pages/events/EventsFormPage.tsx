@@ -144,8 +144,8 @@ const EventsFormPage: React.FC = () => {
       // Format dates for API submission
       const formattedValues = {
         ...values,
-        data_inicio: formatDateForAPI(values.data_inicio),
-        data_fim: formatDateForAPI(values.data_fim),
+        data_inicio: formatDateForAPI(values.data_inicio || ""),
+        data_fim: formatDateForAPI(values.data_fim || ""),
       };
 
       if (isEditMode && id) {

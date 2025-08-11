@@ -166,7 +166,7 @@ const ProdutosListPage: React.FC = () => {
       id: "imagem",
       label: "Imagem",
       minWidth: 60,
-      align: "center",
+      align: "center" as const,
       format: (value: string) =>
         value ? (
           <img
@@ -204,7 +204,7 @@ const ProdutosListPage: React.FC = () => {
       id: "preco_compra",
       label: "Preço de Compra",
       minWidth: 120,
-      align: "right",
+      align: "right" as const,
       sortable: true,
       format: (value: number) => formatCurrency(value),
     },
@@ -212,7 +212,7 @@ const ProdutosListPage: React.FC = () => {
       id: "preco_venda",
       label: "Preço de Venda",
       minWidth: 120,
-      align: "right",
+      align: "right" as const,
       sortable: true,
       format: (value: number) => formatCurrency(value),
     },
@@ -220,7 +220,7 @@ const ProdutosListPage: React.FC = () => {
       id: "estoque",
       label: "Estoque",
       minWidth: 100,
-      align: "right",
+      align: "right" as const,
       sortable: true,
       format: (value: number) => value,
     },

@@ -24,7 +24,7 @@ import {
   Typography,
   Paper,
 } from "@mui/material";
-import { SchemaOf } from "yup";
+import { Schema } from "yup";
 
 export type FormikFieldConfig = {
   name: string;
@@ -58,7 +58,7 @@ export type FormikFieldConfig = {
 interface FormikFormProps<T> {
   title?: string;
   initialValues: T;
-  validationSchema: SchemaOf<T>;
+  validationSchema: Schema<T>;
   onSubmit: (values: T, formikHelpers: FormikHelpers<T>) => void | Promise<any>;
   fields: FormikFieldConfig[];
   submitButtonText?: string;
@@ -260,7 +260,7 @@ function FormikForm<T>({
                 </Grid>
               ))}
 
-              <Grid item xs={12}>
+              <Grid xs={12}>
                 <Box
                   sx={{
                     display: "flex",

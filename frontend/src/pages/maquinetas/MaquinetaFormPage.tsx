@@ -331,7 +331,7 @@ const MaquinetaFormPage: React.FC = () => {
                 </Card>
 
                 <Grid container spacing={3}>
-                  <Grid item xs={12} md={6}>
+                  <Grid xs={12} md={6}>
                     <Field name="numero_serie">
                       {({ field, meta }: FieldProps) => (
                         <TextField
@@ -350,7 +350,7 @@ const MaquinetaFormPage: React.FC = () => {
                     </Field>
                   </Grid>
 
-                  <Grid item xs={12} md={6}>
+                  <Grid xs={12} md={6}>
                     <Field name="status">
                       {({ field, meta }: FieldProps) => (
                         <FormControl fullWidth>
@@ -373,7 +373,7 @@ const MaquinetaFormPage: React.FC = () => {
                     </Field>
                   </Grid>
 
-                  <Grid item xs={12}>
+                  <Grid xs={12}>
                     <Field name="id_unidade">
                       {({ field, meta }: FieldProps) => (
                         <FormControl fullWidth>

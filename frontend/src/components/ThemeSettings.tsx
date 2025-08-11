@@ -235,7 +235,7 @@ const ThemeSettings: React.FC<ThemeSettingsProps> = ({ onClose }) => {
 
       <Grid container spacing={3}>
         {/* Theme Mode */}
-        <Grid item xs={12}>
+        <Grid xs={12}>
           <Card>
             <CardContent>
               <FormControl component="fieldset">
@@ -276,7 +276,7 @@ const ThemeSettings: React.FC<ThemeSettingsProps> = ({ onClose }) => {
         </Grid>
 
         {/* Predefined Color Schemes */}
-        <Grid item xs={12}>
+        <Grid xs={12}>
           <Card>
             <CardContent>
               <Typography variant="subtitle1" gutterBottom>
@@ -315,14 +315,14 @@ const ThemeSettings: React.FC<ThemeSettingsProps> = ({ onClose }) => {
         </Grid>
 
         {/* Custom Colors */}
-        <Grid item xs={12}>
+        <Grid xs={12}>
           <Card>
             <CardContent>
               <Typography variant="subtitle1" gutterBottom>
                 Cores Personalizadas
               </Typography>
               <Grid container spacing={2}>
-                <Grid item xs={12} sm={6} md={3}>
+                <Grid xs={12} sm={6} md={3}>
                   <TextField
                     fullWidth
                     label="Cor Primária"
@@ -357,7 +357,7 @@ const ThemeSettings: React.FC<ThemeSettingsProps> = ({ onClose }) => {
                     }}
                   />
                 </Grid>
-                <Grid item xs={12} sm={6} md={3}>
+                <Grid xs={12} sm={6} md={3}>
                   <TextField
                     fullWidth
                     label="Cor Secundária"
@@ -392,7 +392,7 @@ const ThemeSettings: React.FC<ThemeSettingsProps> = ({ onClose }) => {
                     }}
                   />
                 </Grid>
-                <Grid item xs={12} sm={6} md={3}>
+                <Grid xs={12} sm={6} md={3}>
                   <TextField
                     fullWidth
                     label="Cor de Sucesso"
@@ -427,7 +427,7 @@ const ThemeSettings: React.FC<ThemeSettingsProps> = ({ onClose }) => {
                     }}
                   />
                 </Grid>
-                <Grid item xs={12} sm={6} md={3}>
+                <Grid xs={12} sm={6} md={3}>
                   <TextField
                     fullWidth
                     label="Cor de Erro"
@@ -468,7 +468,7 @@ const ThemeSettings: React.FC<ThemeSettingsProps> = ({ onClose }) => {
         </Grid>
 
         {/* Action Buttons */}
-        <Grid item xs={12}>
+        <Grid xs={12}>
           <Box sx={{ display: "flex", gap: 2, justifyContent: "flex-end" }}>
             <Button
               variant="outlined"

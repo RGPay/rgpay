@@ -21,7 +21,7 @@ const ReactECharts: React.FC<ReactEChartsProps> = ({
     if (chartRef.current) {
       chart = echarts.init(chartRef.current);
       // Using a more specific type assertion
-      chart.setOption(option as echarts.EChartOption);
+      chart.setOption(option as echarts.EChartsOption);
     }
 
     function resizeChart() {

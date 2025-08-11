@@ -257,13 +257,13 @@ const FaturamentoPorHoraChart: React.FC<FaturamentoPorHoraChartProps> = ({
           },
           animationDelay: (idx: number) => idx * 50,
           animationDuration: 600,
-          animationEasing: "cubicOut",
+          animationEasing: "cubicInOut",
         },
       ],
       animation: true,
       animationThreshold: 2000,
       animationDuration: 800,
-      animationEasing: "cubicOut",
+      animationEasing: "cubicInOut",
     };
   };
 

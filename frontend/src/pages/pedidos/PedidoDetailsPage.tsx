@@ -145,7 +145,7 @@ const PedidoDetailsPage: React.FC = () => {
 
       <Box sx={{ width: "100%" }}>
         <Grid container spacing={3}>
-          <Grid item xs={12} md={4}>
+          <Grid xs={12} md={4}>
             <Card sx={{ height: "100%" }}>
               <CardContent>
                 <Typography variant="h6" gutterBottom>
@@ -192,7 +192,7 @@ const PedidoDetailsPage: React.FC = () => {
             </Card>
           </Grid>
 
-          <Grid item xs={12} md={8}>
+          <Grid xs={12} md={8}>
             <Paper sx={{ p: 2, height: "100%" }}>
               <Typography variant="h6" gutterBottom>
                 Itens do Pedido
