@@ -22,7 +22,6 @@ import { CategoryModule } from './categorias/category.module';
 import { SettingsModule } from './settings/settings.module';
 import { UserSettings } from './settings/user-settings.model';
 import { MaquinetasModule } from './maquinetas/maquinetas.module';
-import { HealthController } from './health.controller';
 
 dotenv.config();
 
@@ -66,7 +65,7 @@ dotenv.config();
     SettingsModule,
     MaquinetasModule,
   ],
-  controllers: [AppController, HealthController],
+  controllers: [AppController],
   providers: [AppService],
 })
 export class AppModule {}
