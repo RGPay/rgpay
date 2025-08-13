@@ -48,23 +48,31 @@ jobs:
     permissions:
       id-token: write
       contents: read
-
+  
     steps:
       - name: Download artifact
         uses: actions/download-artifact@v4
         with:
           name: backend-artifact
-
+          path: .   # baixa na raiz do workspace
+  
+      - name: Show workspace
+        run: |
+          pwd
+          ls -la
+          echo "---- backend-artifact ----"
+          ls -la ./backend-artifact
+  
       - name: Azure login
         uses: azure/login@v2
         with:
           client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_753B375AA0AA433B93264C960998D6BB }}
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_B5FB81B320DA4EA484C9648ED66C024D }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_D056C9FCEF7843EA946CF8E7398048E9 }}
-
+  
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
           app-name: rgpay-pdv
           slot-name: Production
-          package: backend-artifact
+          package: ./backend-artifact   # <<< caminho explícito
