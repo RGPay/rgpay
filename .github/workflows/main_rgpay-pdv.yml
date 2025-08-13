@@ -31,7 +31,9 @@ jobs:
         working-directory: backend
 
       - name: Verify build
-        run: ls -l dist && node -e "require('fs').accessSync('dist/main.js')"
+        run: |
+          ls -l dist
+          node -e "require('fs').accessSync('dist/main.js')"
         working-directory: backend
 
       - name: Upload artifact (backend only)
