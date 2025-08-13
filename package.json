@@ -6,7 +6,8 @@
   "scripts": {
     "build": "cd backend && npm install && npm run build",
     "start": "node index.js",
-    "dev": "cd backend && npm run start:dev"
+    "dev": "cd backend && npm run start:dev",
+    "build:vercel": "cd frontend && npm ci && npm run build"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",
