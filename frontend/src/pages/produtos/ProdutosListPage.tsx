@@ -166,11 +166,11 @@ const ProdutosListPage: React.FC = () => {
       id: "imagem",
       label: "Imagem",
       minWidth: 60,
-      align: "center",
-      format: (value: string) =>
+      align: "center" as const,
+      format: (value: unknown, _row: Produto) =>
         value ? (
           <img
-            src={value}
+            src={value as string}
             alt="Produto"
             style={{
               width: 40,
@@ -191,9 +191,9 @@ const ProdutosListPage: React.FC = () => {
       label: "Categoria",
       minWidth: 120,
       sortable: true,
-      format: (value: Produto["category"]) => (
+      format: (value: unknown, _row: Produto) => (
         <Chip
-          label={value?.name || "-"}
+          label={(value as Produto["category"])?.name || "-"}
           size="small"
           color="primary"
           variant="outlined"
@@ -204,35 +204,35 @@ const ProdutosListPage: React.FC = () => {
       id: "preco_compra",
       label: "Preço de Compra",
       minWidth: 120,
-      align: "right",
+      align: "right" as const,
       sortable: true,
-      format: (value: number) => formatCurrency(value),
+      format: (value: unknown) => formatCurrency(value as number),
     },
     {
       id: "preco_venda",
       label: "Preço de Venda",
       minWidth: 120,
-      align: "right",
+      align: "right" as const,
       sortable: true,
-      format: (value: number) => formatCurrency(value),
+      format: (value: unknown) => formatCurrency(value as number),
     },
     {
       id: "estoque",
       label: "Estoque",
       minWidth: 100,
-      align: "right",
+      align: "right" as const,
       sortable: true,
-      format: (value: number) => value,
+      format: (value: unknown) => value as number,
     },
     {
       id: "disponivel",
       label: "Disponível",
       minWidth: 120,
       sortable: true,
-      format: (value: boolean) => (
+      format: (value: unknown) => (
         <Chip
-          label={value ? "Sim" : "Não"}
-          color={value ? "success" : "error"}
+          label={(value as boolean) ? "Sim" : "Não"}
+          color={(value as boolean) ? "success" : "error"}
           size="small"
         />
       ),
@@ -242,7 +242,7 @@ const ProdutosListPage: React.FC = () => {
       label: "Unidade",
       minWidth: 120,
       sortable: true,
-      format: (value: Produto["unidade"]) => value?.nome || "-",
+      format: (value: unknown) => (value as Produto["unidade"])?.nome || "-",
     },
   ];
 

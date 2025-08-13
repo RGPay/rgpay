@@ -45,7 +45,6 @@ import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 import Button from "@mui/material/Button";
-import AuthService from "../../services/auth.service";
 
 const drawerWidth = 260;
 
@@ -137,6 +136,9 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const handleRevokeAutoLogin = async () => {
     if (user && user.sub) {
       try {
+        const { default: AuthService } = await import(
+          "../../services/auth.service"
+        );
         await AuthService.revokeRefreshTokens(user.sub);
       } catch {
         // Ignore errors when revoking tokens
