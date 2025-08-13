@@ -26,6 +26,6 @@ async function bootstrap() {
   // Use port 80 for Azure Web Apps (guaranteed to work)
   const port = Number(process.env.WEBSITES_PORT || process.env.PORT || 3000);
   console.log(`Starting application on port ${port}`);
-  await app.listen(port);
+  await app.listen(port, '0.0.0.0');
 }
 bootstrap();
