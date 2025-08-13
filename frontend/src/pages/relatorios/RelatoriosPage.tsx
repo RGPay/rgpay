@@ -37,7 +37,7 @@ const RelatoriosPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
   
   // Use ref to track if we're currently debouncing to avoid conflicts
-  const debounceRef = useRef<NodeJS.Timeout | null>(null);
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Load eventos when selectedUnidade changes
   useEffect(() => {
