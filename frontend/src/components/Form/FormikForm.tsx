@@ -6,6 +6,7 @@ import {
   FieldProps,
   FormikHelpers,
   FormikProps,
+  FormikValues,
 } from "formik";
 import {
   TextField,
@@ -24,7 +25,7 @@ import {
   Typography,
   Paper,
 } from "@mui/material";
-import { SchemaOf } from "yup";
+import { Schema } from "yup";
 
 export type FormikFieldConfig = {
   name: string;
@@ -55,10 +56,10 @@ export type FormikFieldConfig = {
   helperText?: string;
 };
 
-interface FormikFormProps<T> {
+interface FormikFormProps<T extends FormikValues> {
   title?: string;
   initialValues: T;
-  validationSchema: SchemaOf<T>;
+  validationSchema: Schema<T>;
   onSubmit: (values: T, formikHelpers: FormikHelpers<T>) => void | Promise<any>;
   fields: FormikFieldConfig[];
   submitButtonText?: string;
@@ -67,7 +68,7 @@ interface FormikFormProps<T> {
   loading?: boolean;
 }
 
-function FormikForm<T>({
+function FormikForm<T extends FormikValues>({
   title,
   initialValues,
   validationSchema,
@@ -237,13 +238,13 @@ function FormikForm<T>({
         </Typography>
       )}
 
-      <Formik
+      <Formik<T>
         initialValues={initialValues}
         validationSchema={validationSchema}
         onSubmit={onSubmit}
         enableReinitialize
       >
-        {(formProps) => (
+        {(formProps: FormikProps<T>) => (
           <Form>
             <Grid container spacing={2}>
               {fields.map((field) => (

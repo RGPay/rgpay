@@ -99,8 +99,8 @@ export default function Login() {
 
                 dispatch(
                   loginAction({
-                    access_token: newTokens.access_token,
-                    refresh_token: newTokens.refresh_token,
+                    token: newTokens.access_token,
+                    refreshToken: newTokens.refresh_token,
                     user: newTokens.user,
                   })
                 );
@@ -128,8 +128,8 @@ export default function Login() {
             // Token is still valid, proceed with login
             dispatch(
               loginAction({
-                access_token: token,
-                refresh_token: refreshToken,
+                token: token,
+                refreshToken: refreshToken,
                 user: JSON.parse(user),
               })
             );
@@ -266,8 +266,8 @@ export default function Login() {
                   const data = response.data;
                   dispatch(
                     loginAction({
-                      access_token: data.access_token,
-                      refresh_token: data.refresh_token,
+                      token: data.access_token,
+                      refreshToken: data.refresh_token,
                       user: data.user,
                     })
                   );

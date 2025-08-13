@@ -3,7 +3,7 @@ import * as echarts from "echarts";
 
 // Defining interface with the proper echarts option type
 interface ReactEChartsProps {
-  option: echarts.EChartsCoreOption;
+  option: Record<string, unknown>;
   style?: React.CSSProperties;
   className?: string;
 }
@@ -20,8 +20,8 @@ const ReactECharts: React.FC<ReactEChartsProps> = ({
 
     if (chartRef.current) {
       chart = echarts.init(chartRef.current);
-      // Using a more specific type assertion
-      chart.setOption(option as echarts.EChartOption);
+      // Avoid versioned type conflicts between @types/echarts (v4) and echarts (v5)
+      (chart as any).setOption(option as any);
     }
 
     function resizeChart() {
