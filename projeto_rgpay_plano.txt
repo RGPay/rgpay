@@ -97,4 +97,4 @@ Sistema de modernização para estabelecimentos comerciais que utilizam maquinet
 ### 3. EVOLUÇÃO TÉCNICA
 3.1. Melhorias de performance
 3.2. Segurança e conformidade
-3.3. Testes automatizados mais abrangentes 
+3.3. Testes automatizados mais abrangentes
