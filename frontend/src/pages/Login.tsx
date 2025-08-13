@@ -291,6 +291,33 @@ export default function Login() {
                   );
                   navigate("/");
                 } catch (err: unknown) {
+                  // Retry once after short delay to handle potential cold start
+                  await new Promise((r) => setTimeout(r, 1500));
+                  try {
+                    const response = await api.post("/auth/login", {
+                      email: values.email,
+                      senha: values.password,
+                    });
+                    const data = response.data;
+                    dispatch(
+                      loginAction({
+                        token: data.access_token,
+                        refreshToken: data.refresh_token,
+                        user: data.user,
+                      })
+                    );
+                    if (values.autoLogin) {
+                      localStorage.setItem("token", data.access_token);
+                      localStorage.setItem("refresh_token", data.refresh_token);
+                      localStorage.setItem("user", JSON.stringify(data.user));
+                    } else {
+                      sessionStorage.setItem("token", data.access_token);
+                      sessionStorage.setItem("refresh_token", data.refresh_token);
+                      sessionStorage.setItem("user", JSON.stringify(data.user));
+                    }
+                    navigate("/");
+                    return;
+                  } catch (err) {
                   let errorMessage = "Erro desconhecido ao fazer login";
 
                   if (err instanceof AxiosError) {
@@ -326,7 +353,8 @@ export default function Login() {
                     errorMessage = err.message;
                   }
 
-                  setError(errorMessage);
+                    setError(errorMessage);
+                  }
                 } finally {
                   setLoading(false);
                 }
