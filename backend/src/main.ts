@@ -3,14 +3,16 @@ import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, { bufferLogs: true });
 
   // Configure CORS to allow requests from all origins
+  const allowedOrigin = process.env.CORS_ORIGIN || '*';
   app.enableCors({
-    origin: '*',
+    origin: allowedOrigin === '*' ? true : [allowedOrigin],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
-    credentials: false, // Must be false when origin is '*'
+    credentials: false,
+    optionsSuccessStatus: 204,
   });
 
   app.useGlobalPipes(
@@ -22,7 +24,7 @@ async function bootstrap() {
   );
 
   // Use port 80 for Azure Web Apps (guaranteed to work)
-  const port = process.env.WEBSITES_PORT || process.env.PORT || 80;
+  const port = Number(process.env.WEBSITES_PORT || process.env.PORT || 3000);
   console.log(`Starting application on port ${port}`);
   await app.listen(port);
 }
