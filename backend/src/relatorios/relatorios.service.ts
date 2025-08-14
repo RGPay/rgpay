@@ -92,7 +92,10 @@ export class RelatoriosService {
             [fn('SUM', col('itensPedido.quantidade')), 'qtd'],
             [fn('AVG', col('itensPedido.preco_unitario')), 'unitario'],
             [
-              literal('SUM(itensPedido.quantidade * itensPedido.preco_unitario)'),
+              fn(
+                'SUM',
+                literal('\"itensPedido\".\"quantidade\" * \"itensPedido\".\"preco_unitario\"'),
+              ),
               'total',
             ],
           ],
@@ -115,14 +118,25 @@ export class RelatoriosService {
       ],
       where: whereClause,
       group: [
-        'itensPedido.produto.category.id',
-        'itensPedido.produto.category.name',
-        'itensPedido.produto.id_produto',
-        'itensPedido.produto.nome',
+        col('itensPedido->produto->category.id'),
+        col('itensPedido->produto->category.name'),
+        col('itensPedido->produto.id_produto'),
+        col('itensPedido->produto.nome'),
       ],
       order: [
-        [{ model: this.itemPedidoModel, as: 'itensPedido' }, { model: this.produtoModel, as: 'produto' }, { model: this.categoryModel, as: 'category' }, 'name', 'ASC'],
-        [{ model: this.itemPedidoModel, as: 'itensPedido' }, { model: this.produtoModel, as: 'produto' }, 'nome', 'ASC'],
+        [
+          { model: this.itemPedidoModel, as: 'itensPedido' },
+          { model: this.produtoModel, as: 'produto' },
+          { model: this.categoryModel, as: 'category' },
+          'name',
+          'ASC',
+        ],
+        [
+          { model: this.itemPedidoModel, as: 'itensPedido' },
+          { model: this.produtoModel, as: 'produto' },
+          'nome',
+          'ASC',
+        ],
       ],
       raw: true,
       nest: true,
