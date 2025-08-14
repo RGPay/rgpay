@@ -44,4 +44,4 @@ export interface FaturamentoProdutoGroup {
 export interface FaturamentoProdutoResponse {
   grupos: FaturamentoProdutoGroup[];
   total_geral: number;
-} 
+}

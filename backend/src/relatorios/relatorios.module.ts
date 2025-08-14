@@ -10,16 +10,10 @@ import { RelatoriosService } from './relatorios.service';
 
 @Module({
   imports: [
-    SequelizeModule.forFeature([
-      Pedido,
-      ItemPedido,
-      Produto,
-      Category,
-      Evento,
-    ]),
+    SequelizeModule.forFeature([Pedido, ItemPedido, Produto, Category, Evento]),
   ],
   controllers: [RelatoriosController],
   providers: [RelatoriosService],
   exports: [RelatoriosService],
 })
-export class RelatoriosModule {} 
+export class RelatoriosModule {}

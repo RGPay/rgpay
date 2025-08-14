@@ -94,7 +94,9 @@ export class RelatoriosService {
             [
               fn(
                 'SUM',
-                literal('\"itensPedido\".\"quantidade\" * \"itensPedido\".\"preco_unitario\"'),
+                literal(
+                  '\"itensPedido\".\"quantidade\" * \"itensPedido\".\"preco_unitario\"',
+                ),
               ),
               'total',
             ],
@@ -187,4 +189,4 @@ export class RelatoriosService {
       total_geral: totalGeral,
     };
   }
-} 
+}

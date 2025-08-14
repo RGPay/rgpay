@@ -10,4 +10,4 @@ import { Maquineta } from '../pedidos/maquineta.model';
   providers: [MaquinetasService],
   exports: [MaquinetasService],
 })
-export class MaquinetasModule {} 
+export class MaquinetasModule {}

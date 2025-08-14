@@ -1,1 +1,1 @@
-export * from './maquinetas.module'; 
+export * from './maquinetas.module';

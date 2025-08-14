@@ -1,4 +1,10 @@
-import { IsEnum, IsNotEmpty, IsOptional, IsString, IsInt } from 'class-validator';
+import {
+  IsEnum,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  IsInt,
+} from 'class-validator';
 
 export class CreateMaquinetaDto {
   @IsNotEmpty()
@@ -50,4 +56,4 @@ export class MaquinetaResponseDto {
   };
   createdAt: Date;
   updatedAt: Date;
-} 
+}

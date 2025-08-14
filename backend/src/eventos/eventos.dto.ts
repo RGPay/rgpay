@@ -59,4 +59,4 @@ export class EventoFilterDto {
   @IsOptional()
   @Type(() => Number)
   id_unidade?: number;
-} 
+}

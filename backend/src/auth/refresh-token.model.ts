@@ -30,4 +30,4 @@ export class RefreshToken extends Model<RefreshToken> {
 
   @Column(DataType.DATE)
   declare expires_at: Date;
-} 
+}
