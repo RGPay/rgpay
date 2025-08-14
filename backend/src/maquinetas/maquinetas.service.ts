@@ -2,7 +2,11 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Maquineta } from '../pedidos/maquineta.model';
 import { Unidade } from '../unidades/unidade.model';
-import { CreateMaquinetaDto, UpdateMaquinetaDto, MaquinetaResponseDto } from './maquinetas.dto';
+import {
+  CreateMaquinetaDto,
+  UpdateMaquinetaDto,
+  MaquinetaResponseDto,
+} from './maquinetas.dto';
 
 @Injectable()
 export class MaquinetasService {
@@ -11,28 +15,34 @@ export class MaquinetasService {
     private maquinetaModel: typeof Maquineta,
   ) {}
 
-  async create(createMaquinetaDto: CreateMaquinetaDto): Promise<MaquinetaResponseDto> {
+  async create(
+    createMaquinetaDto: CreateMaquinetaDto,
+  ): Promise<MaquinetaResponseDto> {
     console.log('Creating maquineta with data:', {
       numero_serie: createMaquinetaDto.numero_serie,
       status: createMaquinetaDto.status,
       id_unidade: createMaquinetaDto.id_unidade,
-      logo: createMaquinetaDto.logo ? 'Logo presente (base64 data)' : 'Sem logo',
+      logo: createMaquinetaDto.logo
+        ? 'Logo presente (base64 data)'
+        : 'Sem logo',
     });
-    
+
     const maquineta = await this.maquinetaModel.create({
       numero_serie: createMaquinetaDto.numero_serie,
       status: createMaquinetaDto.status,
       id_unidade: createMaquinetaDto.id_unidade,
       logo: createMaquinetaDto.logo,
     } as any);
-    
+
     console.log('Maquineta created with ID:', maquineta.id_maquineta);
-    return this.formatMaquinetaResponse(await this.findByIdWithUnidade(maquineta.id_maquineta));
+    return this.formatMaquinetaResponse(
+      await this.findByIdWithUnidade(maquineta.id_maquineta),
+    );
   }
 
   async findAll(id_unidade?: number): Promise<MaquinetaResponseDto[]> {
     const whereClause = id_unidade ? { id_unidade } : {};
-    
+
     const maquinetas = await this.maquinetaModel.findAll({
       where: whereClause,
       include: [
@@ -44,7 +54,9 @@ export class MaquinetasService {
       order: [['createdAt', 'DESC']],
     });
 
-    return maquinetas.map(maquineta => this.formatMaquinetaResponse(maquineta));
+    return maquinetas.map((maquineta) =>
+      this.formatMaquinetaResponse(maquineta),
+    );
   }
 
   async findOne(id: number): Promise<MaquinetaResponseDto> {
@@ -52,7 +64,10 @@ export class MaquinetasService {
     return this.formatMaquinetaResponse(maquineta);
   }
 
-  async update(id: number, updateMaquinetaDto: UpdateMaquinetaDto): Promise<MaquinetaResponseDto> {
+  async update(
+    id: number,
+    updateMaquinetaDto: UpdateMaquinetaDto,
+  ): Promise<MaquinetaResponseDto> {
     const maquineta = await this.maquinetaModel.findByPk(id);
     if (!maquineta) {
       throw new NotFoundException(`Maquineta com ID ${id} não encontrada`);
@@ -95,14 +110,16 @@ export class MaquinetasService {
       status: maquineta.status,
       id_unidade: maquineta.id_unidade,
       logo: maquineta.logo,
-      unidade: maquineta.unidade ? {
-        id_unidade: maquineta.unidade.id_unidade,
-        nome: maquineta.unidade.nome,
-        cidade: maquineta.unidade.cidade,
-        estado: maquineta.unidade.estado,
-      } : undefined,
+      unidade: maquineta.unidade
+        ? {
+            id_unidade: maquineta.unidade.id_unidade,
+            nome: maquineta.unidade.nome,
+            cidade: maquineta.unidade.cidade,
+            estado: maquineta.unidade.estado,
+          }
+        : undefined,
       createdAt: maquineta.createdAt,
       updatedAt: maquineta.updatedAt,
     };
   }
-} 
+}

@@ -43,4 +43,4 @@ export class CategoryController {
   remove(@Param('id', ParseIntPipe) id: number): Promise<void> {
     return this.categoryService.remove(id);
   }
-} 
+}

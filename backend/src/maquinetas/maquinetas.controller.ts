@@ -13,7 +13,11 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { MaquinetasService } from './maquinetas.service';
-import { CreateMaquinetaDto, UpdateMaquinetaDto, MaquinetaResponseDto } from './maquinetas.dto';
+import {
+  CreateMaquinetaDto,
+  UpdateMaquinetaDto,
+  MaquinetaResponseDto,
+} from './maquinetas.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 @Controller('maquinetas')
@@ -23,18 +27,24 @@ export class MaquinetasController {
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  create(@Body() createMaquinetaDto: CreateMaquinetaDto): Promise<MaquinetaResponseDto> {
+  create(
+    @Body() createMaquinetaDto: CreateMaquinetaDto,
+  ): Promise<MaquinetaResponseDto> {
     return this.maquinetasService.create(createMaquinetaDto);
   }
 
   @Get()
-  findAll(@Query('id_unidade') id_unidade?: string): Promise<MaquinetaResponseDto[]> {
+  findAll(
+    @Query('id_unidade') id_unidade?: string,
+  ): Promise<MaquinetaResponseDto[]> {
     const unidadeId = id_unidade ? parseInt(id_unidade, 10) : undefined;
     return this.maquinetasService.findAll(unidadeId);
   }
 
   @Get(':id')
-  findOne(@Param('id', ParseIntPipe) id: number): Promise<MaquinetaResponseDto> {
+  findOne(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<MaquinetaResponseDto> {
     return this.maquinetasService.findOne(id);
   }
 
@@ -51,4 +61,4 @@ export class MaquinetasController {
   remove(@Param('id', ParseIntPipe) id: number): Promise<void> {
     return this.maquinetasService.remove(id);
   }
-} 
+}

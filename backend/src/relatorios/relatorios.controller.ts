@@ -1,9 +1,4 @@
-import {
-  Controller,
-  Get,
-  Query,
-  UseGuards,
-} from '@nestjs/common';
+import { Controller, Get, Query, UseGuards } from '@nestjs/common';
 import { RelatoriosService } from './relatorios.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import {
@@ -22,4 +17,4 @@ export class RelatoriosController {
   ): Promise<FaturamentoProdutoResponse> {
     return this.relatoriosService.getFaturamentoProdutos(filterDto);
   }
-} 
+}
