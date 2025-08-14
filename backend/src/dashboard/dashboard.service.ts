@@ -181,7 +181,9 @@ export class DashboardService {
           [
             fn(
               'SUM',
-              literal('\"ItemPedido\".\"quantidade\" * \"ItemPedido\".\"preco_unitario\"'),
+              literal(
+                '\"ItemPedido\".\"quantidade\" * \"ItemPedido\".\"preco_unitario\"',
+              ),
             ),
             'valor_total',
           ],

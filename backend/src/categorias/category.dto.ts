@@ -11,4 +11,4 @@ export class UpdateCategoryDto {
   @IsNotEmpty()
   @IsOptional()
   name?: string;
-} 
+}

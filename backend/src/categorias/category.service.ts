@@ -34,4 +34,4 @@ export class CategoryService {
     const category = await this.findOne(id);
     await category.destroy();
   }
-} 
+}
