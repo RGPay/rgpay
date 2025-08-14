@@ -176,9 +176,15 @@ export class DashboardService {
     if (pedidosIds.length > 0) {
       const result = (await this.itemPedidoModel.findAll({
         attributes: [
-          'id_produto',
-          [fn('SUM', col('quantidade')), 'quantidade'],
-          [fn('SUM', literal('quantidade * preco_unitario')), 'valor_total'],
+          [col('ItemPedido.id_produto'), 'id_produto'],
+          [fn('SUM', col('ItemPedido.quantidade')), 'quantidade'],
+          [
+            fn(
+              'SUM',
+              literal('\"ItemPedido\".\"quantidade\" * \"ItemPedido\".\"preco_unitario\"'),
+            ),
+            'valor_total',
+          ],
         ],
         include: [
           {
@@ -192,7 +198,11 @@ export class DashboardService {
             [Op.in]: pedidosIds,
           },
         },
-        group: ['id_produto', 'produto.nome', 'produto.imagem'],
+        group: [
+          col('ItemPedido.id_produto'),
+          col('produto.nome'),
+          col('produto.imagem'),
+        ],
         order: [[literal('quantidade'), 'DESC']],
         limit: 10,
         raw: true,
@@ -216,14 +226,20 @@ export class DashboardService {
     const vendasPorPeriodo: { data: string; total: number }[] = [];
 
     if (totalPedidos > 0) {
+      // Use Postgres-friendly date formatting (TO_CHAR). MySQL's DATE_FORMAT is not available in Postgres.
+      const dateLabelExpr = this.sequelize.fn(
+        'TO_CHAR',
+        this.sequelize.col('data_hora'),
+        'DD/MM',
+      );
       const pedidosPorData = (await this.pedidoModel.findAll({
         attributes: [
-          [fn('DATE_FORMAT', col('data_hora'), '%d/%m'), 'data'],
+          [dateLabelExpr, 'data'],
           [fn('SUM', col('valor_total')), 'total'],
         ],
         where: whereClause,
-        group: [fn('DATE_FORMAT', col('data_hora'), '%d/%m')],
-        order: [[col('data'), 'ASC']],
+        group: [dateLabelExpr],
+        order: [[dateLabelExpr, 'ASC']],
         raw: true,
       })) as unknown as VendaPorPeriodoResult[];
 
@@ -244,7 +260,10 @@ export class DashboardService {
 
     if (totalPedidos > 0) {
       const vendasUnidade = (await this.pedidoModel.findAll({
-        attributes: ['id_unidade', [fn('SUM', col('valor_total')), 'total']],
+        attributes: [
+          [col('Pedido.id_unidade'), 'id_unidade'],
+          [fn('SUM', col('Pedido.valor_total')), 'total'],
+        ],
         include: [
           {
             model: Unidade,
@@ -253,7 +272,7 @@ export class DashboardService {
           },
         ],
         where: whereClause,
-        group: ['id_unidade', 'unidade.nome'],
+        group: [col('Pedido.id_unidade'), col('unidade.nome')],
         order: [[literal('total'), 'DESC']],
         limit: 10,
         raw: true,

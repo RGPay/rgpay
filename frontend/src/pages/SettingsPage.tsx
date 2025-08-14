@@ -48,7 +48,7 @@ const SettingsPage: React.FC = () => {
   const currentUser = useSelector((state: RootState) => state.auth.user);
   const [users, setUsers] = useState<User[]>([]);
   const [unidades, setUnidades] = useState<Unidade[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [editingUser, setEditingUser] = useState<User | null>(null);
@@ -73,6 +73,7 @@ const SettingsPage: React.FC = () => {
   };
 
   const loadUsers = async () => {
+    setLoading(true);
     try {
       const [usersData, unidadesData] = await Promise.all([
         UsersService.getUsers(),
@@ -92,8 +93,10 @@ const SettingsPage: React.FC = () => {
   };
 
   useEffect(() => {
-    loadUsers();
-  }, []);
+    if (currentUser?.tipo_usuario === "master" && activeTab === 1) {
+      loadUsers();
+    }
+  }, [currentUser?.tipo_usuario, activeTab]);
 
   const handleOpenDialog = (user?: User) => {
     if (user) {
@@ -203,16 +206,7 @@ const SettingsPage: React.FC = () => {
     );
   };
 
-  // Check access level
-  if (currentUser?.tipo_usuario !== "master") {
-    return (
-      <Box sx={{ textAlign: "center", mt: 4 }}>
-        <Typography variant="h6" color="error">
-          Acesso negado. Apenas usuários Master podem gerenciar usuários.
-        </Typography>
-      </Box>
-    );
-  }
+  // Usuários só podem gerenciar "Usuários" se forem master. O restante (tema) é liberado.
 
   if (loading) {
     return (

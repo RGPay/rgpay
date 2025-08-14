@@ -132,6 +132,8 @@ module.exports = {
         onDelete: 'CASCADE',
         allowNull: false,
       },
+      // Optional base64 logo used for receipts
+      logo: { type: Sequelize.TEXT, allowNull: true },
       createdAt: { type: Sequelize.DATE, allowNull: false },
       updatedAt: { type: Sequelize.DATE, allowNull: false },
     });
