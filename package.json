@@ -1,6 +1,6 @@
 {
   "name": "rgpay",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "RGPay - Payment Management System",
   "main": "index.js",
   "scripts": {
