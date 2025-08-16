@@ -25,6 +25,34 @@
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
+## Prerequisites
+
+Before installing dependencies, make sure you have PostgreSQL installed on your system:
+
+### Windows
+- Download from: https://www.postgresql.org/download/windows/
+- Or use Chocolatey: `choco install postgresql`
+
+### macOS
+- Homebrew: `brew install postgresql`
+- Or download from: https://www.postgresql.org/download/macosx/
+
+### Linux
+**Ubuntu/Debian:**
+```bash
+sudo apt update && sudo apt install postgresql postgresql-contrib libpq-dev
+```
+
+**CentOS/RHEL/Fedora:**
+```bash
+sudo yum install postgresql postgresql-server postgresql-devel
+```
+
+**Arch:**
+```bash
+sudo pacman -S postgresql
+```
+
 ## Project setup
 
 ```bash
