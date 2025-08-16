@@ -22,26 +22,41 @@ import { CategoryModule } from './categorias/category.module';
 import { SettingsModule } from './settings/settings.module';
 import { UserSettings } from './settings/user-settings.model';
 import { MaquinetasModule } from './maquinetas/maquinetas.module';
+import * as fs from 'fs';
+import * as path from 'path';
 
 dotenv.config();
+
+interface DatabaseConfig {
+  username: string;
+  password: string;
+  database: string;
+  host: string;
+  port: number;
+  dialect: 'postgres' | 'mysql' | 'sqlite' | 'mariadb' | 'mssql';
+  dialectOptions: {
+    ssl: boolean | { require: boolean; rejectUnauthorized: boolean };
+  };
+}
+
+interface Config {
+  development: DatabaseConfig;
+  test: DatabaseConfig;
+  production: DatabaseConfig;
+}
+
+const configPath = path.join(__dirname, '../config/config.json');
+const config: Config = JSON.parse(
+  fs.readFileSync(configPath, 'utf8'),
+) as Config;
 
 @Module({
   imports: [
     SequelizeModule.forRoot({
+      ...config[(process.env.NODE_ENV || 'development') as keyof Config],
       dialect: 'postgres',
-      host: process.env.DB_HOST,
-      port: Number(process.env.DB_PORT) || 5432,
-      username: process.env.DB_USER,
-      password: process.env.DB_PASS,
-      database: process.env.DB_NAME,
       autoLoadModels: true,
-      synchronize: true,
-      dialectOptions: {
-        ssl: {
-          require: true,
-          rejectUnauthorized: false,
-        },
-      },
+      synchronize: process.env.NODE_ENV !== 'production',
       models: [
         Unidade,
         Usuario,
