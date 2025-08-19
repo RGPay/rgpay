@@ -1,0 +1,81 @@
+name: Deploy backend to Azure App Service - rgpay-dev
+
+on:
+  push:
+    branches: [ develop ]
+  workflow_dispatch:
+
+# Evita deploys concorrentes na mesma branch
+concurrency:
+  group: deploy-rgpay-dev-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: backend/package-lock.json
+
+      - name: Install deps (backend)
+        run: npm ci
+        working-directory: backend
+
+      - name: Build (backend)
+        run: npm run build
+        working-directory: backend
+
+      - name: Verify build output
+        run: |
+          ls -l backend/dist
+          node -e "require('fs').accessSync('backend/dist/main.js')"
+
+      - name: Upload artifact (backend only)
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-artifact
+          path: backend
+          retention-days: 1
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: backend-artifact
+          path: .
+
+      - name: Show workspace (quick debug)
+        run: |
+          pwd
+          ls -la backend
+          ls -la backend/dist || true
+
+      - name: Azure login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_753B375AA0AA433B93264C960998D6BB }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_B5FB81B320DA4EA484C9648ED66C024D }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_D056C9FCEF7843EA946CF8E7398048E9 }}
+
+      - name: Deploy to Azure Web App (rgpay-dev)
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: rgpay-dev
+          package: backend   # envia somente a pasta do backend
