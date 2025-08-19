@@ -16,7 +16,7 @@ import {
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import ptBR from "date-fns/locale/pt-BR";
+import { ptBR } from "date-fns/locale/pt-BR";
 import {
   FilterAlt as FilterAltIcon,
   Refresh as RefreshIcon,

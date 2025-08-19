@@ -11,6 +11,14 @@ import {
   ForbiddenException,
   BadRequestException,
 } from '@nestjs/common';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiBearerAuth,
+  ApiParam,
+  ApiBody,
+} from '@nestjs/swagger';
 import { UsuariosService } from './usuarios.service';
 import { Usuario } from './usuario.model';
 import { JwtAuthGuard } from './jwt-auth.guard';
@@ -25,12 +33,17 @@ interface AuthenticatedRequest {
   };
 }
 
+@ApiTags('Users')
+@ApiBearerAuth('JWT-auth')
 @Controller('usuarios')
 @UseGuards(JwtAuthGuard)
 export class UsuariosController {
   constructor(private readonly usuariosService: UsuariosService) {}
 
   @Get()
+  @ApiOperation({ summary: 'Get all users (Master only)' })
+  @ApiResponse({ status: 200, description: 'List of all users' })
+  @ApiResponse({ status: 403, description: 'Access denied - Master only' })
   async findAll(@Request() req: AuthenticatedRequest): Promise<Usuario[]> {
     // Only master users can manage other users
     if (req.user.tipo_usuario !== 'master') {
@@ -40,6 +53,11 @@ export class UsuariosController {
   }
 
   @Get(':id')
+  @ApiOperation({ summary: 'Get user by ID' })
+  @ApiParam({ name: 'id', description: 'User ID' })
+  @ApiResponse({ status: 200, description: 'User found' })
+  @ApiResponse({ status: 403, description: 'Access denied' })
+  @ApiResponse({ status: 404, description: 'User not found' })
   async findOne(
     @Param('id') id: string,
     @Request() req: AuthenticatedRequest,
@@ -53,6 +71,11 @@ export class UsuariosController {
   }
 
   @Post()
+  @ApiOperation({ summary: 'Create a new user (Master only)' })
+  @ApiResponse({ status: 201, description: 'User created successfully' })
+  @ApiResponse({ status: 403, description: 'Access denied - Master only' })
+  @ApiResponse({ status: 409, description: 'Email already exists' })
+  @ApiBody({ type: CreateUsuarioDto })
   async create(
     @Body() createUsuarioDto: CreateUsuarioDto,
     @Request() req: AuthenticatedRequest,
@@ -65,6 +88,12 @@ export class UsuariosController {
   }
 
   @Put(':id')
+  @ApiOperation({ summary: 'Update user' })
+  @ApiParam({ name: 'id', description: 'User ID' })
+  @ApiResponse({ status: 200, description: 'User updated successfully' })
+  @ApiResponse({ status: 403, description: 'Access denied' })
+  @ApiResponse({ status: 404, description: 'User not found' })
+  @ApiBody({ type: UpdateUsuarioDto })
   async update(
     @Param('id') id: string,
     @Body() updateUsuarioDto: UpdateUsuarioDto,
@@ -91,6 +120,11 @@ export class UsuariosController {
   }
 
   @Delete(':id')
+  @ApiOperation({ summary: 'Delete user (Master only)' })
+  @ApiParam({ name: 'id', description: 'User ID' })
+  @ApiResponse({ status: 200, description: 'User deleted successfully' })
+  @ApiResponse({ status: 403, description: 'Access denied - Master only' })
+  @ApiResponse({ status: 404, description: 'User not found' })
   async remove(
     @Param('id') id: string,
     @Request() req: AuthenticatedRequest,
