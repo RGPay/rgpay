@@ -5,6 +5,18 @@ const expoConfig = require('eslint-config-expo/flat');
 module.exports = defineConfig([
   expoConfig,
   {
-    ignores: ['dist/*'],
+    ignores: ['dist/*', 'node_modules/*'],
+  },
+  // Prettier config to disable conflicting rules FIRST
+  require('eslint-config-prettier'),
+  // Prettier configuration AFTER disabling conflicts
+  {
+    files: ['**/*.{js,jsx,ts,tsx}'],
+    plugins: {
+      prettier: require('eslint-plugin-prettier'),
+    },
+    rules: {
+      'prettier/prettier': 'error',
+    },
   },
 ]);
