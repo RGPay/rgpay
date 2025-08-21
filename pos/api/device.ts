@@ -1,99 +1,108 @@
 // Mock API service for device registration
-import { DeviceAuth } from '@/lib/auth/schema';
-import { apiLog } from '../lib/logger';
+import { DeviceMetadata } from '@/lib/devices/schemas';
+import {
+  DeviceAlreadyAssignedError,
+  DeviceAlreadyRevokedError,
+  DeviceNotAssignedError,
+  DeviceNotFoundError,
+} from '@/lib/errors';
+import { logger } from '@/lib/logger';
 
 // Mock delay function
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
-// Simple array to store devices with real emulator data
-const devices: DeviceAuth[] = [
+const devices: DeviceMetadata[] = [
   {
-    id: 'EMULATOR36X1X9X0-1703123456789',
-    locationId: 'default_location',
-    deviceMetadata: {
-      serialId: 'EMULATOR36X1X9X0',
-      deviceName: 'sdk_gphone64_arm64',
-      operationalSystem: 'android',
-      provider: 'Cielo',
-    },
-    verified: false,
-    active: true,
+    serialId: 'EMULATOR36X1X9X0',
+    deviceName: 'sdk_gphone64_arm64',
+    operationalSystem: 'android',
+    provider: 'Cielo',
+    assigned: false,
+    revoked: false,
+    revokedAt: undefined,
   },
 ];
 
 export const deviceAPI = {
-  // POST /device/{serialId}/registrations
-  async registerDevice(serialId: string): Promise<DeviceAuth> {
-    apiLog.info('Registering device:', { serialId });
+  // GET /device/{serialId}
+  async getDevice(serialId: string): Promise<DeviceMetadata> {
+    logger.info('Registering device:', { serialId });
     await delay(2000); // Simulate network delay
 
-    // Simulate random error (10% chance)
-    if (Math.random() < 0.1) {
-      apiLog.error('Random error occurred during registration');
-      throw new Error('Erro de conexão. Tente novamente.');
-    }
+    // // Simulate random error (10% chance)
+    // if (Math.random() < 0.1) {
+    //   logger.error('Random error occurred during registration');
+    //   throw new Error('Erro de conexão. Tente novamente.');
+    // }
 
-    const device = devices.find(d => d.deviceMetadata.serialId === serialId);
+    const device = devices.find(d => d.serialId === serialId);
 
     if (!device) {
-      apiLog.error('Device not found:', { serialId });
-      throw new Error('Dispositivo não encontrado');
-    }
-
-    if (device.verified) {
-      apiLog.warn('Device already registered:', { serialId });
-      return device;
+      logger.error('Device not found:', { serialId });
+      throw new DeviceNotFoundError('Dispositivo não encontrado');
     }
 
     return device;
   },
 
-  // PATCH /device/{serialId}/registrations/{id}
-  async verifyDevice(
-    serialId: string,
-    registrationId: string
-  ): Promise<DeviceAuth> {
-    apiLog.info('Verifying device:', { serialId, registrationId });
+  // PUT /device/{serialId}/assignments
+  async assignDevice(serialId: string): Promise<DeviceMetadata> {
+    logger.info('Verifying device:', { serialId });
     await delay(1500); // Simulate network delay
 
     // Find device by ID
-    const deviceIndex = devices.findIndex(d => d.id === registrationId);
+    const deviceIndex = devices.findIndex(d => d.serialId === serialId);
     if (deviceIndex === -1) {
-      apiLog.error('Device not found:', { registrationId });
-      throw new Error('Dispositivo não encontrado');
+      logger.error('Device not found:', { serialId });
+      throw new DeviceNotFoundError('Dispositivo não encontrado');
     }
 
     const device = devices[deviceIndex];
 
-    // Verify serial ID matches
-    if (device.deviceMetadata.serialId !== serialId) {
-      apiLog.error('Serial ID mismatch:', {
-        expected: serialId,
-        actual: device.deviceMetadata.serialId,
-      });
-      throw new Error('Serial ID não corresponde');
+    /**
+     * @todo Implement an UI to logout the device and then reassign it
+     * like we have in Banks where we can have just one main device logged in at a time
+     */
+    if (device.assigned) {
+      logger.error('Device is already assigned:', { serialId });
+      throw new DeviceAlreadyAssignedError('Dispositivo já está ativo');
+    }
+
+    if (device.revoked) {
+      logger.error('Device is revoked:', { serialId });
+      throw new DeviceAlreadyRevokedError('Dispositivo não está mais ativo');
     }
 
     // Update device
-    const updatedDevice: DeviceAuth = { ...device, verified: true };
+    const updatedDevice: DeviceMetadata = { ...device, assigned: true };
     devices[deviceIndex] = updatedDevice;
 
-    apiLog.info('Device verified successfully');
+    logger.info('Device verified successfully');
     return updatedDevice;
   },
 
-  // GET /device/{serialId}/registrations
-  async findRegistration(serialId: string): Promise<DeviceAuth | null> {
-    apiLog.info('Finding registration:', { serialId });
+  // POST login
+  async login(serialId: string): Promise<string> {
+    logger.info('Logging in:', { serialId });
     await delay(1000); // Simulate network delay
 
-    const device = devices.find(d => d.deviceMetadata.serialId === serialId);
-    if (device) {
-      apiLog.info('Device found:', { registrationId: device.id });
-      return device;
-    } else {
-      apiLog.info('No device found for serialId:', { serialId });
-      return null;
+    const device = devices.find(d => d.serialId === serialId);
+    if (!device) {
+      logger.error('Device not found:', { serialId });
+      throw new DeviceNotFoundError('Dispositivo não encontrado');
     }
+
+    if (!device.assigned) {
+      logger.error('Device is not assigned:', { serialId });
+      throw new DeviceNotAssignedError('Dispositivo não está registrado');
+    }
+
+    if (device.revoked) {
+      logger.error('Device is revoked:', { serialId });
+      throw new DeviceAlreadyRevokedError('Dispositivo não está mais ativo');
+    }
+
+    logger.info('Device logged in successfully');
+    return `jwt_${JSON.stringify(device)}`;
   },
 };

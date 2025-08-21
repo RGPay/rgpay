@@ -1,7 +1,7 @@
-import { logger, consoleTransport } from 'react-native-logs';
+import { logger as log, consoleTransport } from 'react-native-logs';
 
 // Global logger configuration
-export const log = logger.createLogger({
+export const logger = log.createLogger({
   transport: consoleTransport,
   severity: __DEV__ ? 'debug' : 'error',
   transportOptions: {
@@ -17,12 +17,3 @@ export const log = logger.createLogger({
   printDate: true,
   enabled: true,
 });
-
-// Create namespaced loggers for different parts of the app
-export const authLog = log.extend('AUTH');
-export const deviceLog = log.extend('DEVICE');
-export const apiLog = log.extend('API');
-export const uiLog = log.extend('UI');
-
-// Export the main logger instance
-export default log;

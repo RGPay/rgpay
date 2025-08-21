@@ -10,6 +10,9 @@ export const DeviceMetadataSchema = z.object({
    * @example "Cielo", "PagBank", "Ton"
    */
   provider: z.string().optional(),
+  assigned: z.boolean().default(false),
+  revoked: z.boolean().default(false),
+  revokedAt: z.date().optional(),
 });
 
 // TypeScript type inferred from Zod schema

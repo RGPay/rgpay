@@ -1,12 +1,12 @@
 import { getUniqueId, getSystemName } from 'react-native-device-info';
-import { deviceLog } from '../logger';
+import { logger } from '../logger';
 
 export async function getDeviceId(): Promise<string | null> {
   try {
     const deviceId = await getUniqueId();
     return deviceId;
   } catch (error: unknown) {
-    deviceLog.error('Error getting device id:', error);
+    logger.error('Error getting device id:', error);
     return null;
   }
 }
@@ -16,7 +16,7 @@ export async function getDeviceOs(): Promise<string | null> {
     const os = await getSystemName();
     return os;
   } catch (error: unknown) {
-    deviceLog.error('Error getting device os:', error);
+    logger.error('Error getting device os:', error);
     return null;
   }
 }
@@ -32,7 +32,7 @@ export async function getDeviceProvider(): Promise<string | null> {
     const provider = 'Cielo';
     return provider;
   } catch (error: unknown) {
-    deviceLog.error('Error getting device provider:', error);
+    logger.error('Error getting device provider:', error);
     return null;
   }
 }

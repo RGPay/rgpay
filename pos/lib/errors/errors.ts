@@ -7,11 +7,14 @@ export const DeviceNotFoundError = RgPayErrorFactory.create(
 export const DeviceNotRegisteredError = RgPayErrorFactory.create(
   'DeviceNotRegisteredError'
 );
-export const DeviceNotVerifiedError = RgPayErrorFactory.create(
-  'DeviceNotVerifiedError'
+export const DeviceAlreadyAssignedError = RgPayErrorFactory.create(
+  'DeviceAlreadyAssignedError'
 );
-export const DeviceNotActiveError = RgPayErrorFactory.create(
-  'DeviceNotActiveError'
+export const DeviceAlreadyRevokedError = RgPayErrorFactory.create(
+  'DeviceAlreadyRevokedError'
+);
+export const DeviceNotAssignedError = RgPayErrorFactory.create(
+  'DeviceNotAssignedError'
 );
 
 export const ValidationError = RgPayErrorFactory.create('ValidationError');
