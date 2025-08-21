@@ -1,11 +1,10 @@
 import { AuthState, AuthStateFactory } from '~/lib/stores/auth.state';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { create } from 'zustand';
-import { deviceAPI } from '../../api/device';
-import { getDeviceId } from '../devices/utils';
 import { LOCAL_STORAGE_DEVICE_METADATA_KEY } from '~/lib/stores/constants';
 import { validateZodSchema } from '~/lib/validation';
-import { DeviceMetadata, DeviceMetadataSchema } from '~/lib/devices';
+import { DeviceMetadata, DeviceMetadataSchema, getDeviceId } from '~/lib/devices';
+import { deviceAPI } from '~/api/device';
 
 interface AuthActions {
   // Device discovery flow
