@@ -1,4 +1,4 @@
-import { RgPayErrorFactory } from '@/lib/errors/utils';
+import { RgPayErrorFactory } from '~/lib/errors/utils';
 
 // Device errors
 export const DeviceNotFoundError = RgPayErrorFactory.create(

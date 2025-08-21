@@ -2,26 +2,24 @@ import { Tabs } from 'expo-router';
 import React from 'react';
 import { Platform, View, StyleSheet } from 'react-native';
 
-import { HapticTab } from '@/components/HapticTab';
-import { IconSymbol } from '@/components/ui/IconSymbol';
-import TabBarBackground from '@/components/ui/TabBarBackground';
-import { Colors } from '@/constants/Colors';
-import { useColorScheme } from '@/hooks/useColorScheme';
-import { useAuth } from '@/lib/AuthContext';
-import { ThemedText } from '@/components/ThemedText';
+import { HapticTab } from '~/components/HapticTab';
+import { IconSymbol } from '~/components/ui/IconSymbol';
+import TabBarBackground from '~/components/ui/TabBarBackground';
+import { Colors } from '~/constants/Colors';
+import { useColorScheme } from '~/hooks/useColorScheme';
+import { ThemedText } from '~/components/ThemedText';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
-  const { registration } = useAuth();
 
   const CustomHeader = () => (
     <View style={styles.header}>
       <View style={styles.headerContent}>
         <ThemedText style={styles.unidadeText}>
-          {registration?.unit || 'Unidade'}
+          RGPAY
         </ThemedText>
         <View style={styles.logoContainer}>
-          <ThemedText style={styles.logoText}>RGPAY</ThemedText>
+          <ThemedText style={styles.logoText}>POS</ThemedText>
         </View>
       </View>
     </View>

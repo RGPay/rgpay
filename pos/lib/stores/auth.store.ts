@@ -1,11 +1,11 @@
-import { AuthState, AuthStateFactory } from '@/lib/stores/auth.state';
+import { AuthState, AuthStateFactory } from '~/lib/stores/auth.state';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { create } from 'zustand';
 import { deviceAPI } from '../../api/device';
 import { getDeviceId } from '../devices/utils';
-import { LOCAL_STORAGE_DEVICE_METADATA_KEY } from '@/lib/stores/constants';
-import { validateZodSchema } from '@/lib/validation';
-import { DeviceMetadata, DeviceMetadataSchema } from '@/lib/devices';
+import { LOCAL_STORAGE_DEVICE_METADATA_KEY } from '~/lib/stores/constants';
+import { validateZodSchema } from '~/lib/validation';
+import { DeviceMetadata, DeviceMetadataSchema } from '~/lib/devices';
 
 interface AuthActions {
   // Device discovery flow
@@ -56,7 +56,7 @@ function getDeviceMetadata({
 }
 
 export const useAuthStore = create<AuthStore>((set, get) => ({
-  // Initial state
+  // Initial state - sempre começa limpo na tela de onboarding
   deviceMetadata: null,
   isRegistered: false,
   isLoading: false,

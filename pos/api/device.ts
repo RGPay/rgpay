@@ -1,12 +1,12 @@
 // Mock API service for device registration
-import { DeviceMetadata } from '@/lib/devices/schemas';
+import { DeviceMetadata } from '~/lib/devices/schemas';
 import {
   DeviceAlreadyAssignedError,
   DeviceAlreadyRevokedError,
   DeviceNotAssignedError,
   DeviceNotFoundError,
-} from '@/lib/errors';
-import { logger } from '@/lib/logger';
+} from '~/lib/errors';
+import { logger } from '~/lib/logger';
 
 // Mock delay function
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
