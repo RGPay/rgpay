@@ -1,9 +1,7 @@
-import React, { useEffect } from 'react';
-import { View, ActivityIndicator } from 'react-native';
-import { router } from 'expo-router';
-import { useAuth } from '@/lib/AuthContext';
-import { ThemedView } from './ThemedView';
-import { ThemedText } from './ThemedText';
+import { useAuth } from '@/lib/hooks';
+import React from 'react';
+import { HomeView } from './views/HomeView';
+import { OnboardingView } from './views/OnboardingView';
 
 interface OnboardingWrapperProps {
   children: React.ReactNode;
@@ -12,33 +10,13 @@ interface OnboardingWrapperProps {
 export const OnboardingWrapper: React.FC<OnboardingWrapperProps> = ({
   children,
 }) => {
-  const { isRegistered, isLoading } = useAuth();
+  const { isRegistered, isLoading, error, clearError } = useAuth();
 
-  useEffect(() => {
-    if (!isLoading) {
-      if (!isRegistered) {
-        // If not registered, go to onboarding
-        router.replace('/onboarding');
-      } else {
-        // If registered, go to main app
-        router.replace('/(tabs)');
-      }
-    }
-  }, [isRegistered, isLoading]);
-
-  // Show loading screen while checking registration status
-  if (isLoading) {
-    return (
-      <ThemedView
-        style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
-      >
-        <ActivityIndicator size="large" color="#0a7ea4" />
-        <ThemedText style={{ marginTop: 16, fontSize: 16 }}>
-          Carregando...
-        </ThemedText>
-      </ThemedView>
-    );
+  // If user is registered, show the main app
+  if (isRegistered) {
+    return <HomeView />;
   }
 
-  return <>{children}</>;
+  // If not registered, show onboarding flow
+  return <OnboardingView />;
 };
