@@ -2,16 +2,16 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.kotlin.kapt)
     alias(libs.plugins.hilt)
-    kotlin("kapt")
 }
 
 android {
-    namespace = "com.example.rgpay.pos"
+    namespace = "com.rgpay.pos"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.example.rgpay.pos"
+        applicationId = "com.rgpay.pos"
         minSdk = 27
         targetSdk = 36
         versionCode = 1
