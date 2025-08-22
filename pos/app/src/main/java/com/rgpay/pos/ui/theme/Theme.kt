@@ -15,29 +15,68 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
-private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
+// RGPay Dark Color Scheme - Primary theme matching frontend
+private val RgpayDarkColorScheme = darkColorScheme(
+    // Primary colors
+    primary = RgpayPrimary,
+    onPrimary = RgpayOnPrimary,
+    primaryContainer = RgpayPrimaryDark,
+    onPrimaryContainer = RgpayTextPrimary,
+    
+    // Secondary colors
+    secondary = RgpaySecondary,
+    onSecondary = RgpayOnSecondary,
+    secondaryContainer = RgpaySecondaryDark,
+    onSecondaryContainer = RgpayTextPrimary,
+    
+    // Surface colors
+    background = RgpayBackgroundDark,
+    onBackground = RgpayTextPrimary,
+    surface = RgpaySurfaceDark,
+    onSurface = RgpayTextPrimary,
+    surfaceVariant = RgpaySurfaceVariant,
+    onSurfaceVariant = RgpayTextSecondary,
+    
+    // Utility colors
+    error = RgpayError,
+    onError = RgpayOnPrimary,
+    errorContainer = RgpayError,
+    onErrorContainer = RgpayOnPrimary,
+    
+    // Outline and borders
+    outline = RgpayBorder,
+    outlineVariant = RgpayDivider,
+    
+    // Inverse colors for contrast
+    inverseSurface = RgpayTextPrimary,
+    inversePrimary = RgpayPrimaryDark
 )
 
-private val LightColorScheme = lightColorScheme(
+// Light color scheme for contrast (if user prefers light mode)
+private val RgpayLightColorScheme = lightColorScheme(
     primary = RgpayPrimary,
+    onPrimary = RgpayOnPrimary,
+    primaryContainer = RgpayPrimaryLight,
+    onPrimaryContainer = RgpayPrimaryDark,
+    
     secondary = RgpaySecondary,
-    tertiary = Pink40,
-    background = RgpayBackground,
-    surface = RgpaySurface,
-    onPrimary = androidx.compose.ui.graphics.Color.White,
-    onSecondary = androidx.compose.ui.graphics.Color.White,
-    onTertiary = androidx.compose.ui.graphics.Color.White,
+    onSecondary = RgpayOnSecondary,
+    secondaryContainer = RgpaySecondaryLight,
+    onSecondaryContainer = RgpaySecondaryDark,
+    
+    background = RgpayBackgroundLight,
     onBackground = androidx.compose.ui.graphics.Color(0xFF1C1B1F),
+    surface = RgpaySurfaceLight,
     onSurface = androidx.compose.ui.graphics.Color(0xFF1C1B1F),
+    
+    error = RgpayError,
+    onError = RgpayOnPrimary
 )
 
 @Composable
 fun RgpayTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
-    dynamicColor: Boolean = true,
+    darkTheme: Boolean = true, // Default to dark theme to match frontend
+    dynamicColor: Boolean = false, // Disable dynamic colors to maintain brand consistency
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {
@@ -45,16 +84,18 @@ fun RgpayTheme(
             val context = LocalContext.current
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
-
-        darkTheme -> DarkColorScheme
-        else -> LightColorScheme
+        darkTheme -> RgpayDarkColorScheme
+        else -> RgpayLightColorScheme
     }
+    
     val view = LocalView.current
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
-            window.statusBarColor = colorScheme.primary.toArgb()
-            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
+            // Set status bar to match background for immersive experience
+            window.statusBarColor = colorScheme.background.toArgb()
+            // Light status bar icons for dark theme
+            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
         }
     }
 
