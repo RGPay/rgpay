@@ -3,9 +3,9 @@ package com.rgpay.pos.ui.screens
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CreditCard
-import androidx.compose.material.icons.filled.Store
+import androidx.compose.material.icons.Icons // Added this import
+import androidx.compose.material.icons.filled.CreditCard // Kept for explicitness, will be used via Icons.Filled
+import androidx.compose.material.icons.filled.Store // Kept for explicitness, will be used via Icons.Filled
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -21,9 +21,9 @@ import com.rgpay.pos.R
 import com.rgpay.pos.ui.theme.*
 
 @Composable
-@Preview(showBackground = true) // It's also helpful to set showBackground = true
-fun WelcomeScreenPreview() { // It's good practice to name preview functions differently
-    RgpayTheme { // Apply your theme here
+@Preview(showBackground = true)
+fun WelcomeScreenPreview() {
+    RgpayTheme {
         WelcomeScreen()
     }
 }
@@ -66,7 +66,7 @@ fun WelcomeScreen() {
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
-                        imageVector = CreditCard, // Use direct import
+                        imageVector = Icons.Filled.CreditCard, // Changed to Icons.Filled.CreditCard
                         contentDescription = stringResource(R.string.welcome_logo_description),
                         tint = RgpayOnPrimary,
                         modifier = Modifier.size(48.dp)
@@ -119,13 +119,13 @@ fun WelcomeScreen() {
                     )
                     
                     FeatureItem(
-                        icon = Store, // Use direct import
+                        icon = Icons.Filled.Store, // Changed to Icons.Filled.Store
                         title = stringResource(R.string.feature_pdv_title),
                         description = stringResource(R.string.feature_pdv_description)
                     )
                     
                     FeatureItem(
-                        icon = CreditCard, // Use direct import
+                        icon = Icons.Filled.CreditCard, // Changed to Icons.Filled.CreditCard
                         title = stringResource(R.string.feature_payments_title),
                         description = stringResource(R.string.feature_payments_description)
                     )
