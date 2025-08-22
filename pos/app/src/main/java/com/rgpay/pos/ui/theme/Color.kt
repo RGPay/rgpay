@@ -2,39 +2,44 @@ package com.rgpay.pos.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-// RGPay Frontend Theme Colors - Dark Mode
-val RgpayPrimary = Color(0xFF3070FF)        // Vibrant blue for primary actions
-val RgpayPrimaryLight = Color(0xFF5A8FFF)   // Light blue
-val RgpayPrimaryDark = Color(0xFF1A54E5)    // Dark blue
+// Brand Colors
+val RgpayPrimary = Color(0xFF3070FF)
+val RgpayPrimaryLight = Color(0xFF5A8FFF)
+val RgpayPrimaryDark = Color(0xFF1A54E5)
 
-val RgpaySecondary = Color(0xFF00E5E0)      // Teal as secondary color
-val RgpaySecondaryLight = Color(0xFF44FFFA) // Light teal
-val RgpaySecondaryDark = Color(0xFF00B3B0)  // Dark teal
+val RgpaySecondary = Color(0xFF00E5E0)
+val RgpaySecondaryLight = Color(0xFF44FFFA)
+val RgpaySecondaryDark = Color(0xFF00B3B0)
 
-val RgpaySuccess = Color(0xFF00D97E)        // Vibrant green
-val RgpaySuccessLight = Color(0xFF33FFAA)   // Light green
-val RgpaySuccessDark = Color(0xFF00A562)    // Dark green
+val RgpaySuccess = Color(0xFF00D97E)
+val RgpaySuccessLight = Color(0xFF33FFAA)
+val RgpaySuccessDark = Color(0xFF00A562)
 
-val RgpayWarning = Color(0xFFFF9800)        // Orange warning
-val RgpayError = Color(0xFFF44336)          // Red error
-val RgpayInfo = Color(0xFF42A5F5)           // Blue info
+val RgpayWarning = Color(0xFFFF9800)
+val RgpayError = Color(0xFFF44336)
+val RgpayInfo = Color(0xFF42A5F5)
 
-// Dark Theme Backgrounds
-val RgpayBackgroundDark = Color(0xFF111827)    // Main dark background
-val RgpaySurfaceDark = Color(0xFF1F2937)       // Card/surface background
-val RgpaySurfaceVariant = Color(0xFF374151)    // Alternative surface
+// Dark backgrounds
+val RgpayBackgroundDark = Color(0xFF111827)
+val RgpaySurfaceDark = Color(0xFF1F2937)
+val RgpaySurfaceVariantDark = Color(0xFF374151)
 
-// Text Colors
-val RgpayOnPrimary = Color(0xFFFFFFFF)         // White text on primary
-val RgpayOnSecondary = Color(0xFF121212)       // Dark text on secondary  
-val RgpayTextPrimary = Color(0xFFFFFFFF)       // Primary text
-val RgpayTextSecondary = Color(0xFF94A3B8)     // Secondary text
-val RgpayTextDisabled = Color(0xFF6B7280)      // Disabled text
-
-// Surface variants for borders, dividers
-val RgpayBorder = Color(0x0DFFFFFF)            // White with 5% opacity
-val RgpayDivider = Color(0x0DFFFFFF)           // White with 5% opacity
-
-// Light theme colors for contrast (if needed)
-val RgpayBackgroundLight = Color(0xFFFAFAFA)
+// Light backgrounds
+val RgpayBackgroundLight = Color(0xFFF9FAFB)
 val RgpaySurfaceLight = Color(0xFFFFFFFF)
+val RgpaySurfaceVariantLight = Color(0xFFE5E7EB)
+
+// Text
+val RgpayOnPrimary = Color.White
+val RgpayOnSecondary = Color.Black
+val RgpayTextPrimaryDark = Color.White
+val RgpayTextSecondaryDark = Color(0xFF94A3B8)
+val RgpayTextDisabledDark = Color(0xFF6B7280)
+val RgpayTextPrimaryLight = Color(0xFF1C1B1F)
+val RgpayTextSecondaryLight = Color(0xFF4B5563)
+
+// Borders & dividers
+val RgpayBorderLight = Color(0xFFCBD5E1)
+val RgpayDividerLight = Color(0xFFE2E8F0)
+val RgpayBorderDark = Color(0x0DFFFFFF)
+val RgpayDividerDark = Color(0x0DFFFFFF)

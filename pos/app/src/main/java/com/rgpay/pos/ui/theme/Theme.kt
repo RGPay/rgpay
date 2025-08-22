@@ -10,73 +10,74 @@ import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
-// RGPay Dark Color Scheme - Primary theme matching frontend
+// Dark scheme
 private val RgpayDarkColorScheme = darkColorScheme(
-    // Primary colors
     primary = RgpayPrimary,
     onPrimary = RgpayOnPrimary,
     primaryContainer = RgpayPrimaryDark,
-    onPrimaryContainer = RgpayTextPrimary,
-    
-    // Secondary colors
+    onPrimaryContainer = RgpayTextPrimaryDark,
+
     secondary = RgpaySecondary,
     onSecondary = RgpayOnSecondary,
     secondaryContainer = RgpaySecondaryDark,
-    onSecondaryContainer = RgpayTextPrimary,
-    
-    // Surface colors
+    onSecondaryContainer = RgpayTextPrimaryDark,
+
     background = RgpayBackgroundDark,
-    onBackground = RgpayTextPrimary,
+    onBackground = RgpayTextPrimaryDark,
     surface = RgpaySurfaceDark,
-    onSurface = RgpayTextPrimary,
-    surfaceVariant = RgpaySurfaceVariant,
-    onSurfaceVariant = RgpayTextSecondary,
-    
-    // Utility colors
+    onSurface = RgpayTextPrimaryDark,
+    surfaceVariant = RgpaySurfaceVariantDark,
+    onSurfaceVariant = RgpayTextSecondaryDark,
+
     error = RgpayError,
     onError = RgpayOnPrimary,
-    errorContainer = RgpayError,
-    onErrorContainer = RgpayOnPrimary,
-    
-    // Outline and borders
-    outline = RgpayBorder,
-    outlineVariant = RgpayDivider,
-    
-    // Inverse colors for contrast
-    inverseSurface = RgpayTextPrimary,
+
+    outline = RgpayBorderDark,
+    outlineVariant = RgpayDividerDark,
+    inverseSurface = RgpayTextPrimaryDark,
     inversePrimary = RgpayPrimaryDark
 )
 
-// Light color scheme for contrast (if user prefers light mode)
+// Light scheme
 private val RgpayLightColorScheme = lightColorScheme(
     primary = RgpayPrimary,
     onPrimary = RgpayOnPrimary,
     primaryContainer = RgpayPrimaryLight,
     onPrimaryContainer = RgpayPrimaryDark,
-    
+
     secondary = RgpaySecondary,
     onSecondary = RgpayOnSecondary,
     secondaryContainer = RgpaySecondaryLight,
     onSecondaryContainer = RgpaySecondaryDark,
-    
+
     background = RgpayBackgroundLight,
-    onBackground = androidx.compose.ui.graphics.Color(0xFF1C1B1F),
+    onBackground = RgpayTextPrimaryLight,
     surface = RgpaySurfaceLight,
-    onSurface = androidx.compose.ui.graphics.Color(0xFF1C1B1F),
-    
+    onSurface = RgpayTextPrimaryLight,
+    surfaceVariant = RgpaySurfaceVariantLight,
+    onSurfaceVariant = RgpayTextSecondaryLight,
+
     error = RgpayError,
-    onError = RgpayOnPrimary
+    onError = RgpayOnPrimary,
+    errorContainer = Color(0xFFFFE0E0),
+    onErrorContainer = Color(0xFFB71C1C),
+
+    outline = RgpayBorderLight,
+    outlineVariant = RgpayDividerLight,
+    inverseSurface = RgpayBackgroundDark,
+    inversePrimary = RgpayPrimaryDark
 )
 
 @Composable
 fun RgpayTheme(
-    darkTheme: Boolean = true, // Default to dark theme to match frontend
-    dynamicColor: Boolean = false, // Disable dynamic colors to maintain brand consistency
+    darkTheme: Boolean = isSystemInDarkTheme(),
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {
@@ -84,17 +85,16 @@ fun RgpayTheme(
             val context = LocalContext.current
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
+
         darkTheme -> RgpayDarkColorScheme
         else -> RgpayLightColorScheme
     }
-    
+
     val view = LocalView.current
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
-            // Set status bar to match background for immersive experience
             window.statusBarColor = colorScheme.background.toArgb()
-            // Light status bar icons for dark theme
             WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
         }
     }
