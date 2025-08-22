@@ -12,6 +12,8 @@ hilt = "2.51.1"
 room = "2.6.1"
 navigation = "2.7.7"
 coroutines = "1.8.1"
+navigationRuntimeKtx = "2.9.3"
+navigationCompose = "2.9.3"
 
 
 [libraries]
@@ -45,6 +47,8 @@ navigation-compose = { group = "androidx.navigation", name = "navigation-compose
 
 # Coroutines
 coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines" }
+androidx-navigation-runtime-ktx = { group = "androidx.navigation", name = "navigation-runtime-ktx", version.ref = "navigationRuntimeKtx" }
+androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
 
 
 [plugins]
