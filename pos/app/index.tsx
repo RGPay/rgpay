@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { View, Image } from 'react-native';
 import Animated, { FadeInUp, FadeInDown } from 'react-native-reanimated';
+import { router } from 'expo-router';
 import { Button } from '~/components/ui/button';
 import {
   Card,
@@ -11,6 +12,10 @@ import {
 import { Text } from '~/components/ui/text';
 
 export default function WelcomeScreen() {
+  const handleIniciarVendas = () => {
+    router.push('/registration');
+  };
+
   return (
     <View className='flex-1 justify-center items-center gap-8 p-6 bg-background'>
       <Animated.View entering={FadeInUp.delay(200)} className='items-center gap-4'>
@@ -29,7 +34,7 @@ export default function WelcomeScreen() {
               Prepare-se para começar suas vendas com o RGPay
             </Text>
             <View className='gap-3 mt-4'>
-              <Button className='w-full h-12 rounded-xl'>
+              <Button className='w-full h-12 rounded-xl' onPress={handleIniciarVendas}>
                 <Text className='text-lg font-semibold'>Iniciar Vendas</Text>
               </Button>
             </View>

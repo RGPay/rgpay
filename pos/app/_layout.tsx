@@ -45,6 +45,14 @@ export default function RootLayout() {
             headerShown: false,
           }}
         />
+        <Stack.Screen
+          name='registration/index'
+          options={{
+            title: 'Registro',
+            headerShown: true,
+            headerBackTitle: 'Voltar',
+          }}
+        />
       </Stack>
       <PortalHost />
     </ThemeProvider>
