@@ -1,7 +1,6 @@
-import { logger as log, consoleTransport } from 'react-native-logs';
+import { consoleTransport, logger as nativeLog } from 'react-native-logs';
 
-// Global logger configuration
-export const logger = log.createLogger({
+export const logger = nativeLog.createLogger({
   transport: consoleTransport,
   severity: __DEV__ ? 'debug' : 'error',
   transportOptions: {
@@ -12,8 +11,4 @@ export const logger = log.createLogger({
       debug: 'greenBright',
     },
   },
-  dateFormat: 'time',
-  printLevel: true,
-  printDate: true,
-  enabled: true,
 });

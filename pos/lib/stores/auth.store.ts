@@ -1,10 +1,12 @@
+import { getDeviceId } from './../../node_modules/react-native-device-info/src/index';
 import { AuthState, AuthStateFactory } from '~/lib/stores/auth.state';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { create } from 'zustand';
 import { LOCAL_STORAGE_DEVICE_METADATA_KEY } from '~/lib/stores/constants';
 import { validateZodSchema } from '~/lib/validation';
-import { DeviceMetadata, DeviceMetadataSchema, getDeviceId } from '~/lib/devices';
+import { DeviceMetadata, DeviceMetadataSchema } from '~/lib/devices';
 import { deviceAPI } from '~/api/device';
+import { Platform, PlatformAndroidStatic } from 'react-native';
 
 interface AuthActions {
   // Device discovery flow
@@ -81,8 +83,15 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
         return;
       }
 
-      const deviceId = await getDeviceId();
+      if (Platform.OS !== 'android') {
+        const state = AuthStateFactory.start()
+          .addError('Dispositivo não suportado')
+          .build();
+        set(state);
+        return;
+      }
 
+      const deviceId = (Platform as PlatformAndroidStatic).constants.Serial;
       if (!deviceId) {
         const state = AuthStateFactory.start()
           .addError('Número de série do dispositivo não encontrado')

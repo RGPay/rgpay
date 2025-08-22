@@ -46,7 +46,7 @@ export default function RootLayout() {
           }}
         />
         <Stack.Screen
-          name='registration/index'
+          name='registration'
           options={{
             title: 'Registro',
             headerShown: true,

@@ -6,7 +6,8 @@ import {
   DeviceNotAssignedError,
   DeviceNotFoundError,
 } from '~/lib/errors';
-import { logger } from '~/lib/logger';
+import { log } from '~/lib/logger';
+
 
 // Mock delay function
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
@@ -26,7 +27,7 @@ const devices: DeviceMetadata[] = [
 export const deviceAPI = {
   // GET /device/{serialId}
   async getDevice(serialId: string): Promise<DeviceMetadata> {
-    logger.info('Registering device:', { serialId });
+    log.info('Registering device:', { serialId });
     await delay(2000); // Simulate network delay
 
     // // Simulate random error (10% chance)
