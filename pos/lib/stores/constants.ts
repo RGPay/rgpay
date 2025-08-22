@@ -1,1 +1,0 @@
-export const LOCAL_STORAGE_DEVICE_METADATA_KEY = 'deviceMetadata';
