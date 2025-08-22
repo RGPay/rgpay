@@ -28,7 +28,6 @@ export default function WelcomeScreen() {
             <Text className='text-center text-muted-foreground'>
               Prepare-se para começar suas vendas com o RGPay
             </Text>
-            
             <View className='gap-3 mt-4'>
               <Button className='w-full h-12 rounded-xl'>
                 <Text className='text-lg font-semibold'>Iniciar Vendas</Text>
