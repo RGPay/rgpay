@@ -1,10 +1,11 @@
 <resources>
     <string name="app_name">RGPay</string>
 
+    <string name="logo">RPGay Logo</string>
+
     <!-- Welcome Screen -->
     <string name="welcome_title">Bem-vindo ao RGPay!</string>
     <string name="welcome_subtitle">Sua gestão de comandas simplificada</string>
-    <string name="welcome_logo_description">RGPay Logo</string>
 
     <!-- Features -->
     <string name="features_title">Recursos Principais</string>

@@ -60,7 +60,7 @@ fun WelcomeScreen(navController: NavController) {
                 ) {
                     Image( // Changed from Icon to Image
                         painter = painterResource(id = R.drawable.icon),
-                        contentDescription = stringResource(R.string.welcome_logo_description),
+                        contentDescription = stringResource(R.string.logo),
                         modifier = Modifier.size(64.dp) // Removed tint, as Image doesn't use it the same way
                     )
                 }
@@ -95,7 +95,7 @@ fun WelcomeScreen(navController: NavController) {
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Button(
-                    onClick = { navController.navigate("registration_screen") },
+                    onClick = { navController.navigate("api_key_screen") },
                     modifier = Modifier.fillMaxWidth(0.8f)
                 ) {
                     Text(text = stringResource(R.string.configure))

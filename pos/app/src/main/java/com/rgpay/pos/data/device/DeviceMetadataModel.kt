@@ -13,20 +13,6 @@ class DeviceMetadataModel : ViewModel() {
         private val SERIAL_REGEX = Regex("^[a-zA-Z0-9_-]*$")
     }
 
-    var serialId by mutableStateOf("")
-        private set
-
-    val serialIdHasError by derivedStateOf {
-        serialId.isBlank() || serialId.length > MAX_SERIAL_LENGTH || !SERIAL_REGEX.matches(serialId)
-    }
-
-    fun updateSerialId(input: String) {
-        // Remove caracteres inválidos e limita tamanho
-        val cleaned =
-            input.filter { it.isLetterOrDigit() || it == '_' || it == '-' }.take(MAX_SERIAL_LENGTH)
-        serialId = cleaned
-    }
-
     var deviceName by mutableStateOf("")
         private set
 
@@ -38,5 +24,19 @@ class DeviceMetadataModel : ViewModel() {
         // Remove quebras de linha e limita tamanho
         val cleaned = input.replace("\n", "").take(MAX_DEVICE_NAME_LENGTH)
         deviceName = cleaned
+    }
+
+    var locationName by mutableStateOf("")
+        private set
+
+
+    val locationNameHasError by derivedStateOf {
+        locationName.length > MAX_DEVICE_NAME_LENGTH || locationName.contains("\n")
+    }
+
+    fun updateLocationName(input: String) {
+        // Remove quebras de linha e limita tamanho
+        val cleaned = input.replace("\n", "").take(MAX_DEVICE_NAME_LENGTH)
+        locationName = cleaned
     }
 }
