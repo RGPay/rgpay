@@ -58,6 +58,7 @@ dependencies {
     implementation(libs.androidx.navigation.runtime.ktx)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.ui.text)
+    implementation(libs.material3)
     kapt(libs.hilt.compiler)
     
     testImplementation(libs.junit)

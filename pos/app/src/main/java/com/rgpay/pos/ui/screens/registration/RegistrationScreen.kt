@@ -20,6 +20,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -40,6 +41,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.rgpay.pos.R
 import com.rgpay.pos.client.DeviceApiClient
+import com.rgpay.pos.client.DeviceMetadata
 import com.rgpay.pos.data.device.DeviceMetadataModel
 import com.rgpay.pos.ui.theme.RgpayPrimary
 import com.rgpay.pos.ui.theme.RgpaySecondary
@@ -55,7 +57,22 @@ fun DeviceRegistrationScreen(
 ) {
     val scope = rememberCoroutineScope()
     var isLoading by remember { mutableStateOf(false) }
+    var isLoadingData by remember { mutableStateOf(true) }
     var deviceError by remember { mutableStateOf<String?>(null) }
+    var deviceData by remember { mutableStateOf<DeviceMetadata?>(null) }
+
+    // Carregar dados do dispositivo quando a tela abrir
+    LaunchedEffect(apiKey) {
+        try {
+            deviceData = deviceApiClient.getDevice(apiKey)
+            deviceModel.updateDeviceName(deviceData?.deviceName ?: "")
+            deviceModel.updateLocationName(deviceData?.locationName ?: "")
+        } catch (e: Exception) {
+            deviceError = "Erro ao carregar dados do dispositivo"
+        } finally {
+            isLoadingData = false
+        }
+    }
 
     Box(
         modifier = Modifier
@@ -112,12 +129,39 @@ fun DeviceRegistrationScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            OutlinedTextField(
-                value = deviceModel.deviceName,
-                onValueChange = { deviceModel.updateDeviceName(it) },
-                label = { Text("Nome do dispositivo") },
-                modifier = Modifier.fillMaxWidth(0.9f)
-            )
+            if (isLoadingData) {
+                // Mostrar loading enquanto carrega os dados
+                Column(
+                    modifier = Modifier.fillMaxWidth(0.9f),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    CircularProgressIndicator()
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Text(
+                        text = "Carregando dados do dispositivo...",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            } else {
+                // Mostrar campos quando dados carregaram
+                OutlinedTextField(
+                    value = deviceModel.deviceName,
+                    onValueChange = { deviceModel.updateDeviceName(it) },
+                    label = { Text("Nome do dispositivo") },
+                    modifier = Modifier.fillMaxWidth(0.9f)
+                )
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                OutlinedTextField(
+                    value = deviceModel.locationName,
+                    onValueChange = { deviceModel.updateLocationName(it) },
+                    label = { Text("Localização") },
+                    modifier = Modifier.fillMaxWidth(0.9f),
+                    enabled = false
+                )
+            }
 
             if (deviceError != null) {
                 Spacer(Modifier.height(8.dp))
@@ -130,7 +174,16 @@ fun DeviceRegistrationScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            if (isLoading) {
+            if (isLoadingData) {
+                // Botão desabilitado enquanto carrega dados
+                Button(
+                    modifier = Modifier.fillMaxWidth(0.8f),
+                    enabled = false,
+                    onClick = { }
+                ) {
+                    Text("Carregando...")
+                }
+            } else if (isLoading) {
                 CircularProgressIndicator()
             } else {
                 Button(
@@ -152,7 +205,7 @@ fun DeviceRegistrationScreen(
                         }
                     }
                 ) {
-                    Text("Registrar")
+                    Text("Confirmar")
                 }
             }
         }
