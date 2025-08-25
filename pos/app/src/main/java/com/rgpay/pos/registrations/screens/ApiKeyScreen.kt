@@ -1,4 +1,4 @@
-package com.rgpay.pos.ui.screens.registration
+package com.rgpay.pos.registrations.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -27,7 +27,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -38,7 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.rgpay.pos.R
-import com.rgpay.pos.client.DeviceApiClient
+import com.rgpay.pos.registrations.clients.DeviceApiClient
 import com.rgpay.pos.ui.theme.RgpayPrimary
 import com.rgpay.pos.ui.theme.RgpaySecondary
 import com.rgpay.pos.ui.theme.RgpayTheme
@@ -172,7 +171,6 @@ fun ApiKeyScreen(navController: NavController) {
         }
     }
 }
-
 
 @Preview(showBackground = true)
 @Composable

@@ -1,4 +1,4 @@
-package com.rgpay.pos.ui.screens.registration
+package com.rgpay.pos.registrations.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -40,9 +40,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.rgpay.pos.R
-import com.rgpay.pos.client.DeviceApiClient
-import com.rgpay.pos.client.DeviceMetadata
-import com.rgpay.pos.data.device.DeviceMetadataModel
+import com.rgpay.pos.registrations.clients.DeviceApiClient
+import com.rgpay.pos.registrations.clients.DeviceMetadata
+import com.rgpay.pos.registrations.data.DeviceMetadataModel
 import com.rgpay.pos.ui.theme.RgpayPrimary
 import com.rgpay.pos.ui.theme.RgpaySecondary
 import com.rgpay.pos.ui.theme.RgpayTheme
@@ -164,7 +164,7 @@ fun DeviceRegistrationScreen(
             }
 
             if (deviceError != null) {
-                Spacer(Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(8.dp))
                 Text(
                     text = deviceError ?: "",
                     color = MaterialTheme.colorScheme.error,

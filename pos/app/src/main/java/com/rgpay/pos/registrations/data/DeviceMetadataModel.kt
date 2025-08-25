@@ -1,4 +1,4 @@
-package com.rgpay.pos.data.device
+package com.rgpay.pos.registrations.data
 
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue

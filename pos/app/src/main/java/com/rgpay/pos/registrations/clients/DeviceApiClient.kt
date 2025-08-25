@@ -1,4 +1,4 @@
-package com.rgpay.pos.client
+package com.rgpay.pos.registrations.clients
 
 import com.rgpay.pos.errors.DeviceAlreadyAssignedError
 import com.rgpay.pos.errors.DeviceNotAssignedError
