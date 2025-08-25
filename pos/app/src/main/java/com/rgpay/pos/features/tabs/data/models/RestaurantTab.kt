@@ -1,4 +1,4 @@
-package com.rgpay.pos.tabs.models
+package com.rgpay.pos.features.tabs.data.models
 
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

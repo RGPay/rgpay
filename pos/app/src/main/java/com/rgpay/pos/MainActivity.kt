@@ -7,7 +7,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import com.rgpay.pos.ui.theme.RgpayTheme
+import com.rgpay.pos.core.ui.theme.RgpayTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

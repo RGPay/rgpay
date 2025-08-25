@@ -1,8 +1,8 @@
-package com.rgpay.pos.registrations.clients
+package com.rgpay.pos.features.registrations.clients
 
-import com.rgpay.pos.errors.DeviceAlreadyAssignedError
-import com.rgpay.pos.errors.DeviceNotAssignedError
-import com.rgpay.pos.errors.DeviceNotFoundError
+import com.rgpay.pos.core.errors.DeviceAlreadyAssignedError
+import com.rgpay.pos.core.errors.DeviceNotAssignedError
+import com.rgpay.pos.core.errors.DeviceNotFoundError
 import kotlinx.coroutines.delay
 
 data class DeviceMetadata(

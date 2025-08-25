@@ -1,4 +1,4 @@
-package com.rgpay.pos.registrations.screens
+package com.rgpay.pos.features.registrations.presentation
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -40,12 +40,12 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.rgpay.pos.R
-import com.rgpay.pos.registrations.clients.DeviceApiClient
-import com.rgpay.pos.registrations.clients.DeviceMetadata
-import com.rgpay.pos.registrations.data.DeviceMetadataModel
-import com.rgpay.pos.ui.theme.RgpayPrimary
-import com.rgpay.pos.ui.theme.RgpaySecondary
-import com.rgpay.pos.ui.theme.RgpayTheme
+import com.rgpay.pos.features.registrations.clients.DeviceApiClient
+import com.rgpay.pos.features.registrations.clients.DeviceMetadata
+import com.rgpay.pos.features.registrations.data.DeviceMetadataModel
+import com.rgpay.pos.core.ui.theme.RgpayPrimary
+import com.rgpay.pos.core.ui.theme.RgpaySecondary
+import com.rgpay.pos.core.ui.theme.RgpayTheme
 import kotlinx.coroutines.launch
 
 @Composable

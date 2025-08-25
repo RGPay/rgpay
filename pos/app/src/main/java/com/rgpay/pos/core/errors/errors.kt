@@ -1,4 +1,4 @@
-package com.rgpay.pos.errors
+package com.rgpay.pos.core.errors
 
 // Base class de erro
 open class RgPayError(

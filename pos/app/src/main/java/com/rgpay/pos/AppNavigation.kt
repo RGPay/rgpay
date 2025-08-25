@@ -6,9 +6,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.rgpay.pos.ui.screens.WelcomeScreen
-import com.rgpay.pos.registrations.screens.ApiKeyScreen
-import com.rgpay.pos.registrations.screens.DeviceRegistrationScreen
+import com.rgpay.pos.core.ui.screens.WelcomeScreen
+import com.rgpay.pos.features.registrations.presentation.ApiKeyScreen
+import com.rgpay.pos.features.registrations.presentation.DeviceRegistrationScreen
 
 @Composable
 fun AppNavigation() {

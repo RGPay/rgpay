@@ -1,4 +1,4 @@
-package com.rgpay.pos.ui.screens
+package com.rgpay.pos.core.ui.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.rgpay.pos.R
-import com.rgpay.pos.ui.theme.*
+import com.rgpay.pos.core.ui.theme.*
 
 @Composable
 fun WelcomeScreen(navController: NavController) {
