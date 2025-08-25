@@ -35,7 +35,7 @@ services:
     image: postgres:15
     restart: always
     ports:
-      - "5432:5432"
+      - "55432:5432"
     environment:
       - POSTGRES_DB=rgpay
       - POSTGRES_USER=rgpay
