@@ -49,4 +49,5 @@ jobs:
         with:
           app-name: rgpay-pdv
           slot-name: Production
-          package: backend   # envia somente a pasta do backend
+          package: backend
+          startup-command: "npm start"
