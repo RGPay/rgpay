@@ -26,13 +26,15 @@ dotenv.config();
 
 const isProduction = process.env.NODE_ENV === 'production';
 
+const databaseUrl = process.env.DATABASE_URL || process.env.DB_URL;
+
 const databaseHost = process.env.DB_HOST || (isProduction ? 'db' : 'localhost');
 const databasePort = Number(
   process.env.DB_PORT || (isProduction ? 5432 : 55432),
 );
-const databaseUsername = process.env.DB_USERNAME || 'rgpay';
-const databasePassword = process.env.DB_PASSWORD || 'rgpaypwd';
-const databaseName = process.env.DB_DATABASE || 'rgpay';
+const databaseUsername = process.env.DB_USERNAME || process.env.DB_USER || 'rgpay';
+const databasePassword = process.env.DB_PASSWORD || process.env.DB_PASS || 'rgpaypwd';
+const databaseName = process.env.DB_DATABASE || process.env.DB_NAME || 'rgpay';
 
 const sslEnabled =
   process.env.DB_SSL === 'true' ||
@@ -50,11 +52,15 @@ const sequelizeDialectOptions = {
   imports: [
     SequelizeModule.forRoot({
       dialect: 'postgres',
-      host: databaseHost,
-      port: databasePort,
-      username: databaseUsername,
-      password: databasePassword,
-      database: databaseName,
+      ...(databaseUrl
+        ? { uri: databaseUrl }
+        : {
+            host: databaseHost,
+            port: databasePort,
+            username: databaseUsername,
+            password: databasePassword,
+            database: databaseName,
+          }),
       dialectOptions: sequelizeDialectOptions,
       autoLoadModels: true,
       synchronize: process.env.NODE_ENV !== 'production',
