@@ -22,39 +22,40 @@ import { CategoryModule } from './categorias/category.module';
 import { SettingsModule } from './settings/settings.module';
 import { UserSettings } from './settings/user-settings.model';
 import { MaquinetasModule } from './maquinetas/maquinetas.module';
-import * as fs from 'fs';
-import * as path from 'path';
-
 dotenv.config();
 
-interface DatabaseConfig {
-  username: string;
-  password: string;
-  database: string;
-  host: string;
-  port: number;
-  dialect: 'postgres' | 'mysql' | 'sqlite' | 'mariadb' | 'mssql';
-  dialectOptions: {
-    ssl: boolean | { require: boolean; rejectUnauthorized: boolean };
-  };
-}
+const isProduction = process.env.NODE_ENV === 'production';
 
-interface Config {
-  development: DatabaseConfig;
-  test: DatabaseConfig;
-  production: DatabaseConfig;
-}
+const databaseHost = process.env.DB_HOST || (isProduction ? 'db' : 'localhost');
+const databasePort = Number(
+  process.env.DB_PORT || (isProduction ? 5432 : 55432),
+);
+const databaseUsername = process.env.DB_USERNAME || 'rgpay';
+const databasePassword = process.env.DB_PASSWORD || 'rgpaypwd';
+const databaseName = process.env.DB_DATABASE || 'rgpay';
 
-const configPath = path.join(__dirname, '../config/config.json');
-const config: Config = JSON.parse(
-  fs.readFileSync(configPath, 'utf8'),
-) as Config;
+const sslEnabled =
+  process.env.DB_SSL === 'true' ||
+  process.env.PGSSLMODE === 'require' ||
+  (isProduction && process.env.DB_SSL !== 'false');
+
+const sequelizeDialectOptions = {
+  ssl: sslEnabled ? { require: true, rejectUnauthorized: false } : false,
+};
+
+// Database connection is configured via environment variables.
+// Fallbacks are provided primarily for local development.
 
 @Module({
   imports: [
     SequelizeModule.forRoot({
-      ...config[(process.env.NODE_ENV || 'development') as keyof Config],
       dialect: 'postgres',
+      host: databaseHost,
+      port: databasePort,
+      username: databaseUsername,
+      password: databasePassword,
+      database: databaseName,
+      dialectOptions: sequelizeDialectOptions,
       autoLoadModels: true,
       synchronize: process.env.NODE_ENV !== 'production',
       models: [
