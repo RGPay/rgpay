@@ -1,4 +1,4 @@
-package com.rgpay.pos.features.registrations.presentation
+package com.rgpay.pos.registrations.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -26,7 +26,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import kotlinx.coroutines.delay
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -41,13 +40,13 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.rgpay.pos.R
+import com.rgpay.pos.core.ui.theme.RgpayPrimary
+import com.rgpay.pos.core.ui.theme.RgpaySecondary
+import com.rgpay.pos.core.ui.theme.RgpayTheme
 import com.rgpay.pos.features.registrations.clients.DeviceApiClient
 import com.rgpay.pos.features.registrations.clients.DeviceMetadata
 import com.rgpay.pos.features.registrations.data.DeviceMetadataModel
-import com.rgpay.pos.core.ui.theme.RgpayPrimary
-import com.rgpay.pos.core.ui.theme.RgpaySecondary
-import com.rgpay.pos.core.ui.theme.RgpaySuccess
-import com.rgpay.pos.core.ui.theme.RgpayTheme
+
 import kotlinx.coroutines.launch
 
 @Composable
@@ -62,7 +61,6 @@ fun DeviceRegistrationScreen(
     var isLoadingData by remember { mutableStateOf(true) }
     var deviceError by remember { mutableStateOf<String?>(null) }
     var deviceData by remember { mutableStateOf<DeviceMetadata?>(null) }
-    var isSuccess by remember { mutableStateOf(false) }
 
     // Carregar dados do dispositivo quando a tela abrir
     LaunchedEffect(apiKey) {
@@ -188,27 +186,6 @@ fun DeviceRegistrationScreen(
                 }
             } else if (isLoading) {
                 CircularProgressIndicator()
-            } else if (isSuccess) {
-                // Feedback de sucesso
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    CircularProgressIndicator(
-                        color = RgpaySuccess
-                    )
-                    Text(
-                        text = "Dispositivo registrado com sucesso!",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = RgpaySuccess,
-                        fontWeight = FontWeight.Medium
-                    )
-                    Text(
-                        text = "Redirecionando...",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
             } else {
                 Button(
                     modifier = Modifier.fillMaxWidth(0.8f),
@@ -217,13 +194,8 @@ fun DeviceRegistrationScreen(
                         scope.launch {
                             try {
                                 deviceApiClient.assignDevice(apiKey)
-                                // Mostrar sucesso e navegar para tela principal de tabs
-                                isSuccess = true
-                                delay(1500) // Mostrar feedback por 1.5 segundos
-                                
-                                // Navegar para tela principal de comandas após registro bem-sucedido
-                                // Isso limpa o back stack até welcome_screen, impedindo voltar
-                                navController.navigate("tabs_home") {
+                                // TODO: navegar para tela principal
+                                navController.navigate("welcome_screen") {
                                     popUpTo("welcome_screen") { inclusive = true }
                                 }
                             } catch (e: Exception) {

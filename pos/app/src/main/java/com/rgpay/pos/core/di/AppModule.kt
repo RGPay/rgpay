@@ -3,6 +3,7 @@ package com.rgpay.pos.core.di
 import com.rgpay.pos.core.network.HttpClient
 import com.rgpay.pos.features.registrations.clients.DeviceApiClient
 import com.rgpay.pos.features.registrations.domain.DeviceRegistrationUseCase
+import com.rgpay.pos.features.tabs.clients.TabsApiClient
 import com.rgpay.pos.features.tabs.data.repository.TabRepository
 import com.rgpay.pos.features.tabs.domain.TabUseCase
 import dagger.Module
@@ -37,6 +38,12 @@ object AppModule {
     @Singleton
     fun provideTabRepository(): TabRepository {
         return TabRepository()
+    }
+    
+    @Provides
+    @Singleton
+    fun provideTabsApiClient(httpClient: HttpClient): TabsApiClient {
+        return TabsApiClient(httpClient)
     }
     
     @Provides
