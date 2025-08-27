@@ -51,4 +51,6 @@ object AppModule {
     fun provideTabUseCase(): TabUseCase {
         return TabUseCase()
     }
+    
+
 }

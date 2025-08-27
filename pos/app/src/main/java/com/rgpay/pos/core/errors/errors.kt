@@ -19,3 +19,7 @@ class DeviceAlreadyRevokedError(message: String, cause: Throwable? = null) :
 
 class DeviceNotAssignedError(message: String, cause: Throwable? = null) : RgPayError(message, cause)
 class ValidationError(message: String, cause: Throwable? = null) : RgPayError(message, cause)
+
+// Tab errors
+class TabAlreadyPaidError(message: String, cause: Throwable? = null) : RgPayError(message, cause)
+class TabCancelledError(message: String, cause: Throwable? = null) : RgPayError(message, cause)

@@ -48,6 +48,7 @@ import com.rgpay.pos.core.ui.theme.RgpayPrimary
 import com.rgpay.pos.core.ui.theme.RgpaySecondary
 import com.rgpay.pos.core.ui.theme.RgpaySuccess
 import com.rgpay.pos.core.ui.theme.RgpayTheme
+import com.rgpay.pos.viewmodel.RestaurantData
 import kotlinx.coroutines.launch
 
 @Composable
@@ -55,7 +56,8 @@ fun DeviceRegistrationScreen(
     navController: NavController,
     apiKey: String,
     deviceApiClient: DeviceApiClient = DeviceApiClient(),
-    deviceModel: DeviceMetadataModel = viewModel()
+    deviceModel: DeviceMetadataModel = viewModel(),
+    onRestaurantDataLoaded: (RestaurantData) -> Unit = {}
 ) {
     val scope = rememberCoroutineScope()
     var isLoading by remember { mutableStateOf(false) }
@@ -70,6 +72,16 @@ fun DeviceRegistrationScreen(
             deviceData = deviceApiClient.getDevice(apiKey)
             deviceModel.updateDeviceName(deviceData?.deviceName ?: "")
             deviceModel.updateLocationName(deviceData?.locationName ?: "")
+            
+            // Salvar dados do restaurante no AppViewModel
+            val restaurantData = RestaurantData(
+                id = deviceData?.locationId ?: "",
+                name = deviceData?.locationName ?: "",
+                restaurantName = "Lorem ipsum Lanches", // TODO: Buscar do backend
+                address = "Rua das Flores, 123 - Centro", // TODO: Buscar do backend
+                logoUrl = "" // TODO: Buscar do backend
+            )
+            onRestaurantDataLoaded(restaurantData)
         } catch (e: Exception) {
             deviceError = "Erro ao carregar dados do dispositivo"
         } finally {

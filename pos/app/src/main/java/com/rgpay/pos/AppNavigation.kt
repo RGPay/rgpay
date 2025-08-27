@@ -1,6 +1,7 @@
 package com.rgpay.pos
 
 import androidx.compose.runtime.Composable
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -10,10 +11,13 @@ import com.rgpay.pos.core.ui.screens.WelcomeScreen
 import com.rgpay.pos.features.registrations.presentation.ApiKeyScreen
 import com.rgpay.pos.features.registrations.presentation.DeviceRegistrationScreen
 import com.rgpay.pos.features.tabs.presentation.TabsHomeScreen
+import com.rgpay.pos.features.tabs.presentation.TabsListScreen
+import com.rgpay.pos.viewmodel.AppViewModel
 
 @Composable
 fun AppNavigation() {
     val navController = rememberNavController()
+    val appViewModel: AppViewModel = viewModel()
 
     NavHost(
         navController = navController,
@@ -37,7 +41,10 @@ fun AppNavigation() {
             val apiKey = backStackEntry.arguments?.getString("apiKey") ?: ""
             DeviceRegistrationScreen(
                 navController = navController,
-                apiKey = apiKey
+                apiKey = apiKey,
+                onRestaurantDataLoaded = { restaurantData ->
+                    appViewModel.setRestaurantData(restaurantData)
+                }
             )
         }
         
@@ -45,6 +52,7 @@ fun AppNavigation() {
         composable("tabs_home") {
             TabsHomeScreen(
                 navController = navController,
+                appViewModel = appViewModel,
                 onNewTabClick = {
                     navController.navigate("new_tab")
                 },
@@ -61,6 +69,30 @@ fun AppNavigation() {
                 },
                 onTabsClick = {
                     navController.navigate("list_tabs")
+                }
+            )
+        }
+        
+        // Tela de listagem de comandas
+        composable("list_tabs") {
+            TabsListScreen(
+                navController = navController,
+                appViewModel = appViewModel,
+                onMenuClick = {
+                    // TODO: Implementar drawer menu
+                },
+                onHomeClick = {
+                    navController.navigate("tabs_home")
+                },
+                onTabsClick = {
+                    // Já está na tela de comandas
+                },
+                onManageTabClick = { tab -> // TODO: Implementar tela de detalhes da comanda
+                    if (tab.tableId != null) {
+                        navController.navigate("tab_details/${tab.tableId}")
+                    } else {
+                        navController.navigate("new_tab")
+                    }
                 }
             )
         }

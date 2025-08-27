@@ -11,8 +11,8 @@ object ValidationUtils {
         return apiKey.isNotBlank() && apiKey.length >= 6
     }
     
-    fun isValidTableNumber(tableNumber: String): Boolean {
-        return tableNumber.isNotBlank() && tableNumber.length <= 10
+    fun isValidTableId(tableId: String): Boolean {
+        return tableId.isNotBlank() && tableId.length <= 10
     }
     
     fun isValidDeviceName(deviceName: String): Boolean {

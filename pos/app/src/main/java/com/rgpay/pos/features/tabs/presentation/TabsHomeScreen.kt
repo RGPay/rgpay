@@ -7,7 +7,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.PostAdd
 import androidx.compose.material.icons.filled.Receipt
 import androidx.compose.material.icons.filled.Restaurant
 import androidx.compose.material3.*
@@ -22,15 +21,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.rgpay.pos.R
 import com.rgpay.pos.core.ui.theme.*
+import com.rgpay.pos.viewmodel.AppViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TabsHomeScreen(
     navController: NavController,
+    appViewModel: AppViewModel,
     onNewTabClick: () -> Unit = {},
     onListTabsClick: () -> Unit = {},
     onMenuClick: () -> Unit = {},
@@ -42,7 +44,7 @@ fun TabsHomeScreen(
             TopAppBar(
                 title = {
                     Text(
-                        text = "Lorem ipsum Lanches",
+                        text = appViewModel.getRestaurantName().ifEmpty { "Lorem ipsum Lanches" },
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold
                     )
@@ -190,7 +192,7 @@ fun TabsHomeScreen(
                     onClick = onNewTabClick,
                     modifier = Modifier.weight(1f),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = RgpayPrimary
+                        containerColor = RgpaySuccess
                     ),
                     shape = RoundedCornerShape(12.dp)
                 ) {
@@ -200,7 +202,7 @@ fun TabsHomeScreen(
                         modifier = Modifier.padding(16.dp)
                     ) {
                         Icon(
-                            imageVector = Icons.Default.PostAdd,
+                            painter = painterResource(id = R.drawable.add_receipt),
                             contentDescription = null,
                             modifier = Modifier.size(32.dp)
                         )
@@ -217,7 +219,7 @@ fun TabsHomeScreen(
                     onClick = onListTabsClick,
                     modifier = Modifier.weight(1f),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = RgpaySecondary
+                        containerColor = RgpayPrimary
                     ),
                     shape = RoundedCornerShape(12.dp)
                 ) {
@@ -248,7 +250,8 @@ fun TabsHomeScreen(
 fun TabsHomeScreenPreview() {
     RgpayTheme {
         TabsHomeScreen(
-            navController = rememberNavController()
+            navController = rememberNavController(),
+            appViewModel = viewModel()
         )
     }
 }

@@ -8,7 +8,7 @@ import java.math.BigDecimal
 
 // Classe base
 open class RestaurantTabModelBase(
-    open val tableNumber: String? = null,
+    open val tableId: String? = null,
     open val numberOfPayers: Int? = null,
     open val items: List<TabItem> = emptyList()
 )
@@ -24,19 +24,19 @@ data class TabItem(
 
 // Comanda em rascunho (não persistida)
 data class DraftTab(
-    override val tableNumber: String? = null,
+    override val tableId: String? = null,
     override val numberOfPayers: Int? = null,
     override val items: List<TabItem> = emptyList(),
     val isDraft: Boolean = true
-) : RestaurantTabModelBase(tableNumber, numberOfPayers, items)
+) : RestaurantTabModelBase(tableId, numberOfPayers, items)
 
 // Comanda persistida
 data class RestaurantTabModel(
-    override val tableNumber: String? = null,
+    override val tableId: String? = null,
     override val numberOfPayers: Int? = null,
     override val items: List<TabItem> = emptyList(),
     val isCancelled: Boolean = false
-) : RestaurantTabModelBase(tableNumber, numberOfPayers, items) {
+) : RestaurantTabModelBase(tableId, numberOfPayers, items) {
 
     val total: BigDecimal
         get() = items.fold(BigDecimal.ZERO) { acc, item -> acc + (item.price * BigDecimal(item.quantity)) }

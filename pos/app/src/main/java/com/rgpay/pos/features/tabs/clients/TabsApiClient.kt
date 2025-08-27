@@ -5,7 +5,7 @@ import kotlinx.coroutines.delay
 
 data class TabApiResponse(
     val id: String,
-    val tableNumber: String?,
+    val tableId: String?,
     val numberOfPayers: Int?,
     val items: List<TabItemApi>,
     val isCancelled: Boolean = false,
@@ -38,26 +38,39 @@ class TabsApiClient(
         delay(1000)
         
         return listOf(
+            // Comanda parcialmente paga (aberta)
             TabApiResponse(
                 id = "1",
-                tableNumber = "Mesa 1",
+                tableId = "Mesa 01",
                 numberOfPayers = 2,
                 items = listOf(
-                    TabItemApi("1", "X-Burger", 15.90, 2, 1),
-                    TabItemApi("2", "Refrigerante", 5.50, 2, 2)
+                    TabItemApi("1", "X-Burger", 15.90, 2, 1), // 1 de 2 pago
+                    TabItemApi("2", "Refrigerante", 5.50, 2, 2) // 2 de 2 pago
                 ),
                 total = 42.80,
                 remaining = 15.90
             ),
+            // Comanda paga
             TabApiResponse(
                 id = "2",
-                tableNumber = "Mesa 3",
+                tableId = "Mesa Pikachu",
                 numberOfPayers = 4,
                 items = listOf(
-                    TabItemApi("3", "X-Salada", 18.90, 1, 1),
-                    TabItemApi("4", "Batata Frita", 12.00, 1, 0)
+                    TabItemApi("3", "X-Burger", 15.90, 2, 2), // 2 de 2 pago
+                    TabItemApi("4", "Refrigerante", 5.50, 2, 2) // 2 de 2 pago
                 ),
-                total = 30.90,
+                total = 42.80,
+                remaining = 0.0
+            ),
+            // Mesa não registrada (aberta)
+            TabApiResponse(
+                id = "3",
+                tableId = null,
+                numberOfPayers = 1,
+                items = listOf(
+                    TabItemApi("5", "Batata Frita", 12.00, 1, 0) // 0 de 1 pago
+                ),
+                total = 12.00,
                 remaining = 12.00
             )
         )
@@ -77,13 +90,13 @@ class TabsApiClient(
     }
     
     // POST /comandas
-    suspend fun createTab(tableNumber: String?, numberOfPayers: Int?): TabApiResponse {
+    suspend fun createTab(tableId: String?, numberOfPayers: Int?): TabApiResponse {
         // Simulação de criação
         delay(800)
         
         return TabApiResponse(
             id = System.currentTimeMillis().toString(),
-            tableNumber = tableNumber,
+            tableId = tableId,
             numberOfPayers = numberOfPayers,
             items = emptyList(),
             total = 0.0,
