@@ -40,10 +40,9 @@ jobs:
       - name: Azure login
         uses: azure/login@v2
         with:
-          # ⚠️ Substitua por segredos/credenciais de DEV, se forem diferentes dos de produção
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_DEV }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_DEV }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_DEV }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_753B375AA0AA433B93264C960998D6BB }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_B5FB81B320DA4EA484C9648ED66C024D }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_D056C9FCEF7843EA946CF8E7398048E9 }}
 
       - name: Deploy to Azure Web App (rgpay-dev)
         uses: azure/webapps-deploy@v3
