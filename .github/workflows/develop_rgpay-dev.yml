@@ -1,0 +1,54 @@
+name: Deploy backend to Azure App Service - rgpay-dev
+
+on:
+  push:
+    branches: [ develop ]
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: backend/package-lock.json
+
+      - name: Install deps (backend)
+        run: npm ci
+        working-directory: backend
+
+      - name: Build (backend)
+        run: npm run build
+        working-directory: backend
+
+      - name: Verify build
+        run: |
+          ls -l dist
+          node -e "require('fs').accessSync('dist/main.js')"
+        working-directory: backend
+
+      - name: Azure login
+        uses: azure/login@v2
+        with:
+          # ⚠️ Substitua por segredos/credenciais de DEV, se forem diferentes dos de produção
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_DEV }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_DEV }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_DEV }}
+
+      - name: Deploy to Azure Web App (rgpay-dev)
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: rgpay-dev
+          slot-name: Production
+          package: backend
+          startup-command: "npm start"
