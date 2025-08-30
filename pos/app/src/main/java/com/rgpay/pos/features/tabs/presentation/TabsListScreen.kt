@@ -151,7 +151,8 @@ fun TabsListScreen(
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-            when (uiState) {
+            val currentUiState = uiState
+            when (currentUiState) {
                 is TabsListUiState.Loading -> {
                     Box(
                         modifier = Modifier.fillMaxSize(),
@@ -172,7 +173,7 @@ fun TabsListScreen(
                 }
                 
                 is TabsListUiState.Success -> {
-                    if (uiState.tabs.isEmpty()) {
+                    if (currentUiState.tabs.isEmpty()) {
                         // Empty state
                         Box(
                             modifier = Modifier.fillMaxSize(),
@@ -203,14 +204,14 @@ fun TabsListScreen(
                             verticalArrangement = Arrangement.spacedBy(12.dp)
                         ) {
                             // Separar comandas abertas e pagas
-                            val openTabs = uiState.tabs.filter { !it.isPaid }
-                            val paidTabs = uiState.tabs.filter { it.isPaid }
+                            val openTabs = currentUiState.tabs.filter { !it.isPaid }
+                            val paidTabs = currentUiState.tabs.filter { it.isPaid }
                             
                             // Seção: Comandas em Aberto
                             if (openTabs.isNotEmpty()) {
                                 item {
                                     Text(
-                                        text = "Comandas em Aberto (${uiState.openTabsCount})",
+                                        text = "Comandas em Aberto (${currentUiState.openTabsCount})",
                                         style = MaterialTheme.typography.titleMedium,
                                         fontWeight = FontWeight.Bold,
                                         color = MaterialTheme.colorScheme.primary,
@@ -230,11 +231,11 @@ fun TabsListScreen(
                             if (paidTabs.isNotEmpty()) {
                                 item {
                                     Text(
-                                        text = "Comandas Pagas (${uiState.paidTabsCount})",
+                                        text = "Comandas Pagas (${currentUiState.paidTabsCount})",
                                         style = MaterialTheme.typography.titleMedium,
                                         fontWeight = FontWeight.Bold,
                                         color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                        modifier = Modifier.padding(vertical = 8.dp, top = 16.dp)
+                                        modifier = Modifier.padding(top = 16.dp, bottom = 8.dp)
                                     )
                                 }
                                 
@@ -272,13 +273,13 @@ fun TabsListScreen(
                                     fontWeight = FontWeight.Bold
                                 )
                                 Text(
-                                    text = uiState.message,
+                                    text = currentUiState.message,
                                     style = MaterialTheme.typography.bodyMedium,
                                     color = MaterialTheme.colorScheme.onErrorContainer,
                                     textAlign = TextAlign.Center
                                 )
                                 Button(
-                                    onClick = uiState.retryAction,
+                                    onClick = currentUiState.retryAction,
                                     colors = ButtonDefaults.buttonColors(
                                         containerColor = MaterialTheme.colorScheme.error
                                     )
