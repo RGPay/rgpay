@@ -36,10 +36,16 @@ const databaseUsername = process.env.DB_USERNAME || process.env.DB_USER || 'rgpa
 const databasePassword = process.env.DB_PASSWORD || process.env.DB_PASS || 'rgpaypwd';
 const databaseName = process.env.DB_DATABASE || process.env.DB_NAME || 'rgpay';
 
-const sslEnabled =
-  process.env.DB_SSL === 'true' ||
-  process.env.PGSSLMODE === 'require' ||
-  (isProduction && process.env.DB_SSL !== 'false');
+const sslEnabled = (() => {
+  const url = process.env.DATABASE_URL || process.env.DB_URL || '';
+  const urlIndicatesSsl = /sslmode=require/i.test(url);
+  return (
+    urlIndicatesSsl ||
+    process.env.DB_SSL === 'true' ||
+    process.env.PGSSLMODE === 'require' ||
+    (isProduction && process.env.DB_SSL !== 'false')
+  );
+})();
 
 const sequelizeDialectOptions = {
   ssl: sslEnabled ? { require: true, rejectUnauthorized: false } : false,

@@ -52,6 +52,7 @@ interface DataTableProps<T> {
   title?: string;
   actions?: DataTableAction<T>[];
   onRowClick?: (item: T) => void;
+  onRowDoubleClick?: (item: T) => void;
   keyExtractor: (item: T) => string | number;
   isLoading?: boolean;
   onRefresh?: () => void;
@@ -116,6 +117,7 @@ function DataTable<T>({
   title,
   actions = [],
   onRowClick,
+  onRowDoubleClick,
   keyExtractor,
   isLoading = false,
   onRefresh,
@@ -284,6 +286,9 @@ function DataTable<T>({
                   tabIndex={-1}
                   key={keyExtractor(row)}
                   onClick={onRowClick ? () => onRowClick(row) : undefined}
+                  onDoubleClick={
+                    onRowDoubleClick ? () => onRowDoubleClick(row) : undefined
+                  }
                   sx={{ cursor: onRowClick ? "pointer" : "default" }}
                 >
                   {columns.map((column) => {

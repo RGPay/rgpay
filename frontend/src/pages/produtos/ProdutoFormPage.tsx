@@ -145,15 +145,27 @@ const ProdutoFormPage: React.FC = () => {
     formikHelpers: FormikHelpers<Produto | CreateProdutoDto>
   ) => {
     try {
+      // Sanitize payload: send only fields accepted by the backend DTO
+      const payload: CreateProdutoDto | UpdateProdutoDto = {
+        nome: values.nome as string,
+        preco_compra: Number((values as any).preco_compra),
+        preco_venda: Number((values as any).preco_venda),
+        category_id: Number((values as any).category_id ?? (values as any).categoryId),
+        disponivel: Boolean((values as any).disponivel),
+        id_unidade: Number((values as any).id_unidade),
+        estoque: Number((values as any).estoque),
+        imagem: (values as any).imagem || undefined,
+      } as any;
+
       if (isEditMode && id) {
-        await produtosService.update(parseInt(id), values);
+        await produtosService.update(parseInt(id), payload as UpdateProdutoDto);
         setToast({
           open: true,
           message: "Produto atualizado com sucesso",
           severity: "success",
         });
       } else {
-        await produtosService.create(values as CreateProdutoDto);
+        await produtosService.create(payload as CreateProdutoDto);
         setToast({
           open: true,
           message: "Produto criado com sucesso",

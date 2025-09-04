@@ -8,6 +8,7 @@ module.exports = {
       {
         id_unidade: 1,
         nome: 'Bar do Centro',
+        tipo: 'bar',
         cnpj: '12345678000100',
         cidade: 'Recife',
         estado: 'PE',
@@ -18,6 +19,7 @@ module.exports = {
       {
         id_unidade: 2,
         nome: 'Bar do Mangue',
+        tipo: 'casa_show',
         cnpj: '98765432000199',
         cidade: 'Recife',
         estado: 'PE',

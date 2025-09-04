@@ -47,24 +47,34 @@ export class ProdutosController {
     required: false,
     description: 'Filter by unit ID',
   })
+  @ApiQuery({
+    name: 'q',
+    required: false,
+    description: 'Search term (nome contains, case-insensitive)',
+  })
   @ApiResponse({ status: 200, description: 'List of products' })
   async findAll(
-    @Query('categoryId') categoryId?: number,
-    @Query('disponivel') disponivel?: boolean,
-    @Query('id_unidade') id_unidade?: number,
+    @Query('categoryId') categoryId?: string,
+    @Query('disponivel') disponivel?: string,
+    @Query('id_unidade') id_unidade?: string,
+    @Query('q') q?: string,
   ): Promise<Produto[]> {
     const filters: Record<string, any> = {};
 
-    if (categoryId) {
-      filters.categoryId = categoryId;
+    if (categoryId !== undefined && categoryId !== '') {
+      filters.categoryId = Number(categoryId);
     }
 
-    if (disponivel !== undefined) {
-      filters.disponivel = disponivel;
+    if (disponivel !== undefined && disponivel !== '') {
+      filters.disponivel = disponivel === 'true';
     }
 
-    if (id_unidade) {
-      filters.id_unidade = id_unidade;
+    if (id_unidade !== undefined && id_unidade !== '') {
+      filters.id_unidade = Number(id_unidade);
+    }
+
+    if (q && q.trim() !== '') {
+      filters.q = q.trim();
     }
 
     return this.produtosService.findAll(filters);

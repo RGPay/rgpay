@@ -1,4 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { Op } from 'sequelize';
 import { InjectModel } from '@nestjs/sequelize';
 import { Produto } from './produto.model';
 import { CreateProdutoDto, UpdateProdutoDto } from './produtos.dto';
@@ -10,10 +11,29 @@ export class ProdutosService {
     private readonly produtoModel: typeof Produto,
   ) {}
 
-  async findAll(filters = {}): Promise<Produto[]> {
+  async findAll(filters: Record<string, any> = {}): Promise<Produto[]> {
+    const where: Record<string, any> = {};
+
+    if (typeof filters.categoryId === 'number') {
+      where.categoryId = filters.categoryId;
+    }
+
+    if (typeof filters.disponivel === 'boolean') {
+      where.disponivel = filters.disponivel;
+    }
+
+    if (typeof filters.id_unidade === 'number') {
+      where.id_unidade = filters.id_unidade;
+    }
+
+    if (typeof filters.q === 'string' && filters.q.trim() !== '') {
+      where.nome = { [Op.iLike]: `%${filters.q.trim()}%` };
+    }
+
     return this.produtoModel.findAll({
-      where: filters,
+      where,
       include: ['unidade', 'category'],
+      order: [['id_produto', 'ASC']],
     });
   }
 

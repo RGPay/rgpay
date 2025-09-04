@@ -124,5 +124,6 @@ export class PedidoFilterDto {
   @ApiProperty({ example: 1, description: 'Unit ID filter', required: false })
   @IsNumber()
   @IsOptional()
+  @Type(() => Number)
   id_unidade?: number;
 }

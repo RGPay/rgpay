@@ -21,6 +21,13 @@ export class Unidade extends Model<Unidade> {
   @Column({ type: DataType.STRING, allowNull: true })
   declare cnpj?: string;
 
+  @Column({
+    type: DataType.ENUM('casa_show', 'bar', 'restaurante'),
+    allowNull: false,
+    defaultValue: 'bar',
+  })
+  declare tipo: 'casa_show' | 'bar' | 'restaurante';
+
   @Column(DataType.STRING)
   declare cidade: string;
 

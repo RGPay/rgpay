@@ -1,4 +1,4 @@
-import { IsString, IsOptional } from 'class-validator';
+import { IsString, IsOptional, IsIn } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateUnidadeDto {
@@ -18,6 +18,17 @@ export class CreateUnidadeDto {
   @ApiProperty({ example: 'São Paulo', description: 'City' })
   @IsString()
   cidade: string;
+
+  @ApiProperty({
+    example: 'bar',
+    description: 'Establishment type',
+    enum: ['casa_show', 'bar', 'restaurante'],
+    required: false,
+  })
+  @IsString()
+  @IsOptional()
+  @IsIn(['casa_show', 'bar', 'restaurante'])
+  tipo?: 'casa_show' | 'bar' | 'restaurante';
 
   @ApiProperty({ example: 'SP', description: 'State' })
   @IsString()
@@ -51,6 +62,17 @@ export class UpdateUnidadeDto {
   @IsString()
   @IsOptional()
   cidade?: string;
+
+  @ApiProperty({
+    example: 'bar',
+    description: 'Establishment type',
+    enum: ['casa_show', 'bar', 'restaurante'],
+    required: false,
+  })
+  @IsString()
+  @IsOptional()
+  @IsIn(['casa_show', 'bar', 'restaurante'])
+  tipo?: 'casa_show' | 'bar' | 'restaurante';
 
   @ApiProperty({ example: 'SP', description: 'State', required: false })
   @IsString()
