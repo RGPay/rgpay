@@ -42,7 +42,10 @@ const CategoriesListPage: React.FC = () => {
     setLoading(true);
     try {
       const data = await CategoriesService.getAll();
-      setCategories(data);
+      const sorted = [...data].sort((a, b) =>
+        a.name.localeCompare(b.name, 'pt-BR', { sensitivity: 'base' })
+      );
+      setCategories(sorted);
     } catch {
       setToast({
         open: true,
@@ -187,12 +190,6 @@ const CategoriesListPage: React.FC = () => {
   // Define columns for DataTable
   const columns = [
     {
-      id: "id",
-      label: "ID",
-      minWidth: 50,
-      sortable: true,
-    },
-    {
       id: "name",
       label: "Nome",
       minWidth: 180,
@@ -254,8 +251,7 @@ const CategoriesListPage: React.FC = () => {
   if (adding)
     extraRows.push(
       <TableRow key="add-row">
-        <TableCell>-</TableCell>
-        <TableCell colSpan={columns.length - 1}>
+        <TableCell colSpan={columns.length}>
           <TextField
             inputRef={addInputRef}
             value={addValue}

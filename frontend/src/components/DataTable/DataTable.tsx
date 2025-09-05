@@ -29,6 +29,8 @@ type DataTableColumn<T> = {
   align?: "right" | "left" | "center";
   format?: (value: unknown, row: T) => React.ReactNode;
   sortable?: boolean;
+  // Optional function used for sorting when the column value is nested or formatted
+  sortValue?: (row: T) => string | number | boolean | null | undefined;
 };
 
 type DataTableAction<T> = {
@@ -80,35 +82,31 @@ function stableSort<T>(
   return stabilizedThis.map((el) => el[0]);
 }
 
-function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
-  if (b[orderBy] < a[orderBy]) {
-    return -1;
+function basicCompare(a: any, b: any): number {
+  if (a === b) return 0;
+  if (a === undefined || a === null) return 1; // nulls last
+  if (b === undefined || b === null) return -1;
+  if (typeof a === "string" && typeof b === "string") {
+    return a.localeCompare(b, undefined, { sensitivity: "base" });
   }
-  if (b[orderBy] > a[orderBy]) {
-    return 1;
-  }
-  return 0;
+  return a < b ? -1 : a > b ? 1 : 0;
 }
 
 type Order = "asc" | "desc";
 
-function getComparator(
+function getComparator<T>(
   order: Order,
-  orderBy: string
-): (a: unknown, b: unknown) => number {
+  orderBy: string,
+  columns: DataTableColumn<T>[]
+): (a: T, b: T) => number {
+  const column = columns.find((c) => c.id === orderBy);
+  const accessor = (row: T): any => {
+    if (column?.sortValue) return column.sortValue(row);
+    return (row as any)[orderBy];
+  };
   return order === "desc"
-    ? (a: unknown, b: unknown) =>
-        descendingComparator(
-          a as Record<string, unknown>,
-          b as Record<string, unknown>,
-          orderBy as keyof typeof a
-        )
-    : (a: unknown, b: unknown) =>
-        -descendingComparator(
-          a as Record<string, unknown>,
-          b as Record<string, unknown>,
-          orderBy as keyof typeof a
-        );
+    ? (a: T, b: T) => basicCompare(accessor(b), accessor(a))
+    : (a: T, b: T) => basicCompare(accessor(a), accessor(b));
 }
 
 function DataTable<T>({
@@ -177,7 +175,7 @@ function DataTable<T>({
 
   // Apply sorting
   const sortedData = orderBy
-    ? stableSort(filteredData, getComparator(order, orderBy))
+    ? stableSort(filteredData, getComparator(order, orderBy, columns))
     : filteredData;
 
   // Apply pagination
@@ -230,8 +228,16 @@ function DataTable<T>({
           )}
 
           {onRefresh && (
-            <Tooltip title="Atualizar">
-              <IconButton onClick={onRefresh}>
+            <Tooltip title="Resetar">
+              <IconButton
+                onClick={() => {
+                  setSearchQuery("");
+                  setPage(0);
+                  setOrder("asc");
+                  setOrderBy("");
+                  onRefresh();
+                }}
+              >
                 <RefreshIcon />
               </IconButton>
             </Tooltip>

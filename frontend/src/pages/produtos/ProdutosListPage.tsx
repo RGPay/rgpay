@@ -202,13 +202,14 @@ const ProdutosListPage: React.FC = () => {
           <span style={{ color: "#bbb" }}>-</span>
         ),
     },
-    { id: "id_produto", label: "ID", minWidth: 50, sortable: true },
+    // ID ocultado da UI por não ser útil aos usuários
     { id: "nome", label: "Nome", minWidth: 180, sortable: true },
     {
       id: "category",
       label: "Categoria",
       minWidth: 120,
       sortable: true,
+      sortValue: (row: Produto) => row.category?.name || "",
       format: (value: unknown, _row: Produto) => (
         <Chip
           label={(value as Produto["category"])?.name || "-"}
@@ -268,6 +269,7 @@ const ProdutosListPage: React.FC = () => {
       label: "Unidade",
       minWidth: 120,
       sortable: true,
+      sortValue: (row: Produto) => row.unidade?.nome || "",
       format: (value: unknown) => (value as Produto["unidade"])?.nome || "-",
     },
   ];
@@ -356,11 +358,13 @@ const ProdutosListPage: React.FC = () => {
             }
           >
             <MenuItem value="">Todas</MenuItem>
-            {categories.map((cat) => (
-              <MenuItem key={cat.id} value={cat.id}>
-                {cat.name}
-              </MenuItem>
-            ))}
+            {[...categories]
+              .sort((a, b) => a.name.localeCompare(b.name, 'pt-BR', { sensitivity: 'base' }))
+              .map((cat) => (
+                <MenuItem key={cat.id} value={cat.id}>
+                  {cat.name}
+                </MenuItem>
+              ))}
           </Select>
         </FormControl>
 

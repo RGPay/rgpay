@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { Op } from 'sequelize';
 import { InjectModel } from '@nestjs/sequelize';
 import { Produto } from './produto.model';
@@ -67,6 +67,9 @@ export class ProdutosService {
       'number'
     ) {
       categoryId = (createProdutoDto as { categoryId?: number }).categoryId;
+    }
+    if (categoryId === undefined || Number.isNaN(categoryId)) {
+      throw new BadRequestException('Categoria é obrigatória');
     }
     const data = {
       nome: nome as string,
