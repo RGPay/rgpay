@@ -45,7 +45,7 @@ const MaquinetaFormPage: React.FC = () => {
   const [initialValues, setInitialValues] = useState<CreateMaquinetaData>({
     numero_serie: '',
     status: 'ativa',
-    id_unidade: selectedUnidade || 0,
+    id_unidade: (selectedUnidade ?? '') as unknown as number,
     logo: '',
   });
 
@@ -66,6 +66,15 @@ const MaquinetaFormPage: React.FC = () => {
       setUnidadesLoading(true);
       const data = await UnidadesService.getAll();
       setUnidades(data);
+      // If no unidade selected yet, default to the first available to avoid out-of-range select value
+      if (!isEditing) {
+        setInitialValues((prev) => {
+          const current = prev.id_unidade as unknown as string | number;
+          const hasValid = typeof current === 'number' && data.some((u) => u.id_unidade === current);
+          const fallback = data.length > 0 ? (data[0].id_unidade as unknown as number) : ('' as unknown as number);
+          return hasValid ? prev : { ...prev, id_unidade: fallback };
+        });
+      }
     } catch (err) {
       console.error('Erro ao carregar unidades:', err);
       setError('Erro ao carregar unidades. Tente novamente.');
@@ -99,12 +108,6 @@ const MaquinetaFormPage: React.FC = () => {
     try {
       setError(null);
       
-      console.log('Submitting maquineta form with values:', {
-        numero_serie: values.numero_serie,
-        status: values.status,
-        id_unidade: values.id_unidade,
-        logo: values.logo ? 'Logo presente (base64 data)' : 'Sem logo',
-      });
 
       if (isEditing && id) {
         const updateData: UpdateMaquinetaData = {
@@ -113,14 +116,10 @@ const MaquinetaFormPage: React.FC = () => {
           id_unidade: values.id_unidade,
           logo: values.logo,
         };
-        console.log('Updating maquineta with ID:', id);
         await MaquinetasService.update(parseInt(id, 10), updateData);
       } else {
-        console.log('Creating new maquineta');
         await MaquinetasService.create(values);
       }
-
-      console.log('Maquineta saved successfully, navigating to list');
       navigate('/maquinetas');
     } catch (err: any) {
       console.error('Erro ao salvar maquineta:', err);
@@ -375,11 +374,18 @@ const MaquinetaFormPage: React.FC = () => {
 
                   <Grid item xs={12}>
                     <Field name="id_unidade">
-                      {({ field, meta }: FieldProps) => (
+                      {({ field, meta, form }: FieldProps) => (
                         <FormControl fullWidth>
                           <InputLabel>Unidade</InputLabel>
                           <Select
                             {...field}
+                            value={(field.value as unknown as number) || ''}
+                            onChange={(e) =>
+                              form.setFieldValue(
+                                'id_unidade',
+                                e.target.value === '' ? '' : Number(e.target.value)
+                              )
+                            }
                             label="Unidade"
                             error={meta.touched && Boolean(meta.error)}
                           >

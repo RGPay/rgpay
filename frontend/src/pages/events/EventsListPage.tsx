@@ -115,7 +115,6 @@ const EventsListPage: React.FC = () => {
   };
 
   const columns = [
-    { id: "id_evento", label: "ID", minWidth: 50 },
     { id: "nome", label: "Nome", minWidth: 180 },
     { id: "descricao", label: "Descrição", minWidth: 200 },
     {

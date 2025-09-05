@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   Box,
   Typography,
@@ -10,6 +10,10 @@ import {
   CardContent,
   Divider,
   IconButton,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from "@mui/material";
 import {
   Edit as EditIcon,
@@ -22,10 +26,20 @@ import type { RootState } from "../store/store";
 import { Toast } from "../components";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
+import usersService from "../services/users.service";
 
 const validationSchema = Yup.object({
   name: Yup.string().required("Nome é obrigatório"),
   email: Yup.string().email("Email inválido").required("Email é obrigatório"),
+});
+
+const changePasswordSchema = Yup.object({
+  newPassword: Yup.string()
+    .min(6, "A senha deve ter no mínimo 6 caracteres")
+    .required("Nova senha é obrigatória"),
+  confirmPassword: Yup.string()
+    .oneOf([Yup.ref("newPassword")], "As senhas não coincidem")
+    .required("Confirmação de senha é obrigatória"),
 });
 
 interface ProfileFormValues {
@@ -41,6 +55,8 @@ const ProfilePage: React.FC = () => {
     message: "",
     severity: "success" as "success" | "error",
   });
+  const [memberSince, setMemberSince] = useState<string | null>(null);
+  const [changePwdOpen, setChangePwdOpen] = useState(false);
 
   const handleCloseToast = () => {
     setToast({ ...toast, open: false });
@@ -50,7 +66,6 @@ const ProfilePage: React.FC = () => {
     try {
       // Here you would call an API to update user profile
       // await userService.updateProfile(values);
-      console.log("Profile update values:", values);
 
       setToast({
         open: true,
@@ -108,6 +123,24 @@ const ProfilePage: React.FC = () => {
     name: user?.name || "",
     email: user?.email || "",
   };
+
+  useEffect(() => {
+    const loadUserDetails = async () => {
+      try {
+        if (user?.id_usuario) {
+          const full = await usersService.getUser(user.id_usuario);
+          const created = (full as any)?.createdAt;
+          if (created) {
+            const date = new Date(created);
+            setMemberSince(date.toLocaleDateString("pt-BR"));
+          }
+        }
+      } catch {
+        setMemberSince(null);
+      }
+    };
+    loadUserDetails();
+  }, [user?.id_usuario]);
 
   return (
     <Box>
@@ -171,7 +204,7 @@ const ProfilePage: React.FC = () => {
               <Divider sx={{ my: 2 }} />
 
               <Typography variant="body2" color="text.secondary">
-                Membro desde: {new Date().toLocaleDateString("pt-BR")}
+                Membro desde: {memberSince || "—"}
               </Typography>
             </CardContent>
           </Card>
@@ -306,7 +339,12 @@ const ProfilePage: React.FC = () => {
 
               <Grid container spacing={2}>
                 <Grid item xs={12} sm={6}>
-                  <Button variant="outlined" fullWidth sx={{ py: 1.5 }}>
+                  <Button
+                    variant="outlined"
+                    fullWidth
+                    sx={{ py: 1.5 }}
+                    onClick={() => setChangePwdOpen(true)}
+                  >
                     Alterar Senha
                   </Button>
                 </Grid>
@@ -332,6 +370,65 @@ const ProfilePage: React.FC = () => {
         severity={toast.severity}
         onClose={handleCloseToast}
       />
+
+      {/* Change Password Dialog */}
+      <Dialog open={changePwdOpen} onClose={() => setChangePwdOpen(false)} fullWidth maxWidth="xs">
+        <DialogTitle>Alterar Senha</DialogTitle>
+        <Formik
+          initialValues={{ newPassword: "", confirmPassword: "" }}
+          validationSchema={changePasswordSchema}
+          onSubmit={async (values, { setSubmitting, resetForm }) => {
+            try {
+              if (!user?.id_usuario) return;
+              await usersService.updateUser(user.id_usuario, {
+                senha: values.newPassword,
+              });
+              setToast({ open: true, message: "Senha alterada com sucesso", severity: "success" });
+              resetForm();
+              setChangePwdOpen(false);
+            } catch (e) {
+              setToast({ open: true, message: "Erro ao alterar senha", severity: "error" });
+            } finally {
+              setSubmitting(false);
+            }
+          }}
+        >
+          {({ values, errors, touched, handleChange, handleBlur, handleSubmit, isSubmitting }) => (
+            <Form onSubmit={handleSubmit}>
+              <DialogContent>
+                <TextField
+                  fullWidth
+                  name="newPassword"
+                  label="Nova Senha"
+                  type="password"
+                  margin="dense"
+                  value={values.newPassword}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  error={touched.newPassword && Boolean(errors.newPassword)}
+                  helperText={touched.newPassword && errors.newPassword}
+                />
+                <TextField
+                  fullWidth
+                  name="confirmPassword"
+                  label="Confirmar Senha"
+                  type="password"
+                  margin="dense"
+                  value={values.confirmPassword}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  error={touched.confirmPassword && Boolean(errors.confirmPassword)}
+                  helperText={touched.confirmPassword && errors.confirmPassword}
+                />
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={() => setChangePwdOpen(false)} disabled={isSubmitting}>Cancelar</Button>
+                <Button type="submit" variant="contained" disabled={isSubmitting}>Salvar</Button>
+              </DialogActions>
+            </Form>
+          )}
+        </Formik>
+      </Dialog>
     </Box>
   );
 };

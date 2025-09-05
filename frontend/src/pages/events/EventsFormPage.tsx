@@ -78,13 +78,13 @@ const EventsFormPage: React.FC = () => {
   const isEditMode = Boolean(id);
 
   const [initialValues, setInitialValues] = useState<
-    Partial<Evento> | CreateEventoDto
+    Partial<Evento> | (Omit<CreateEventoDto, 'id_unidade'> & { id_unidade: number | "" })
   >({
     nome: "",
     descricao: "",
     data_inicio: "",
     data_fim: "",
-    id_unidade: 1,
+    id_unidade: "",
   });
   const [loading, setLoading] = useState(isEditMode);
   const [toast, setToast] = useState({
@@ -99,6 +99,10 @@ const EventsFormPage: React.FC = () => {
       try {
         const data = await unidadesService.getAll();
         setUnidades(data);
+        // If creating and no unidade chosen yet, set first option
+        if (!isEditMode && data.length > 0) {
+          setInitialValues((prev) => ({ ...prev, id_unidade: data[0].id_unidade }));
+        }
       } catch (error) {
         setToast({
           open: true,

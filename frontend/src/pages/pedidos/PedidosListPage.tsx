@@ -82,7 +82,6 @@ const PedidosListPage: React.FC = () => {
   };
 
   const columns = [
-    { id: "id_pedido", label: "ID", minWidth: 50, sortable: true },
     {
       id: "data_hora",
       label: "Data/Hora",

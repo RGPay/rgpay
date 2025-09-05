@@ -18,14 +18,6 @@ export class MaquinetasService {
   async create(
     createMaquinetaDto: CreateMaquinetaDto,
   ): Promise<MaquinetaResponseDto> {
-    console.log('Creating maquineta with data:', {
-      numero_serie: createMaquinetaDto.numero_serie,
-      status: createMaquinetaDto.status,
-      id_unidade: createMaquinetaDto.id_unidade,
-      logo: createMaquinetaDto.logo
-        ? 'Logo presente (base64 data)'
-        : 'Sem logo',
-    });
 
     const maquineta = await this.maquinetaModel.create({
       numero_serie: createMaquinetaDto.numero_serie,
@@ -34,7 +26,6 @@ export class MaquinetasService {
       logo: createMaquinetaDto.logo,
     } as any);
 
-    console.log('Maquineta created with ID:', maquineta.id_maquineta);
     return this.formatMaquinetaResponse(
       await this.findByIdWithUnidade(maquineta.id_maquineta),
     );

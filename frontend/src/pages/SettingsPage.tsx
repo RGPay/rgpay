@@ -44,6 +44,15 @@ import UnidadesService, { Unidade } from "../services/unidades.service";
 import { useSelector } from "react-redux";
 import type { RootState } from "../store/store";
 
+// Local form state allows temporary empty value for id_unidade to avoid MUI out-of-range warnings
+type UserFormState = {
+  nome: string;
+  email: string;
+  senha?: string;
+  tipo_usuario: "master" | "gerente";
+  id_unidade: number | "";
+};
+
 const SettingsPage: React.FC = () => {
   const currentUser = useSelector((state: RootState) => state.auth.user);
   const [users, setUsers] = useState<User[]>([]);
@@ -54,12 +63,12 @@ const SettingsPage: React.FC = () => {
   const [editingUser, setEditingUser] = useState<User | null>(null);
   const [userToDelete, setUserToDelete] = useState<User | null>(null);
   const [activeTab, setActiveTab] = useState(0);
-  const [formData, setFormData] = useState<CreateUserDto | UpdateUserDto>({
+  const [formData, setFormData] = useState<UserFormState>({
     nome: "",
     email: "",
     senha: "",
     tipo_usuario: "gerente",
-    id_unidade: 0,
+    id_unidade: "",
   });
 
   const [toast, setToast] = useState({
@@ -115,7 +124,7 @@ const SettingsPage: React.FC = () => {
         email: "",
         senha: "",
         tipo_usuario: "gerente",
-        id_unidade: unidades.length > 0 ? unidades[0].id_unidade : 0,
+        id_unidade: unidades.length > 0 ? unidades[0].id_unidade : "",
       });
     }
     setDialogOpen(true);
@@ -129,7 +138,7 @@ const SettingsPage: React.FC = () => {
       email: "",
       senha: "",
       tipo_usuario: "gerente",
-      id_unidade: 0,
+      id_unidade: "",
     });
   };
 
@@ -137,7 +146,14 @@ const SettingsPage: React.FC = () => {
     try {
       if (editingUser) {
         // Update user
-        const updateData: UpdateUserDto = { ...formData };
+        const updateData: UpdateUserDto = {
+          nome: formData.nome,
+          email: formData.email,
+          senha: formData.senha,
+          tipo_usuario: formData.tipo_usuario,
+          id_unidade:
+            formData.id_unidade === "" ? undefined : Number(formData.id_unidade),
+        };
         if (!updateData.senha) {
           delete updateData.senha; // Don't update password if empty
         }
@@ -149,7 +165,21 @@ const SettingsPage: React.FC = () => {
         });
       } else {
         // Create user
-        await UsersService.createUser(formData as CreateUserDto);
+        if (formData.id_unidade === "") {
+          setToast({
+            open: true,
+            message: "Selecione uma unidade",
+            severity: "error",
+          });
+          return;
+        }
+        await UsersService.createUser({
+          nome: formData.nome,
+          email: formData.email,
+          senha: formData.senha || "",
+          tipo_usuario: formData.tipo_usuario,
+          id_unidade: Number(formData.id_unidade),
+        });
         setToast({
           open: true,
           message: "Usuário criado com sucesso",
@@ -381,14 +411,18 @@ const SettingsPage: React.FC = () => {
                 fullWidth
                 select
                 label="Unidade"
-                value={formData.id_unidade}
-                onChange={(e) =>
+                value={formData.id_unidade === "" ? "" : Number(formData.id_unidade)}
+                onChange={(e) => {
+                  const val = e.target.value as unknown as string;
                   setFormData({
                     ...formData,
-                    id_unidade: parseInt(e.target.value),
-                  })
-                }
+                    id_unidade: val === "" ? "" : parseInt(val, 10),
+                  });
+                }}
               >
+                <MenuItem value="">
+                  <em>Selecione uma unidade</em>
+                </MenuItem>
                 {unidades.map((unidade) => (
                   <MenuItem key={unidade.id_unidade} value={unidade.id_unidade}>
                     {unidade.nome}

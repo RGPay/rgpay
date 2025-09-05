@@ -84,7 +84,6 @@ const UnidadesListPage: React.FC = () => {
   };
 
   const columns = [
-    { id: "id_unidade", label: "ID", minWidth: 50 },
     { id: "nome", label: "Nome", minWidth: 180 },
     {
       id: "tipo",

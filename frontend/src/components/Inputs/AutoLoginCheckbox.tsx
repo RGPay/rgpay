@@ -20,7 +20,7 @@ export default function AutoLoginCheckbox({
         <span style={{ display: "flex", alignItems: "center" }}>
           {label}
           <Tooltip
-            title="Se ativado, você permanecerá logado automaticamente neste dispositivo. Não use em computadores públicos ou compartilhados."
+            title="Se ativado, você permanecerá conectado automaticamente neste dispositivo."
             placement="right"
             arrow
           >
