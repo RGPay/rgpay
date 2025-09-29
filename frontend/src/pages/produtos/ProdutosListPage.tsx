@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Box,
   Button,
@@ -11,6 +11,7 @@ import {
   FormControl,
   InputLabel,
   Select,
+  CircularProgress,
 } from "@mui/material";
 import {
   Add as AddIcon,
@@ -39,6 +40,8 @@ const ProdutosListPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedProduto, setSelectedProduto] = useState<Produto | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [togglingIds, setTogglingIds] = useState<Record<number, boolean>>({});
+  const togglingRef = useRef<Set<number>>(new Set());
   const [toast, setToast] = useState({
     open: false,
     message: "",
@@ -93,11 +96,13 @@ const ProdutosListPage: React.FC = () => {
     fetchCategories();
   }, []);
 
-  const handleSearch = () => {
-    // In a real app, you might want to search on the server side
-    // For now, we'll just filter the products client-side
-    loadProdutos();
-  };
+  // Atualiza o filtro de busca com debounce enquanto digita
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setFilter((prev) => ({ ...prev, q: (searchTerm || "").trim() || undefined }));
+    }, 300);
+    return () => clearTimeout(handler);
+  }, [searchTerm]);
 
   const handleCreateProduto = () => {
     navigate("/produtos/novo");
@@ -137,15 +142,25 @@ const ProdutosListPage: React.FC = () => {
   };
 
   const handleToggleStatus = async (produto: Produto) => {
+    const id = produto.id_produto;
+    if (togglingRef.current.has(id)) return; // bloqueio síncrono
+    togglingRef.current.add(id);
+    setTogglingIds((prev) => ({ ...prev, [id]: true }));
     try {
-      await produtosService.toggleStatus(produto.id_produto);
+      const desired = !produto.disponivel;
+      const updated = await produtosService.update(id, { disponivel: desired });
+      // atualização otimista do item na lista
+      setProdutos((prev) =>
+        prev.map((p) =>
+          p.id_produto === id ? { ...p, disponivel: updated.disponivel } : p
+        )
+      );
       setToast({
         open: true,
-        message: `Produto ${
-          produto.disponivel ? "desativado" : "ativado"
-        } com sucesso`,
+        message: `Produto ${updated.disponivel ? "ativado" : "desativado"} com sucesso`,
         severity: "success",
       });
+      // recarrega em background para garantir sincronização
       loadProdutos();
     } catch (error) {
       console.error("Error toggling product status:", error);
@@ -154,6 +169,9 @@ const ProdutosListPage: React.FC = () => {
         message: "Erro ao alterar status do produto",
         severity: "error",
       });
+    } finally {
+      togglingRef.current.delete(id);
+      setTogglingIds((prev) => ({ ...prev, [id]: false }));
     }
   };
 
@@ -184,13 +202,14 @@ const ProdutosListPage: React.FC = () => {
           <span style={{ color: "#bbb" }}>-</span>
         ),
     },
-    { id: "id_produto", label: "ID", minWidth: 50, sortable: true },
+    // ID ocultado da UI por não ser útil aos usuários
     { id: "nome", label: "Nome", minWidth: 180, sortable: true },
     {
       id: "category",
       label: "Categoria",
       minWidth: 120,
       sortable: true,
+      sortValue: (row: Produto) => row.category?.name || "",
       format: (value: unknown, _row: Produto) => (
         <Chip
           label={(value as Produto["category"])?.name || "-"}
@@ -229,19 +248,28 @@ const ProdutosListPage: React.FC = () => {
       label: "Disponível",
       minWidth: 120,
       sortable: true,
-      format: (value: unknown) => (
-        <Chip
-          label={(value as boolean) ? "Sim" : "Não"}
-          color={(value as boolean) ? "success" : "error"}
-          size="small"
-        />
-      ),
+      format: (value: unknown, row: Produto) =>
+        togglingIds[row.id_produto] ? (
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+            <CircularProgress size={14} thickness={5} />
+            <Typography variant="caption" color="text.secondary">
+              Atualizando...
+            </Typography>
+          </Box>
+        ) : (
+          <Chip
+            label={(value as boolean) ? "Sim" : "Não"}
+            color={(value as boolean) ? "success" : "error"}
+            size="small"
+          />
+        ),
     },
     {
       id: "unidade",
       label: "Unidade",
       minWidth: 120,
       sortable: true,
+      sortValue: (row: Produto) => row.unidade?.nome || "",
       format: (value: unknown) => (value as Produto["unidade"])?.nome || "-",
     },
   ];
@@ -299,14 +327,17 @@ const ProdutosListPage: React.FC = () => {
             ),
             endAdornment: searchTerm ? (
               <InputAdornment position="end">
-                <IconButton size="small" onClick={() => setSearchTerm("")}>
+                <IconButton
+                  size="small"
+                  onClick={() => {
+                    setSearchTerm("");
+                    setFilter((prev) => ({ ...prev, q: undefined }));
+                  }}
+                >
                   <CloseIcon fontSize="small" />
                 </IconButton>
               </InputAdornment>
             ) : null,
-          }}
-          onKeyPress={(e) => {
-            if (e.key === "Enter") handleSearch();
           }}
         />
 
@@ -315,23 +346,25 @@ const ProdutosListPage: React.FC = () => {
           <Select
             labelId="category-filter-label"
             id="category-filter"
-            value={filter.category_id || ""}
+            value={filter.categoryId || ""}
             label="Categoria"
             onChange={(e) =>
               setFilter({
                 ...filter,
-                category_id: e.target.value
+                categoryId: e.target.value
                   ? Number(e.target.value)
                   : undefined,
               })
             }
           >
             <MenuItem value="">Todas</MenuItem>
-            {categories.map((cat) => (
-              <MenuItem key={cat.id} value={cat.id}>
-                {cat.name}
-              </MenuItem>
-            ))}
+            {[...categories]
+              .sort((a, b) => a.name.localeCompare(b.name, 'pt-BR', { sensitivity: 'base' }))
+              .map((cat) => (
+                <MenuItem key={cat.id} value={cat.id}>
+                  {cat.name}
+                </MenuItem>
+              ))}
           </Select>
         </FormControl>
 
@@ -362,7 +395,14 @@ const ProdutosListPage: React.FC = () => {
           </Select>
         </FormControl>
 
-        <IconButton onClick={loadProdutos} color="primary">
+        <IconButton
+          onClick={() => {
+            setSearchTerm("");
+            setFilter({});
+          }}
+          color="primary"
+          title="Resetar filtros"
+        >
           <RefreshIcon />
         </IconButton>
       </Box>
@@ -373,7 +413,7 @@ const ProdutosListPage: React.FC = () => {
         title="Lista de Produtos"
         keyExtractor={(item) => item.id_produto}
         actions={actions}
-        onRowClick={(produto) => handleToggleStatus(produto)}
+        onRowDoubleClick={(produto) => handleToggleStatus(produto)}
         isLoading={loading}
         searchable={false}
       />

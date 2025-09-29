@@ -84,8 +84,26 @@ const UnidadesListPage: React.FC = () => {
   };
 
   const columns = [
-    { id: "id_unidade", label: "ID", minWidth: 50 },
     { id: "nome", label: "Nome", minWidth: 180 },
+    {
+      id: "tipo",
+      label: "Tipo",
+      minWidth: 120,
+      format: (value: unknown) => {
+        const v = value as string;
+        if (!v) return '-';
+        switch (v) {
+          case 'casa_show':
+            return 'Casa de Show';
+          case 'bar':
+            return 'Bar';
+          case 'restaurante':
+            return 'Restaurante';
+          default:
+            return v;
+        }
+      },
+    },
     {
       id: "cnpj",
       label: "CNPJ",

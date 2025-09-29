@@ -13,6 +13,9 @@ import unidadesService, {
 // Form validation schema
 const validationSchema = Yup.object({
   nome: Yup.string().required("O nome da unidade é obrigatório"),
+  tipo: Yup.mixed<'casa_show' | 'bar' | 'restaurante'>()
+    .oneOf(['casa_show', 'bar', 'restaurante'], 'Selecione um tipo válido')
+    .required('O tipo da unidade é obrigatório'),
   cnpj: Yup.string().optional(),
   cidade: Yup.string().required("A cidade da unidade é obrigatória"),
   estado: Yup.string().required("O estado da unidade é obrigatório"),
@@ -94,6 +97,7 @@ const UnidadeFormPage: React.FC = () => {
 
   const initialValues = {
     nome: unidade?.nome || "",
+    tipo: unidade?.tipo || "",
     cnpj: unidade?.cnpj || "",
     cidade: unidade?.cidade || "",
     estado: unidade?.estado || "",
@@ -108,6 +112,20 @@ const UnidadeFormPage: React.FC = () => {
       required: true,
       fullWidth: true,
       xs: 12,
+    },
+    {
+      name: "tipo",
+      label: "Tipo",
+      type: "select" as const,
+      required: true,
+      fullWidth: true,
+      xs: 12,
+      md: 6,
+      options: [
+        { value: 'casa_show', label: 'Casa de Show' },
+        { value: 'bar', label: 'Bar' },
+        { value: 'restaurante', label: 'Restaurante' },
+      ],
     },
     {
       name: "cnpj",

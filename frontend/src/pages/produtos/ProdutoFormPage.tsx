@@ -55,13 +55,11 @@ const ProdutoFormPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const isEditMode = Boolean(id);
 
-  const [initialValues, setInitialValues] = useState<
-    Produto | CreateProdutoDto
-  >({
+  const [initialValues, setInitialValues] = useState<Produto | CreateProdutoDto>({
     nome: "",
     preco_compra: 0,
     preco_venda: 0,
-    category_id: 0,
+    category_id: "" as unknown as number,
     disponivel: true,
     id_unidade: 1,
     estoque: 0,
@@ -145,15 +143,36 @@ const ProdutoFormPage: React.FC = () => {
     formikHelpers: FormikHelpers<Produto | CreateProdutoDto>
   ) => {
     try {
+      // Sanitize payload: send only fields accepted by the backend DTO
+      const rawCategory = (values as any).category_id ?? (values as any).categoryId;
+      const categoryIdSanitized =
+        rawCategory === "" || rawCategory === undefined || rawCategory === null
+          ? undefined
+          : Number(rawCategory);
+
+      const payload: CreateProdutoDto | UpdateProdutoDto = {
+        nome: String((values as any).nome ?? ""),
+        preco_compra: Number((values as any).preco_compra),
+        preco_venda: Number((values as any).preco_venda),
+        category_id: categoryIdSanitized as number,
+        disponivel: Boolean((values as any).disponivel),
+        id_unidade: Number((values as any).id_unidade),
+        estoque: Number((values as any).estoque),
+        imagem:
+          (typeof (values as any).imagem === "string" && (values as any).imagem.trim() === "")
+            ? undefined
+            : (values as any).imagem,
+      } as any;
+
       if (isEditMode && id) {
-        await produtosService.update(parseInt(id), values);
+        await produtosService.update(parseInt(id), payload as UpdateProdutoDto);
         setToast({
           open: true,
           message: "Produto atualizado com sucesso",
           severity: "success",
         });
       } else {
-        await produtosService.create(values as CreateProdutoDto);
+        await produtosService.create(payload as CreateProdutoDto);
         setToast({
           open: true,
           message: "Produto criado com sucesso",
@@ -447,14 +466,27 @@ const ProdutoFormPage: React.FC = () => {
                         fullWidth
                         required
                         size="small"
+                        value={(field.value as unknown as number) || ""}
+                        onChange={(e) =>
+                          setFieldValue(
+                            "category_id",
+                            e.target.value === "" ? "" : Number(e.target.value)
+                          )
+                        }
                         error={meta.touched && !!meta.error}
                         helperText={meta.touched && meta.error}
                       >
-                        {categories.map((category) => (
-                          <MenuItem key={category.id} value={category.id}>
-                            {category.name}
-                          </MenuItem>
-                        ))}
+                        {[...categories]
+                          .sort((a, b) =>
+                            a.name.localeCompare(b.name, 'pt-BR', {
+                              sensitivity: 'base',
+                            })
+                          )
+                          .map((category) => (
+                            <MenuItem key={category.id} value={category.id}>
+                              {category.name}
+                            </MenuItem>
+                          ))}
                       </TextField>
                     )}
                   </Field>

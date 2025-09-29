@@ -111,6 +111,7 @@ function FormikForm<T extends FormikValues>({
               <TextField
                 {...fieldProps}
                 select
+                id={String(name)}
                 label={label}
                 placeholder={placeholder}
                 fullWidth={fullWidth}
@@ -120,7 +121,17 @@ function FormikForm<T extends FormikValues>({
                 helperText={fieldError || helperText}
                 autoFocus={autoFocus}
                 size="small"
+                value={(() => {
+                  const currentValue = (fieldProps as any).value ?? "";
+                  const optionValues = (options || []).map((o) => String(o.value));
+                  const isAllowed =
+                    currentValue === "" || optionValues.includes(String(currentValue));
+                  return isAllowed ? currentValue : "";
+                })()}
               >
+                <MenuItem value="">
+                  <em>Selecione</em>
+                </MenuItem>
                 {options?.map((option) => (
                   <MenuItem key={option.value} value={option.value}>
                     {option.label}
@@ -190,6 +201,7 @@ function FormikForm<T extends FormikValues>({
             {({ field: fieldProps }: FieldProps) => (
               <TextField
                 {...fieldProps}
+                id={String(name)}
                 label={label}
                 placeholder={placeholder}
                 multiline
@@ -213,6 +225,7 @@ function FormikForm<T extends FormikValues>({
               <TextField
                 {...fieldProps}
                 type={type}
+                id={String(name)}
                 label={label}
                 {...(type !== "date" && { placeholder })}
                 fullWidth={fullWidth}

@@ -41,9 +41,10 @@ export interface UpdateProdutoDto {
 }
 
 export interface ProdutosFilter {
-  category_id?: number;
+  categoryId?: number;
   disponivel?: boolean;
   id_unidade?: number;
+  q?: string;
 }
 
 class ProdutosService {

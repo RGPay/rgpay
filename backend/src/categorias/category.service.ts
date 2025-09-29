@@ -15,7 +15,9 @@ export class CategoryService {
   }
 
   async findAll(): Promise<Category[]> {
-    return this.categoryModel.findAll();
+    return this.categoryModel.findAll({
+      order: [["name", "ASC"]],
+    });
   }
 
   async findOne(id: number): Promise<Category> {
